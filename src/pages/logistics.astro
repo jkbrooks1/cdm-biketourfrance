@@ -1,0 +1,47 @@
+---
+import { readFileSync } from 'fs';
+import path from 'path';
+
+const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
+let tourData = { tourName: 'Tour', startDate: '', endDate: '', totalMiles: 0, totalElevation: 0, branding: {} };
+
+try {
+  const content = readFileSync(tourDataPath, 'utf-8');
+  tourData = JSON.parse(content);
+} catch (err) {
+  console.warn('Warning: Could not load tour-data.json');
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logistics</title>
+  <style define:vars={{
+    primary: tourData.branding?.colors?.primary || '#2D5016',
+    secondary: tourData.branding?.colors?.secondary || '#1B4F72',
+    cta: tourData.branding?.colors?.cta || '#0066cc',
+  }}>
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Logistics & Practical Info</h1>
+  </header>
+
+  <main>
+    <section>
+      <div><strong>{tourData.startDate}</strong> <span>Start Date</span></div>
+      <div><strong>{tourData.endDate}</strong> <span>End Date</span></div>
+      <div><strong>{tourData.totalMiles}</strong> <span>Total Miles</span></div>
+      <div><strong>{tourData.totalElevation.toLocaleString()}</strong> <span>Total Elevation</span></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; BikeTourFrance.net</p>
+  </footer>
+</body>
+</html>

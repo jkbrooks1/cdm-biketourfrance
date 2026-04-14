@@ -1,0 +1,97 @@
+---
+import { readFileSync } from 'fs';
+import path from 'path';
+
+export async function getStaticPaths() {
+  const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
+  let allTourData = { rides: [], branding: {} };
+  try {
+    const content = readFileSync(tourDataPath, 'utf-8');
+    allTourData = JSON.parse(content);
+  } catch (err) {
+    console.warn('Warning: Could not load tour-data.json');
+  }
+  return allTourData.rides.map((ride) => ({
+    params: { day: ride.dayNumber },
+    props: { ride, tourData: allTourData }
+  }));
+}
+
+const { ride, tourData } = Astro.props;
+const dayNum = parseInt(ride.dayNumber);
+const rideCount = tourData.rides.filter(r => !isNaN(parseInt(r.dayNumber))).length;
+const prevDay = dayNum - 1;
+const nextDay = dayNum + 1;
+const hasPrev = prevDay >= 1;
+const hasNext = nextDay <= rideCount;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ride Day {ride.dayNumber}</title>
+  <style define:vars={{
+    primary: tourData.branding?.colors?.primary || '#2D5016',
+    secondary: tourData.branding?.colors?.secondary || '#1B4F72',
+    cta: tourData.branding?.colors?.cta || '#0066cc',
+  }}>
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/">← Back</a>
+  </header>
+
+  <main>
+    <h1>Ride Day {ride.dayNumber}: {ride.startTown} → {ride.endTown}</h1>
+
+    {ride.pandaImageUrl && (
+      <img src={ride.pandaImageUrl} alt="Ride Day {ride.dayNumber}" />
+    )}
+
+    <section>
+      <div><strong>{ride.miles.toFixed(1)}</strong> <span>Miles</span></div>
+      <div><strong>{ride.elevation.toLocaleString()}</strong> <span>ft Elevation</span></div>
+    </section>
+
+    {ride.highlights && ride.highlights.length > 0 && (
+      <section>
+        <h2>Notable Sights</h2>
+        <ul>
+          {ride.highlights.map((highlight) => (
+            <li>
+              <strong>{highlight.title}</strong>
+              <p>{highlight.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {ride.lunch && (
+      <section>
+        <h2>Lunch</h2>
+        <p><strong>{ride.lunch.name}</strong> ({ride.lunch.type}) — Mile {ride.lunch.milepost.toFixed(1)}</p>
+      </section>
+    )}
+
+    {ride.overnightNarrative && (
+      <section>
+        <h2>Arrival in {ride.endTown}</h2>
+        <p>{ride.overnightNarrative}</p>
+      </section>
+    )}
+
+    <nav>
+      {hasPrev ? <a href={`/${prevDay}`}>← Day {prevDay}</a> : <span></span>}
+      {hasNext ? <a href={`/${nextDay}`}>Day {nextDay} →</a> : <span></span>}
+    </nav>
+  </main>
+
+  <footer>
+    <p>&copy; BikeTourFrance.net</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment — never commit secrets
+.env
+.env.local
+
+# Generated data (rebuilt on each deploy)
+src/data/tour-data.json
+
+# macOS
+.DS_Store

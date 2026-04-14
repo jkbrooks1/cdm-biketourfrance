@@ -1,0 +1,21 @@
+{
+  "name": "cdm-biketourfrance",
+  "version": "1.0.0",
+  "description": "Canal des Deux Mers 2026 tour website",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "fetch": "node scripts/validate-and-transform.js",
+    "build": "npm run fetch && astro build",
+    "build:astro": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^4.0.0",
+    "dotenv": "^17.4.2",
+    "googleapis": "^118.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

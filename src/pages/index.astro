@@ -1,0 +1,67 @@
+---
+import { readFileSync } from 'fs';
+import path from 'path';
+
+const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
+let tourData = { rides: [], tourName: 'Tour', description: '' };
+
+try {
+  const content = readFileSync(tourDataPath, 'utf-8');
+  tourData = JSON.parse(content);
+} catch (err) {
+  console.warn('Warning: Could not load tour-data.json');
+}
+
+const { tourName, startDate, endDate, description, rides, branding } = tourData;
+const totalMiles = rides.reduce((sum, r) => sum + (r.miles || 0), 0);
+const totalElevation = rides.reduce((sum, r) => sum + (r.elevation || 0), 0);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{tourName}</title>
+  <style define:vars={{
+    primary: branding?.colors?.primary || '#2D5016',
+    secondary: branding?.colors?.secondary || '#1B4F72',
+    cta: branding?.colors?.cta || '#0066cc',
+  }}>
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{tourName}</h1>
+    <p>{startDate} — {endDate}</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>{description}</h2>
+      <div>
+        <div><strong>{rides.length}</strong> <span>Ride Days</span></div>
+        <div><strong>{totalMiles.toFixed(0)}</strong> <span>Miles</span></div>
+        <div><strong>{Math.round(totalElevation).toLocaleString()}</strong> <span>ft Elevation</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>The Route</h2>
+      <div>
+        {rides.map((ride) => (
+          <a href={`/${ride.dayNumber}`}>
+            <h3>Ride Day {ride.dayNumber}</h3>
+            <p>{ride.startTown} → {ride.endTown}</p>
+            <div>{ride.miles.toFixed(0)} mi | {ride.elevation.toLocaleString()} ft</div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; BikeTourFrance.net</p>
+  </footer>
+</body>
+</html>
