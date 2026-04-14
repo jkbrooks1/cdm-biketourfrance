@@ -1,0 +1,321 @@
+{
+  "tourName": "Canal des Deux Mers 2026",
+  "tourSlug": "cdm-2026",
+  "startDate": "2026-05-10",
+  "endDate": "2026-05-18",
+  "description": "Bordeaux to Sète: 289 miles, 8 days, self-supported cycling",
+  "totalMiles": "328.1",
+  "totalElevation": 12870,
+  "branding": {
+    "colors": {
+      "primary": "#2D5016",
+      "secondary": "#1B4F72",
+      "cta": "#0066cc",
+      "background": "#F5F0E8"
+    },
+    "fonts": {
+      "primary": "Montserrat",
+      "fallback": "Arial, sans-serif"
+    }
+  },
+  "media": {
+    "r2Base": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev",
+    "logo": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_LOGO_White_on_Transparent.png"
+  },
+  "rides": [
+    {
+      "dayNumber": "0",
+      "date": "8/28",
+      "startTown": "ARR:Bordeaux",
+      "endTown": "",
+      "miles": 0,
+      "elevation": 0,
+      "rwgpsId": "",
+      "pandaImage": "",
+      "highlights": [],
+      "lunch": null,
+      "pandaImageUrl": null,
+      "overnightNarrative": ""
+    },
+    {
+      "dayNumber": "1",
+      "date": "8/29",
+      "startTown": "Bordeaux",
+      "endTown": "La Réole",
+      "miles": 45.67,
+      "elevation": 2667,
+      "rwgpsId": "54547390",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Bordeaux Historic Waterfront",
+          "description": "UNESCO-listed 18th-century port and \"Port of the Moon\" crescent harbor fueled global commerce."
+        },
+        {
+          "title": "Roger Lapébie Greenway",
+          "description": "Former railway converted to cycling path through vineyards, connecting Bordeaux to rural France."
+        },
+        {
+          "title": "La Sauve-Majeure Abbey",
+          "description": "UNESCO Romanesque ruins, visible landmark on approach to La Réole marking medieval heritage."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "La Réole, one of the oldest towns along the Garonne, traces its roots to a powerful Benedictine priory founded in the 8th century. Its name derives from “Regula,” reflecting monastic rule. The town’s steep streets and arcaded square reveal medieval importance as a trading hub. Each summer, it hosts cultural festivals celebrating music and heritage. Quiet today, La Réole retains a sense of faded authority, with stone facades and river views marking its former strategic and religious significance."
+    },
+    {
+      "dayNumber": "2",
+      "date": "8/30",
+      "startTown": "La Réole",
+      "endTown": "Aiguillon",
+      "miles": 28.43,
+      "elevation": 1486,
+      "rwgpsId": "54547575",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "First sustained Canal de Garonne",
+          "description": "Transition into true canal experience with dedicated cycling infrastructure and waterway commerce heritage."
+        },
+        {
+          "title": "Le Mas-d'Agenais church",
+          "description": "Authentic Rembrandt painting in a small village setting, unexpected artistic treasure in countryside."
+        },
+        {
+          "title": "Aiguillon confluence",
+          "description": "Meeting of major waterways with visible lock systems, engineering marvel and water management."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Aiguillon sits at the confluence of the Lot and Garonne rivers, a position that made it strategically vital for centuries. The Dukes of Aiguillon once held significant political influence, and the town became associated with regional power struggles. Its fertile surroundings support agriculture, especially plum production for prunes. While modest in scale, Aiguillon reflects classic river-town France, where waterways shaped commerce, defense, and daily life, leaving behind a quietly layered historical identity rooted in geography."
+    },
+    {
+      "dayNumber": "3",
+      "date": "8/31",
+      "startTown": "Aiguillon",
+      "endTown": "Moissac",
+      "miles": 47.46,
+      "elevation": 1702,
+      "rwgpsId": "54547576",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Pont-Canal du Cacor",
+          "description": "Canal carried across river as major engineering highlight, UNESCO site showcasing 18th-century innovation."
+        },
+        {
+          "title": "Moissac Abbey",
+          "description": "UNESCO Romanesque masterpiece and pilgrimage site along Camino de Santiago route through France."
+        },
+        {
+          "title": "Abbey cloister and tympanum",
+          "description": "Exceptional medieval sculpture detail, among finest Romanesque art in Europe worth studying closely."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Moissac is renowned for the Abbey of Saint-Pierre, a UNESCO-listed masterpiece of Romanesque art. Its cloister and sculpted tympanum are considered among the finest in Europe, drawing pilgrims for centuries along the Camino de Santiago. Legend holds that monks once tamed the surrounding land from wilderness through devotion and labor. The town thrives on this spiritual heritage, blending pilgrimage culture with canal-side tranquility, making it a key historical and cultural stop in southwestern France."
+    },
+    {
+      "dayNumber": "4",
+      "date": "9/1",
+      "startTown": "Moissac",
+      "endTown": "Toulouse",
+      "miles": 44.17,
+      "elevation": 1276,
+      "rwgpsId": "54547579",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Castelsarrasin canal junction",
+          "description": "Key inland waterway intersection where multiple canals converge, historic commerce and trade hub."
+        },
+        {
+          "title": "Canal greenways into Toulouse",
+          "description": "Shaded urban riding corridors providing peaceful transition into major city through green infrastructure."
+        },
+        {
+          "title": "Toulouse \"Pink City\"",
+          "description": "Distinctive terracotta architecture and major regional center, cultural and aerospace industry powerhouse."
+        }
+      ],
+      "lunch": {
+        "name": "",
+        "type": "",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
+    },
+    {
+      "dayNumber": "REST",
+      "date": "9/2",
+      "startTown": "Toulouse",
+      "endTown": "Toulouse",
+      "miles": 0,
+      "elevation": 0,
+      "rwgpsId": "NA",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Capitole Square & Arcades",
+          "description": "Grand civic square framed by pink brick arcades, heart of Toulouse’s daily life."
+        },
+        {
+          "title": "Basilica of Saint-Sernin",
+          "description": "Romanesque pilgrimage church, UNESCO-listed, with octagonal tower and historic Camino significance."
+        },
+        {
+          "title": "Garonne River Promenade",
+          "description": "Tree-lined riverbanks and bridges offer relaxed strolling, sunset views, and classic Pink City perspectives."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RESTDAY_PANDA_v2.png",
+      "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
+    },
+    {
+      "dayNumber": "5",
+      "date": "9/3",
+      "startTown": "Toulouse",
+      "endTown": "Castelnaudary",
+      "miles": 40.05,
+      "elevation": 1554,
+      "rwgpsId": "54547580",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Plane tree canopy",
+          "description": "Defining visual of the Canal du Midi, providing shade and character to entire route."
+        },
+        {
+          "title": "Le Seuil de Naurouze",
+          "description": "Canal summit and Atlantic–Mediterranean watershed divide marking pivotal point in journey progression."
+        },
+        {
+          "title": "Castelnaudary cassoulet birthplace",
+          "description": "Canal town birthplace of cassoulet, regional culinary symbol and gastronomic destination for cyclists."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Castelnaudary is widely regarded as the birthplace of cassoulet, the rich bean and meat stew that defines regional cuisine. Legend claims the dish sustained locals during a medieval siege, symbolizing resilience. Positioned along the Canal du Midi, the town became an important waypoint for trade and transport. Its Grand Bassin remains one of the canal’s largest water expanses. Castelnaudary’s identity is deeply tied to food culture, slow travel, and the enduring rhythms of southwestern France."
+    },
+    {
+      "dayNumber": "6",
+      "date": "9/4",
+      "startTown": "Castelnaudary",
+      "endTown": "Carcassonne",
+      "miles": 22.29,
+      "elevation": 623,
+      "rwgpsId": "54547581",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Lauragais plains",
+          "description": "Wide-open agricultural landscape transition revealing expansive terrain and rural character of region deeply."
+        },
+        {
+          "title": "Le Somail",
+          "description": "One of most picturesque canal villages with authentic charm and character along route."
+        },
+        {
+          "title": "Carcassonne citadel",
+          "description": "Iconic double-walled medieval fortress visible from approach, one of France's most visually striking destinations."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Carcassonne is famed for its fortified medieval citadel, La Cité, with double walls and watchtowers that appear almost mythical. Restored in the 19th century by Viollet-le-Duc, it embodies the idealized image of a medieval fortress. Historically, it played a key role during the Albigensian Crusade against the Cathars. Today, Carcassonne attracts visitors drawn to its dramatic skyline, blending legend and history into one of France’s most iconic and visually striking destinations."
+    },
+    {
+      "dayNumber": "7",
+      "date": "9/5",
+      "startTown": "Carcassonne",
+      "endTown": "Capestang",
+      "miles": 57.3,
+      "elevation": 1937,
+      "rwgpsId": "54547582",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Minervois wine region",
+          "description": "Vineyard-dominated landscape providing distinctive terrain and local wine culture worth exploring and tasting."
+        },
+        {
+          "title": "Variable towpath conditions",
+          "description": "More technical riding sections adding challenge and variety to cycling experience on this day."
+        },
+        {
+          "title": "Capestang collegiate church",
+          "description": "Prominent landmark visible from distance, architectural achievement and spiritual center of small town."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Capestang grew around its imposing collegiate church, Saint-Étienne, whose unfinished tower reflects ambitious medieval plans. The town sits along the Canal du Midi, giving it a quiet but steady connection to trade and travel. Nearby wetlands and vineyards shape its landscape. Capestang is known for its relaxed pace and local wine culture, offering a contrast to larger destinations. It remains a place where canal life, agriculture, and history intersect in understated but authentic ways."
+    },
+    {
+      "dayNumber": "8",
+      "date": "9/6",
+      "startTown": "Capestang",
+      "endTown": "Sète",
+      "miles": 42.74,
+      "elevation": 1625,
+      "rwgpsId": "54547583",
+      "pandaImage": "",
+      "highlights": [
+        {
+          "title": "Oppidum d'Ensérune",
+          "description": "Ancient hilltop archaeological site providing historical context and views over surrounding Languedoc landscape."
+        },
+        {
+          "title": "Nine Fonseranes Locks",
+          "description": "Iconic staircase of locks descending toward sea, engineering marvel and visually stunning canal feature."
+        },
+        {
+          "title": "Coastal lagoons and Thau Basin",
+          "description": "Transition to Mediterranean landscape, unique wetland ecosystem and final geographic marker before arrival."
+        }
+      ],
+      "lunch": {
+        "name": "PER JOHN",
+        "type": "TBD",
+        "milepost": 0
+      },
+      "pandaImageUrl": null,
+      "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
+    }
+  ],
+  "buildDate": "2026-04-14T23:25:20.597Z"
+}
