@@ -1,47 +1,97 @@
 ---
+import Layout from '../components/Layout.astro';
 import { readFileSync } from 'fs';
 import path from 'path';
 
 const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
-let tourData = { tourName: 'Tour', startDate: '', endDate: '', totalMiles: 0, totalElevation: 0, branding: {} };
+let tourData: any = { tourName: 'Tour', startDate: '', endDate: '', totalMiles: '0', totalElevation: 0, rides: [] };
 
 try {
-  const content = readFileSync(tourDataPath, 'utf-8');
-  tourData = JSON.parse(content);
+  tourData = JSON.parse(readFileSync(tourDataPath, 'utf-8'));
 } catch (err) {
-  console.warn('Warning: Could not load tour-data.json');
+  console.warn('Could not load tour-data.json');
 }
+
+const { tourName, startDate, endDate, totalMiles, totalElevation, rides } = tourData;
+const rideCount = rides.filter((r: any) => r.miles > 0 && r.dayNumber !== 'REST').length;
+const restCount = rides.filter((r: any) => r.dayNumber === 'REST').length;
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logistics</title>
-  <style define:vars={{
-    primary: tourData.branding?.colors?.primary || '#2D5016',
-    secondary: tourData.branding?.colors?.secondary || '#1B4F72',
-    cta: tourData.branding?.colors?.cta || '#0066cc',
-  }}>
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Logistics & Practical Info</h1>
-  </header>
+<Layout title={`Logistics — ${tourName}`}>
+  <div class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Canal des Deux Mers 2026</p>
+      <h1>Logistics &amp; Planning</h1>
+    </div>
+  </div>
 
-  <main>
-    <section>
-      <div><strong>{tourData.startDate}</strong> <span>Start Date</span></div>
-      <div><strong>{tourData.endDate}</strong> <span>End Date</span></div>
-      <div><strong>{tourData.totalMiles}</strong> <span>Total Miles</span></div>
-      <div><strong>{tourData.totalElevation.toLocaleString()}</strong> <span>Total Elevation</span></div>
-    </section>
-  </main>
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2>Tour Overview</h2>
+      </div>
 
-  <footer>
-    <p>&copy; BikeTourFrance.net</p>
-  </footer>
-</body>
-</html>
+      <div class="logistics-grid">
+        <div class="logistics-card">
+          <h3>Start Date</h3>
+          <p>{startDate}</p>
+        </div>
+        <div class="logistics-card">
+          <h3>End Date</h3>
+          <p>{endDate}</p>
+        </div>
+        <div class="logistics-card">
+          <h3>Total Distance</h3>
+          <p>{parseFloat(totalMiles).toFixed(0)} <span>miles</span></p>
+        </div>
+        <div class="logistics-card">
+          <h3>Total Elevation</h3>
+          <p>{Number(totalElevation).toLocaleString()} <span>ft</span></p>
+        </div>
+        <div class="logistics-card">
+          <h3>Ride Days</h3>
+          <p>{rideCount}</p>
+        </div>
+        <div class="logistics-card">
+          <h3>Rest Days</h3>
+          <p>{restCount}</p>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>Daily Summary</h2>
+      </div>
+
+      <table class="route-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Miles</th>
+            <th>Elevation</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rides.map((ride: any) => (
+            <tr>
+              <td>
+                <a href={`/${ride.dayNumber}`}>
+                  {ride.dayNumber === 'REST' ? 'Rest'
+                   : ride.dayNumber === '0' ? 'Arr.'
+                   : ride.dayNumber}
+                </a>
+              </td>
+              <td>{ride.date || '—'}</td>
+              <td>{ride.startTown || '—'}</td>
+              <td>{ride.endTown || '—'}</td>
+              <td>{ride.miles > 0 ? ride.miles.toFixed(1) : '—'}</td>
+              <td>{ride.elevation > 0 ? ride.elevation.toLocaleString() : '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Layout>

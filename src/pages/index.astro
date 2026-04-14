@@ -1,67 +1,89 @@
 ---
+import Layout from '../components/Layout.astro';
 import { readFileSync } from 'fs';
 import path from 'path';
 
 const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
-let tourData = { rides: [], tourName: 'Tour', description: '' };
+let tourData: any = { rides: [], tourName: 'Tour', description: '', startDate: '', endDate: '', totalMiles: '0', totalElevation: 0 };
 
 try {
-  const content = readFileSync(tourDataPath, 'utf-8');
-  tourData = JSON.parse(content);
+  tourData = JSON.parse(readFileSync(tourDataPath, 'utf-8'));
 } catch (err) {
-  console.warn('Warning: Could not load tour-data.json');
+  console.warn('Could not load tour-data.json');
 }
 
-const { tourName, startDate, endDate, description, rides, branding } = tourData;
-const totalMiles = rides.reduce((sum, r) => sum + (r.miles || 0), 0);
-const totalElevation = rides.reduce((sum, r) => sum + (r.elevation || 0), 0);
+const { tourName, startDate, endDate, description, rides, totalMiles, totalElevation } = tourData;
+const rideCount = rides.filter((r: any) => r.miles > 0 && r.dayNumber !== 'REST').length;
+const restCount = rides.filter((r: any) => r.dayNumber === 'REST').length;
+
+function badgeLabel(dayNumber: string) {
+  if (dayNumber === 'REST') return 'Rest Day';
+  if (dayNumber === '0') return 'Arrival';
+  return `Day ${dayNumber}`;
+}
+function badgeClass(dayNumber: string) {
+  if (dayNumber === 'REST') return 'ride-card-badge rest-day';
+  if (dayNumber === '0') return 'ride-card-badge arrival';
+  return 'ride-card-badge';
+}
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{tourName}</title>
-  <style define:vars={{
-    primary: branding?.colors?.primary || '#2D5016',
-    secondary: branding?.colors?.secondary || '#1B4F72',
-    cta: branding?.colors?.cta || '#0066cc',
-  }}>
-  </style>
-</head>
-<body>
-  <header>
-    <h1>{tourName}</h1>
-    <p>{startDate} — {endDate}</p>
-  </header>
-
-  <main>
-    <section>
-      <h2>{description}</h2>
-      <div>
-        <div><strong>{rides.length}</strong> <span>Ride Days</span></div>
-        <div><strong>{totalMiles.toFixed(0)}</strong> <span>Miles</span></div>
-        <div><strong>{Math.round(totalElevation).toLocaleString()}</strong> <span>ft Elevation</span></div>
+<Layout title={tourName} description={description}>
+  <div class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">BikeTourFrance.net</p>
+      <h1>{tourName}</h1>
+      <p class="hero-route">Bordeaux → Sète &nbsp;·&nbsp; {startDate} – {endDate}</p>
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <span class="stat-value">{rideCount}</span>
+          <span class="stat-label">Ride Days</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-value">{restCount}</span>
+          <span class="stat-label">Rest Days</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-value">{parseFloat(totalMiles).toFixed(0)}</span>
+          <span class="stat-label">Miles</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-value">{Number(totalElevation).toLocaleString()}</span>
+          <span class="stat-label">ft Elevation</span>
+        </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section>
-      <h2>The Route</h2>
-      <div>
-        {rides.map((ride) => (
-          <a href={`/${ride.dayNumber}`}>
-            <h3>Ride Day {ride.dayNumber}</h3>
-            <p>{ride.startTown} → {ride.endTown}</p>
-            <div>{ride.miles.toFixed(0)} mi | {ride.elevation.toLocaleString()} ft</div>
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2>The Route</h2>
+        <p>{description}</p>
+      </div>
+      <div class="ride-grid">
+        {rides.map((ride: any) => (
+          <a href={`/${ride.dayNumber}`} class="ride-card">
+            <span class={badgeClass(ride.dayNumber)}>
+              {badgeLabel(ride.dayNumber)}
+            </span>
+            {(ride.startTown || ride.endTown) && (
+              <p class="ride-card-route">
+                {ride.startTown}
+                {ride.startTown && ride.endTown && <span class="ride-card-arrow"> → </span>}
+                {ride.endTown}
+              </p>
+            )}
+            {ride.miles > 0 && (
+              <div class="ride-card-stats">
+                <span>{ride.miles.toFixed(0)} mi</span>
+                <span>{ride.elevation.toLocaleString()} ft</span>
+              </div>
+            )}
+            {ride.date && <p class="ride-card-date">{ride.date}</p>}
           </a>
         ))}
       </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; BikeTourFrance.net</p>
-  </footer>
-</body>
-</html>
+    </div>
+  </section>
+</Layout>
