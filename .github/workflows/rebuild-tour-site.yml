@@ -12,6 +12,9 @@ on:
       - 'astro.config.mjs'
       - 'package.json'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
