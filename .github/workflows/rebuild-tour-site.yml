@@ -53,7 +53,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add src/data/tour-data.json
+          git add -f src/data/tour-data.json
           git diff-index --quiet HEAD || git commit -m "Update tour data from Sheets"
 
       - name: Push changes back to repo
