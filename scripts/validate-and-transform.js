@@ -221,11 +221,18 @@ function parseTourData(tabs) {
   const totalMiles = enrichedRides.reduce((sum, r) => sum + r.miles, 0);
   const totalElevation = enrichedRides.reduce((sum, r) => sum + r.elevation, 0);
 
+  // Derive start/end dates from ride data (day 0 or day 1 → last ride day)
+  const rideDates = enrichedRides
+    .filter(r => r.date && r.dayNumber !== 'TRAIN')
+    .map(r => r.date);
+  const derivedStartDate = rideDates[0] || TOUR_START_DATE;
+  const derivedEndDate   = rideDates[rideDates.length - 1] || TOUR_END_DATE;
+
   return {
     tourName: TOUR_NAME,
     tourSlug: TOUR_SLUG,
-    startDate: TOUR_START_DATE,
-    endDate: TOUR_END_DATE,
+    startDate: derivedStartDate,
+    endDate: derivedEndDate,
     description: TOUR_DESCRIPTION,
     totalMiles: totalMiles.toFixed(1),
     totalElevation: Math.round(totalElevation),
