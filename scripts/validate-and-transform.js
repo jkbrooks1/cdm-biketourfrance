@@ -54,10 +54,16 @@ async function validateAndTransform() {
 
     let serviceAccountInfo;
     try {
+      // Try base64 decoding first (for local .env files)
       const decodedKey = Buffer.from(SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf-8');
       serviceAccountInfo = JSON.parse(decodedKey);
     } catch (err) {
-      throw new Error(`Failed to decode service account key: ${err.message}`);
+      // If base64 fails, try parsing directly as JSON (for GitHub Actions secrets)
+      try {
+        serviceAccountInfo = JSON.parse(SERVICE_ACCOUNT_KEY_BASE64);
+      } catch (jsonErr) {
+        throw new Error(`Failed to parse service account key (tried both base64 and JSON): ${err.message}`);
+      }
     }
 
     const auth = new google.auth.GoogleAuth({
