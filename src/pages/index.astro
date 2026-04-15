@@ -21,17 +21,19 @@ function formatDate(iso: string) {
   const d = new Date(year, month - 1, day);
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
-const rideCount = rides.filter((r: any) => r.miles > 0 && r.dayNumber !== 'REST').length;
+const rideCount = rides.filter((r: any) => r.miles > 0 && r.dayNumber !== 'REST' && r.dayNumber !== 'TRAIN').length;
 const restCount = rides.filter((r: any) => r.dayNumber === 'REST').length;
 
 function badgeLabel(dayNumber: string) {
-  if (dayNumber === 'REST') return 'Rest Day';
-  if (dayNumber === '0') return 'Arrival';
+  if (dayNumber === 'REST')  return 'Rest Day';
+  if (dayNumber === 'TRAIN') return 'Train Day';
+  if (dayNumber === '0')     return 'Arrival';
   return `Day ${dayNumber}`;
 }
 function badgeClass(dayNumber: string) {
-  if (dayNumber === 'REST') return 'ride-card-badge rest-day';
-  if (dayNumber === '0') return 'ride-card-badge arrival';
+  if (dayNumber === 'REST')  return 'ride-card-badge rest-day';
+  if (dayNumber === 'TRAIN') return 'ride-card-badge train-day';
+  if (dayNumber === '0')     return 'ride-card-badge arrival';
   return 'ride-card-badge';
 }
 ---

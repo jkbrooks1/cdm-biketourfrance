@@ -223,8 +223,9 @@ section { padding: 72px 0; }
   border-radius: 3px;
   align-self: flex-start;
 }
-.ride-card-badge.rest-day { background: var(--color-blue); }
-.ride-card-badge.arrival  { background: var(--color-gray-mid); }
+.ride-card-badge.rest-day  { background: var(--color-blue); }
+.ride-card-badge.train-day { background: #7B5E3A; }
+.ride-card-badge.arrival   { background: var(--color-gray-mid); }
 .ride-card-route {
   font-size: 15px;
   font-weight: 600;
