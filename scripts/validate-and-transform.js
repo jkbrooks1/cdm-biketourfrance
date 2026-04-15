@@ -180,8 +180,24 @@ function parseTourData(tabs) {
   const mediaRows = tabs.mediaManifest.slice(1) || [];
   
   let logo = 'BTF_LOGO_White_on_Transparent.png';
-  const pandaAssets = {};
-  
+
+  // Fallback map when Media_Manifest rows are missing Panda_Asset_Name
+  const PANDA_FALLBACK = {
+    '0':    'BTF_CDM_RD00_KICKOFF_PANDA_v2.png',
+    '1':    'BTF_CDM_RD01_PANDA_v2.png',
+    '2':    'BTF_CDM_RD02_PANDA_v1.png',
+    '3':    'BTF_CDM_RD03_PANDA_v1.png',
+    '4':    'BTF_CDM_RD04_PANDA_v1.png',
+    'REST': 'BTF_CDM_RESTDAY_PANDA_v2.png',
+    '5':    'BTF_CDM_RD05_PANDA_v1.png',
+    '6':    'BTF_CDM_RD06_PANDA_v1.png',
+    '7':    'BTF_CDM_RD07_PANDA_v1.png',
+    '8':    'BTF_CDM_RD08_PANDA_v1.png',
+  };
+
+  const pandaAssets = { ...PANDA_FALLBACK };
+
+  // Media_Manifest entries override the fallback when present
   mediaRows.forEach((row) => {
     const day = row[mediaHeaderMap['Day_Number']];
     const assetName = row[mediaHeaderMap['Panda_Asset_Name']];
