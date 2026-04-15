@@ -230,8 +230,8 @@ function parseTourData(tabs) {
     overnightNarrative: narrativeByTown[ride.endTown.trim()] || ''
   }));
 
-  const totalMiles = enrichedRides.reduce((sum, r) => sum + r.miles, 0);
-  const totalElevation = enrichedRides.reduce((sum, r) => sum + r.elevation, 0);
+  const totalMiles = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.miles, 0);
+  const totalElevation = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.elevation, 0);
 
   // Derive start/end dates from ride data (day 0 or day 1 → last ride day)
   const rideDates = enrichedRides

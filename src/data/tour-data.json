@@ -1,11 +1,11 @@
 {
   "tourName": "Canal des Deux Mers 2026",
   "tourSlug": "cdm-2026",
-  "startDate": "2026-05-10",
-  "endDate": "2026-05-18",
+  "startDate": "8/28",
+  "endDate": "9/6",
   "description": "Bordeaux to Sète: 289 miles, 8 days, self-supported cycling",
   "totalMiles": "328.1",
-  "totalElevation": 12870,
+  "totalElevation": 1860,
   "branding": {
     "colors": {
       "primary": "#2D5016",
@@ -24,7 +24,27 @@
   },
   "rides": [
     {
-      "dayNumber": "0",
+      "dayNumber": "TourDay_00",
+      "tourDayNum": 0,
+      "rideType": "arrival",
+      "rideDay": "",
+      "date": "",
+      "startTown": "Bordeaux",
+      "endTown": "Sète",
+      "miles": 0,
+      "elevation": 1860,
+      "rwgpsId": "54546718",
+      "pandaImage": "",
+      "highlights": [],
+      "lunch": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD00_KICKOFF_PANDA_v2.png",
+      "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
+    },
+    {
+      "dayNumber": "TourDay_00",
+      "tourDayNum": 0,
+      "rideType": "arrival",
+      "rideDay": "0",
       "date": "8/28",
       "startTown": "ARR:Bordeaux",
       "endTown": "",
@@ -38,12 +58,15 @@
       "overnightNarrative": ""
     },
     {
-      "dayNumber": "1",
+      "dayNumber": "TourDay_01",
+      "tourDayNum": 1,
+      "rideType": "ride",
+      "rideDay": "1",
       "date": "8/29",
       "startTown": "Bordeaux",
       "endTown": "La Réole",
       "miles": 45.67,
-      "elevation": 2667,
+      "elevation": 1050,
       "rwgpsId": "54547390",
       "pandaImage": "",
       "highlights": [
@@ -65,16 +88,19 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v2.png",
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v1.png",
       "overnightNarrative": "La Réole, one of the oldest towns along the Garonne, traces its roots to a powerful Benedictine priory founded in the 8th century. Its name derives from “Regula,” reflecting monastic rule. The town’s steep streets and arcaded square reveal medieval importance as a trading hub. Each summer, it hosts cultural festivals celebrating music and heritage. Quiet today, La Réole retains a sense of faded authority, with stone facades and river views marking its former strategic and religious significance."
     },
     {
-      "dayNumber": "2",
+      "dayNumber": "TourDay_02",
+      "tourDayNum": 2,
+      "rideType": "ride",
+      "rideDay": "2",
       "date": "8/30",
       "startTown": "La Réole",
       "endTown": "Aiguillon",
       "miles": 28.43,
-      "elevation": 1486,
+      "elevation": 120,
       "rwgpsId": "54547575",
       "pandaImage": "",
       "highlights": [
@@ -100,12 +126,15 @@
       "overnightNarrative": "Aiguillon sits at the confluence of the Lot and Garonne rivers, a position that made it strategically vital for centuries. The Dukes of Aiguillon once held significant political influence, and the town became associated with regional power struggles. Its fertile surroundings support agriculture, especially plum production for prunes. While modest in scale, Aiguillon reflects classic river-town France, where waterways shaped commerce, defense, and daily life, leaving behind a quietly layered historical identity rooted in geography."
     },
     {
-      "dayNumber": "3",
+      "dayNumber": "TourDay_03",
+      "tourDayNum": 3,
+      "rideType": "ride",
+      "rideDay": "3",
       "date": "8/31",
       "startTown": "Aiguillon",
       "endTown": "Moissac",
       "miles": 47.46,
-      "elevation": 1702,
+      "elevation": 160,
       "rwgpsId": "54547576",
       "pandaImage": "",
       "highlights": [
@@ -131,12 +160,15 @@
       "overnightNarrative": "Moissac is renowned for the Abbey of Saint-Pierre, a UNESCO-listed masterpiece of Romanesque art. Its cloister and sculpted tympanum are considered among the finest in Europe, drawing pilgrims for centuries along the Camino de Santiago. Legend holds that monks once tamed the surrounding land from wilderness through devotion and labor. The town thrives on this spiritual heritage, blending pilgrimage culture with canal-side tranquility, making it a key historical and cultural stop in southwestern France."
     },
     {
-      "dayNumber": "4",
+      "dayNumber": "TourDay_04",
+      "tourDayNum": 4,
+      "rideType": "ride",
+      "rideDay": "4",
       "date": "9/1",
       "startTown": "Moissac",
       "endTown": "Toulouse",
       "miles": 44.17,
-      "elevation": 1276,
+      "elevation": 70,
       "rwgpsId": "54547579",
       "pandaImage": "",
       "highlights": [
@@ -162,7 +194,10 @@
       "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
     },
     {
-      "dayNumber": "REST",
+      "dayNumber": "TourDay_05",
+      "tourDayNum": 5,
+      "rideType": "rest",
+      "rideDay": "REST",
       "date": "9/2",
       "startTown": "Toulouse",
       "endTown": "Toulouse",
@@ -189,16 +224,19 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RESTDAY_PANDA_v2.png",
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD05_PANDA_v1.png",
       "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
     },
     {
-      "dayNumber": "5",
+      "dayNumber": "TourDay_06",
+      "tourDayNum": 6,
+      "rideType": "ride",
+      "rideDay": "5",
       "date": "9/3",
       "startTown": "Toulouse",
       "endTown": "Castelnaudary",
       "miles": 40.05,
-      "elevation": 1554,
+      "elevation": 190,
       "rwgpsId": "54547580",
       "pandaImage": "",
       "highlights": [
@@ -220,16 +258,19 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD05_PANDA_v1.png",
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD06_PANDA_v1.png",
       "overnightNarrative": "Castelnaudary is widely regarded as the birthplace of cassoulet, the rich bean and meat stew that defines regional cuisine. Legend claims the dish sustained locals during a medieval siege, symbolizing resilience. Positioned along the Canal du Midi, the town became an important waypoint for trade and transport. Its Grand Bassin remains one of the canal’s largest water expanses. Castelnaudary’s identity is deeply tied to food culture, slow travel, and the enduring rhythms of southwestern France."
     },
     {
-      "dayNumber": "6",
+      "dayNumber": "TourDay_07",
+      "tourDayNum": 7,
+      "rideType": "ride",
+      "rideDay": "6",
       "date": "9/4",
       "startTown": "Castelnaudary",
       "endTown": "Carcassonne",
       "miles": 22.29,
-      "elevation": 623,
+      "elevation": 70,
       "rwgpsId": "54547581",
       "pandaImage": "",
       "highlights": [
@@ -251,16 +292,19 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD06_PANDA_v1.png",
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD07_PANDA_v1.png",
       "overnightNarrative": "Carcassonne is famed for its fortified medieval citadel, La Cité, with double walls and watchtowers that appear almost mythical. Restored in the 19th century by Viollet-le-Duc, it embodies the idealized image of a medieval fortress. Historically, it played a key role during the Albigensian Crusade against the Cathars. Today, Carcassonne attracts visitors drawn to its dramatic skyline, blending legend and history into one of France’s most iconic and visually striking destinations."
     },
     {
-      "dayNumber": "7",
+      "dayNumber": "TourDay_08",
+      "tourDayNum": 8,
+      "rideType": "ride",
+      "rideDay": "7",
       "date": "9/5",
       "startTown": "Carcassonne",
       "endTown": "Capestang",
       "miles": 57.3,
-      "elevation": 1937,
+      "elevation": 120,
       "rwgpsId": "54547582",
       "pandaImage": "",
       "highlights": [
@@ -282,16 +326,19 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD07_PANDA_v1.png",
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
       "overnightNarrative": "Capestang grew around its imposing collegiate church, Saint-Étienne, whose unfinished tower reflects ambitious medieval plans. The town sits along the Canal du Midi, giving it a quiet but steady connection to trade and travel. Nearby wetlands and vineyards shape its landscape. Capestang is known for its relaxed pace and local wine culture, offering a contrast to larger destinations. It remains a place where canal life, agriculture, and history intersect in understated but authentic ways."
     },
     {
-      "dayNumber": "8",
+      "dayNumber": "TourDay_09",
+      "tourDayNum": 9,
+      "rideType": "ride",
+      "rideDay": "8",
       "date": "9/6",
       "startTown": "Capestang",
       "endTown": "Sète",
       "miles": 42.74,
-      "elevation": 1625,
+      "elevation": 80,
       "rwgpsId": "54547583",
       "pandaImage": "",
       "highlights": [
@@ -317,7 +364,27 @@
       "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
     },
     {
-      "dayNumber": "11",
+      "dayNumber": "TourDay_10",
+      "tourDayNum": 10,
+      "rideType": "train",
+      "rideDay": "TRAIN",
+      "date": "9/7",
+      "startTown": "Sète",
+      "endTown": "Bordeaux",
+      "miles": 0,
+      "elevation": 0,
+      "rwgpsId": "",
+      "pandaImage": "",
+      "highlights": [],
+      "lunch": null,
+      "pandaImageUrl": null,
+      "overnightNarrative": "Bordeaux, capital of Nouvelle-Aquitaine, rose to prominence through wine trade and its strategic Garonne River port. Known as “Port of the Moon,” its crescent harbor fueled global commerce in the 18th century. The city’s limestone architecture reflects immense wealth from that era. Bordeaux also carries complex history tied to Atlantic trade. Today, it blends grand boulevards, vibrant markets, and a deep wine culture, serving as both cultural capital and gateway to southwestern France’s vineyards."
+    },
+    {
+      "dayNumber": "TourDay_01",
+      "tourDayNum": 1,
+      "rideType": "ride",
+      "rideDay": "",
       "date": "",
       "startTown": "",
       "endTown": "",
@@ -327,9 +394,9 @@
       "pandaImage": "",
       "highlights": [],
       "lunch": null,
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v1.png",
       "overnightNarrative": ""
     }
   ],
-  "buildDate": "2026-04-15T00:29:58.810Z"
+  "buildDate": "2026-04-15T03:14:29.245Z"
 }
