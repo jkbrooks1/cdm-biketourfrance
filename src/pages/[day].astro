@@ -87,6 +87,16 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
             </div>
           )}
 
+          {ride.rwgpsId && ride.rwgpsId !== 'NA' && ride.rwgpsId !== '' && (
+            <div class="rwgps-embed">
+              <iframe
+                src={`https://ridewithgps.com/embeds?type=route&id=${ride.rwgpsId}&sampleGraph=true`}
+                scrolling="no"
+                loading="lazy"
+              ></iframe>
+            </div>
+          )}
+
           {hasLunch && (
             <div class="lunch-section">
               <span class="lunch-label">Lunch</span>
