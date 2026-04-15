@@ -69,7 +69,6 @@ section { padding: 72px 0; }
   font-weight: 700;
   color: var(--color-white);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 .nav-logo span {
   font-weight: 400;
@@ -87,7 +86,6 @@ section { padding: 72px 0; }
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   transition: color 0.15s;
 }
 .nav-links a:hover { color: var(--color-white); }
@@ -128,7 +126,6 @@ section { padding: 72px 0; }
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--color-green);
   margin-bottom: 14px;
 }
@@ -175,7 +172,6 @@ section { padding: 72px 0; }
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--color-gray-mid);
 }
 
@@ -217,7 +213,6 @@ section { padding: 72px 0; }
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.09em;
-  text-transform: uppercase;
   padding: 3px 9px;
   border-radius: 3px;
   align-self: flex-start;
@@ -265,7 +260,6 @@ section { padding: 72px 0; }
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: rgba(255,255,255,0.85);
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.25);
@@ -364,7 +358,6 @@ section { padding: 72px 0; }
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.10em;
-  text-transform: uppercase;
   color: var(--color-green);
   margin-bottom: 14px;
 }
@@ -440,7 +433,6 @@ section { padding: 72px 0; }
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.10em;
-  text-transform: uppercase;
   color: var(--color-green);
   min-width: 48px;
 }
@@ -473,7 +465,6 @@ section { padding: 72px 0; }
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   border-radius: 6px;
   padding: 9px 18px;
   cursor: pointer;
@@ -608,7 +599,6 @@ section { padding: 72px 0; }
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--color-gray-mid);
   padding: 10px 14px;
   border-bottom: 2px solid var(--color-divider);
@@ -643,7 +633,6 @@ section { padding: 72px 0; }
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.10em;
-  text-transform: uppercase;
   color: var(--color-green);
   margin-bottom: 8px;
 }
@@ -675,7 +664,6 @@ section { padding: 72px 0; }
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--color-gray-mid);
 }
 .form-group input,
@@ -711,7 +699,6 @@ section { padding: 72px 0; }
   padding: 13px 28px;
   cursor: pointer;
   transition: opacity 0.15s;
-  text-transform: uppercase;
 }
 .btn-primary:hover { opacity: 0.86; }
 
