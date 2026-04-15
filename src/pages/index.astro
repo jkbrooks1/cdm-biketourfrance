@@ -84,14 +84,16 @@ function badgeClass(ride: any) {
       <div class="section-header">
         <h2>The Route</h2>
         <p>{description}</p>
-        {endToEndRwgpsId && (
-          <p>
-            <a href={`https://ridewithgps.com/routes/${endToEndRwgpsId}`} target="_blank" rel="noopener noreferrer">
-              View full route on Ride With GPS →
-            </a>
-          </p>
-        )}
       </div>
+      {endToEndRwgpsId && (
+        <div class="rwgps-embed">
+          <iframe
+            src={`https://ridewithgps.com/embeds?type=route&id=${endToEndRwgpsId}&sampleGraph=true`}
+            scrolling="no"
+            loading="lazy"
+          ></iframe>
+        </div>
+      )}
       <div class="ride-grid">
         {rides.map((ride: any) => (
           <a href={`/${ride.dayNumber}`} class="ride-card">
