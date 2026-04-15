@@ -23,23 +23,37 @@ function formatDate(raw: string) {
 }
 
 function calculateRideTime(miles: number): number {
-  // Typical touring pace: 12 mph
-  return miles / 12;
+  // Conservative touring pace: 10 mph
+  return miles / 10;
 }
 
 function calculateTotalDayTime(miles: number): number {
-  // Ride time + ~1.5 hours for stops, lunch, breaks
+  // Ride time + 50% for stops, lunch, breaks
   const rideTime = calculateRideTime(miles);
-  return rideTime + 1.5;
+  return rideTime * 1.5;
+}
+
+function roundTo30Minutes(hours: number): { hours: number; minutes: number } {
+  const totalMinutes = Math.round(hours * 60);
+  const roundedMinutes = Math.round(totalMinutes / 30) * 30;
+  const hours_part = Math.floor(roundedMinutes / 60);
+  const minutes_part = roundedMinutes % 60;
+  return { hours: hours_part, minutes: minutes_part };
+}
+
+function formatTimeRounded(hours: number): string {
+  const rounded = roundTo30Minutes(hours);
+  return `${rounded.hours}h${rounded.minutes > 0 ? ` ${rounded.minutes}m` : ''}`;
 }
 
 function calculateFinishTime(totalHours: number): string {
-  // Assuming 9am start
+  // Assuming 9am start, round to nearest 30 minutes
   const startHour = 9;
   const startMinutes = 0;
   const totalMinutes = startHour * 60 + startMinutes + Math.round(totalHours * 60);
-  const finishHour = Math.floor(totalMinutes / 60) % 24;
-  const finishMin = totalMinutes % 60;
+  const roundedTotalMinutes = Math.round(totalMinutes / 30) * 30;
+  const finishHour = Math.floor(roundedTotalMinutes / 60) % 24;
+  const finishMin = roundedTotalMinutes % 60;
   const period = finishHour >= 12 ? 'pm' : 'am';
   const displayHour = finishHour > 12 ? finishHour - 12 : finishHour === 0 ? 12 : finishHour;
   return `${displayHour}:${finishMin.toString().padStart(2, '0')} ${period}`;
@@ -94,11 +108,11 @@ const highlights = ride.highlights?.slice(0, 2) || [];
     </div>
     <div class="metric-pair">
       <span class="metric-label">Ride Time</span>
-      <span class="metric-value">{Math.floor(rideTime)}h {Math.round((rideTime % 1) * 60)}m</span>
+      <span class="metric-value">{formatTimeRounded(rideTime)}</span>
     </div>
     <div class="metric-pair">
       <span class="metric-label">Total Time</span>
-      <span class="metric-value">{Math.floor(totalDayTime)}h {Math.round((totalDayTime % 1) * 60)}m</span>
+      <span class="metric-value">{formatTimeRounded(totalDayTime)}</span>
     </div>
   </div>
 
