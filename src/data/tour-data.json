@@ -6,6 +6,7 @@
   "description": "Bordeaux to Sète: 289 miles, 8 days, self-supported cycling",
   "totalMiles": "328.1",
   "totalElevation": 1860,
+  "endToEndRwgpsId": "54546718",
   "branding": {
     "colors": {
       "primary": "#2D5016",
@@ -398,5 +399,5 @@
       "overnightNarrative": ""
     }
   ],
-  "buildDate": "2026-04-15T03:14:29.245Z"
+  "buildDate": "2026-04-15T03:20:15.436Z"
 }

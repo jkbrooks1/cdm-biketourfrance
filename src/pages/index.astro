@@ -12,7 +12,7 @@ try {
   console.warn('Could not load tour-data.json');
 }
 
-const { tourName, startDate, endDate, description, rides, totalMiles, totalElevation, media } = tourData;
+const { tourName, startDate, endDate, description, rides, totalMiles, totalElevation, endToEndRwgpsId, media } = tourData;
 const landingPanda = media?.r2Base ? `${media.r2Base}/BTF_CDM_LANDING_PANDA_v1.png` : null;
 
 function formatDate(raw: string) {
@@ -84,6 +84,13 @@ function badgeClass(ride: any) {
       <div class="section-header">
         <h2>The Route</h2>
         <p>{description}</p>
+        {endToEndRwgpsId && (
+          <p>
+            <a href={`https://ridewithgps.com/routes/${endToEndRwgpsId}`} target="_blank" rel="noopener noreferrer">
+              View full route on Ride With GPS →
+            </a>
+          </p>
+        )}
       </div>
       <div class="ride-grid">
         {rides.map((ride: any) => (

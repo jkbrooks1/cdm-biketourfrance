@@ -240,6 +240,10 @@ function parseTourData(tabs) {
   const derivedStartDate = rideDates[0] || TOUR_START_DATE;
   const derivedEndDate   = rideDates[rideDates.length - 1] || TOUR_END_DATE;
 
+  // Extract end-to-end RWGPS route ID from arrival day
+  const arrivalRide = enrichedRides.find(r => r.rideType === 'arrival');
+  const endToEndRwgpsId = arrivalRide?.rwgpsId || '';
+
   return {
     tourName: TOUR_NAME,
     tourSlug: TOUR_SLUG,
@@ -248,6 +252,7 @@ function parseTourData(tabs) {
     description: TOUR_DESCRIPTION,
     totalMiles: totalMiles.toFixed(1),
     totalElevation: Math.round(totalElevation),
+    endToEndRwgpsId,
     branding: BRANDING,
     media: {
       r2Base: R2_BASE_URL,
