@@ -34,7 +34,7 @@
       "pandaImage": "",
       "highlights": [],
       "lunch": null,
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD00_KICKOFF_PANDA_v2.png",
       "overnightNarrative": ""
     },
     {
@@ -65,7 +65,7 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v2.png",
       "overnightNarrative": "La Réole, one of the oldest towns along the Garonne, traces its roots to a powerful Benedictine priory founded in the 8th century. Its name derives from “Regula,” reflecting monastic rule. The town’s steep streets and arcaded square reveal medieval importance as a trading hub. Each summer, it hosts cultural festivals celebrating music and heritage. Quiet today, La Réole retains a sense of faded authority, with stone facades and river views marking its former strategic and religious significance."
     },
     {
@@ -96,7 +96,7 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD02_PANDA_v1.png",
       "overnightNarrative": "Aiguillon sits at the confluence of the Lot and Garonne rivers, a position that made it strategically vital for centuries. The Dukes of Aiguillon once held significant political influence, and the town became associated with regional power struggles. Its fertile surroundings support agriculture, especially plum production for prunes. While modest in scale, Aiguillon reflects classic river-town France, where waterways shaped commerce, defense, and daily life, leaving behind a quietly layered historical identity rooted in geography."
     },
     {
@@ -127,7 +127,7 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD03_PANDA_v1.png",
       "overnightNarrative": "Moissac is renowned for the Abbey of Saint-Pierre, a UNESCO-listed masterpiece of Romanesque art. Its cloister and sculpted tympanum are considered among the finest in Europe, drawing pilgrims for centuries along the Camino de Santiago. Legend holds that monks once tamed the surrounding land from wilderness through devotion and labor. The town thrives on this spiritual heritage, blending pilgrimage culture with canal-side tranquility, making it a key historical and cultural stop in southwestern France."
     },
     {
@@ -158,7 +158,7 @@
         "type": "",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD04_PANDA_v1.png",
       "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
     },
     {
@@ -220,7 +220,7 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD05_PANDA_v1.png",
       "overnightNarrative": "Castelnaudary is widely regarded as the birthplace of cassoulet, the rich bean and meat stew that defines regional cuisine. Legend claims the dish sustained locals during a medieval siege, symbolizing resilience. Positioned along the Canal du Midi, the town became an important waypoint for trade and transport. Its Grand Bassin remains one of the canal’s largest water expanses. Castelnaudary’s identity is deeply tied to food culture, slow travel, and the enduring rhythms of southwestern France."
     },
     {
@@ -251,7 +251,7 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD06_PANDA_v1.png",
       "overnightNarrative": "Carcassonne is famed for its fortified medieval citadel, La Cité, with double walls and watchtowers that appear almost mythical. Restored in the 19th century by Viollet-le-Duc, it embodies the idealized image of a medieval fortress. Historically, it played a key role during the Albigensian Crusade against the Cathars. Today, Carcassonne attracts visitors drawn to its dramatic skyline, blending legend and history into one of France’s most iconic and visually striking destinations."
     },
     {
@@ -282,7 +282,7 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD07_PANDA_v1.png",
       "overnightNarrative": "Capestang grew around its imposing collegiate church, Saint-Étienne, whose unfinished tower reflects ambitious medieval plans. The town sits along the Canal du Midi, giving it a quiet but steady connection to trade and travel. Nearby wetlands and vineyards shape its landscape. Capestang is known for its relaxed pace and local wine culture, offering a contrast to larger destinations. It remains a place where canal life, agriculture, and history intersect in understated but authentic ways."
     },
     {
@@ -313,9 +313,9 @@
         "type": "TBD",
         "milepost": 0
       },
-      "pandaImageUrl": null,
+      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
       "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
     }
   ],
-  "buildDate": "2026-04-14T23:51:43.841Z"
+  "buildDate": "2026-04-15T00:10:55.681Z"
 }
