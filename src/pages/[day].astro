@@ -18,17 +18,24 @@ export async function getStaticPaths() {
 }
 
 const { ride, tourData } = Astro.props;
-const dayNum = parseInt(ride.dayNumber);
-const isRest = ride.dayNumber === 'REST';
+const isRest    = ride.dayNumber === 'REST';
 const isArrival = ride.dayNumber === '0';
-const isTrain = ride.dayNumber === 'TRAIN';
-const rideNums = tourData.rides
+// TRAIN: either literal 'TRAIN' or zero-mile non-arrival non-rest day after all ride days
+const numericRideDays = tourData.rides
   .map((r: any) => parseInt(r.dayNumber))
   .filter((n: number) => !isNaN(n) && n > 0);
-const maxDay = Math.max(...rideNums);
+const maxRideDay = numericRideDays.length ? Math.max(...numericRideDays) : 0;
+const dayNumParsed = parseInt(ride.dayNumber);
+const isTrain = ride.dayNumber === 'TRAIN' ||
+  (ride.miles === 0 && !isRest && !isArrival && !isNaN(dayNumParsed) && dayNumParsed > maxRideDay);
 
-const hasPrev = !isNaN(dayNum) && dayNum > 1;
-const hasNext = !isNaN(dayNum) && dayNum < maxDay;
+// Use actual ordered neighbors for navigation (handles REST, TRAIN, gaps)
+const allDayNumbers: string[] = tourData.rides.map((r: any) => r.dayNumber);
+const currentIdx = allDayNumbers.indexOf(ride.dayNumber);
+const prevDay = currentIdx > 0 ? allDayNumbers[currentIdx - 1] : null;
+const nextDay = currentIdx < allDayNumbers.length - 1 ? allDayNumbers[currentIdx + 1] : null;
+const hasPrev = prevDay !== null && prevDay !== '0';
+const hasNext = nextDay !== null;
 
 function pageTitle() {
   if (isRest)    return `Rest Day — ${ride.startTown}`;
@@ -54,13 +61,13 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
   <div class="day-topbar">
     <div class="day-topbar-inner">
       {hasPrev ? (
-        <a href={`/${dayNum - 1}`} class="btn-topbar">← Previous</a>
+        <a href={`/${prevDay}`} class="btn-topbar">← Previous</a>
       ) : (
         <span></span>
       )}
       <a href="/" class="btn-topbar btn-topbar-home">⌂ Home</a>
       {hasNext ? (
-        <a href={`/${dayNum + 1}`} class="btn-topbar">Next →</a>
+        <a href={`/${nextDay}`} class="btn-topbar">Next →</a>
       ) : (
         <span></span>
       )}
@@ -179,12 +186,12 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
 
       <nav class="day-nav">
         {hasPrev ? (
-          <a href={`/${dayNum - 1}`} class="btn-nav">← Previous</a>
+          <a href={`/${prevDay}`} class="btn-nav">← Previous</a>
         ) : (
           <a href="/" class="btn-nav">← Back to Home</a>
         )}
         {hasNext ? (
-          <a href={`/${dayNum + 1}`} class="btn-nav">Next →</a>
+          <a href={`/${nextDay}`} class="btn-nav">Next →</a>
         ) : (
           <span></span>
         )}
