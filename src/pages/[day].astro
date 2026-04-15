@@ -117,6 +117,28 @@ const hasTowns = ride.towns && ride.towns.length > 0;
                 )}
               </div>
 
+              {/* Daily Route Map */}
+              {ride.rwgpsId && ride.rwgpsId !== 'NA' && ride.rwgpsId !== '' && (
+                <div class="rwgps-embed-compact">
+                  <div class="rwgps-header">
+                    <h3>Route Map</h3>
+                    <a
+                      href={`https://ridewithgps.com/routes/${ride.rwgpsId}`}
+                      target="_blank"
+                      rel="noopener"
+                      class="btn-rwgps-link"
+                    >
+                      View in RWGPS →
+                    </a>
+                  </div>
+                  <iframe
+                    src={`https://ridewithgps.com/embeds?type=route&id=${ride.rwgpsId}&sampleGraph=true`}
+                    scrolling="no"
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              )}
+
               {/* Day Shape */}
               {ride.dayShape && (
                 <div class="day-shape">
@@ -150,8 +172,8 @@ const hasTowns = ride.towns && ride.towns.length > 0;
                           <span class="wc-distance">Mile {wc.distanceFromStart.toFixed(1)}</span>
                         </div>
                         <div class="wc-details">
-                          <div class="wc-type">{wc.wcType}</div>
-                          {wc.wcLocation && <div class="wc-location">{wc.wcLocation}</div>}
+                          {wc.location && <div class="wc-location">{wc.location}</div>}
+                          <div class="wc-type">{wc.facilityType || wc.wcType || 'Stop'}</div>
                           <div class="wc-confidence">
                             Confidence: {'★'.repeat(wc.confidence)}{'☆'.repeat(5 - wc.confidence)}
                           </div>
@@ -178,15 +200,12 @@ const hasTowns = ride.towns && ride.towns.length > 0;
             </>
           )}
 
-          {/* Full Route Map */}
-          {ride.rwgpsId && ride.rwgpsId !== 'NA' && ride.rwgpsId !== '' && (
-            <div class="rwgps-embed">
-              <h3>Full Route Map</h3>
-              <iframe
-                src={`https://ridewithgps.com/embeds?type=route&id=${ride.rwgpsId}&sampleGraph=true`}
-                scrolling="no"
-                loading="lazy"
-              ></iframe>
+          {/* Full Route Button */}
+          {tourData.endToEndRwgpsId && tourData.endToEndRwgpsId !== 'NA' && tourData.endToEndRwgpsId !== '' && (
+            <div class="route-button-block">
+              <a href="/full-route" class="btn-full-route">
+                View Full Route Map →
+              </a>
             </div>
           )}
 
@@ -308,7 +327,6 @@ const hasTowns = ride.towns && ride.towns.length > 0;
   .snapshot-label {
     font-size: 0.8rem;
     color: #666;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 500;
   }
@@ -399,25 +417,79 @@ const hasTowns = ride.towns && ride.towns.length > 0;
     margin-bottom: 0.25rem;
   }
 
-  /* Route Map */
-  .rwgps-embed {
+  /* Route Map - Compact Daily Route */
+  .rwgps-embed-compact {
     margin-bottom: 2.5rem;
   }
 
-  .rwgps-embed h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #2d5016;
+  .rwgps-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
     margin-bottom: 1rem;
     border-bottom: 2px solid #e8dcc8;
     padding-bottom: 0.5rem;
+    flex-wrap: wrap;
   }
 
-  .rwgps-embed iframe {
+  .rwgps-embed-compact h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d5016;
+    margin: 0;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .btn-rwgps-link {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    background: #2d5016;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .btn-rwgps-link:hover {
+    background: #1a3009;
+    box-shadow: 0 2px 8px rgba(45, 80, 22, 0.2);
+  }
+
+  .rwgps-embed-compact iframe {
     width: 100%;
-    height: 500px;
+    height: 300px;
     border: none;
     border-radius: 4px;
+  }
+
+  /* Full Route Button */
+  .route-button-block {
+    margin: 2.5rem 0;
+  }
+
+  .btn-full-route {
+    display: inline-block;
+    padding: 0.875rem 1.5rem;
+    background: #2d5016;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 2px solid #2d5016;
+  }
+
+  .btn-full-route:hover {
+    background: #1a3009;
+    box-shadow: 0 4px 12px rgba(45, 80, 22, 0.2);
   }
 
   /* Towns Link Block */
@@ -543,6 +615,27 @@ const hasTowns = ride.towns && ride.towns.length > 0;
 
     .wc-distance {
       white-space: normal;
+    }
+
+    .rwgps-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .btn-rwgps-link {
+      width: 100%;
+      text-align: center;
+      white-space: normal;
+    }
+
+    .rwgps-embed-compact iframe {
+      height: 250px;
+    }
+
+    .btn-full-route {
+      display: block;
+      text-align: center;
+      padding: 1rem;
     }
   }
 </style>

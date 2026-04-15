@@ -92,7 +92,7 @@ const highlights = ride.highlights?.slice(0, 2) || [];
 
 <div class="today-block">
   <div class="today-header">
-    <h2 class="today-title">Day {ride.tourDayNum}</h2>
+    <h2 class="today-title">Ride Day {ride.tourDayNum}</h2>
     <p class="today-route">{ride.startTown} → {ride.endTown}</p>
     {ride.date && <p class="today-date">{formatDate(ride.date)}</p>}
   </div>
@@ -107,24 +107,9 @@ const highlights = ride.highlights?.slice(0, 2) || [];
       <span class="metric-value">{ride.elevation.toLocaleString()} ft</span>
     </div>
     <div class="metric-pair">
-      <span class="metric-label">Ride Time</span>
-      <span class="metric-value">{formatTimeRounded(rideTime)}</span>
-    </div>
-    <div class="metric-pair">
-      <span class="metric-label">Total Time</span>
+      <span class="metric-label">Estimated Tour Time</span>
       <span class="metric-value">{formatTimeRounded(totalDayTime)}</span>
     </div>
-  </div>
-
-  <div class="today-section">
-    <h3 class="section-label">Day Shape</h3>
-    <p class="day-shape-label">{dayShape.label}</p>
-    <p class="day-shape-description">{dayShape.description}</p>
-  </div>
-
-  <div class="today-section">
-    <h3 class="section-label">Finish Window</h3>
-    <p class="finish-time">Finish: <strong>{finishTime}</strong> (assuming 9am start)</p>
   </div>
 
   <div class="today-section">
@@ -139,14 +124,10 @@ const highlights = ride.highlights?.slice(0, 2) || [];
     )}
   </div>
 
-  <div class="today-section">
-    <h3 class="section-label">Water & Stops</h3>
-    <p class="stops-info">Water every 10–15 miles. Bathrooms available in towns along route.</p>
-  </div>
-
   {highlights.length > 0 && (
     <div class="today-section">
-      <h3 class="section-label">What You'll See</h3>
+      <h3 class="section-label">Oh, the places you'll go!</h3>
+      <p class="seuss-quote">…And will you succeed?<br/>Yes! You will, indeed!<br/>(98 and 3/4 percent<br/>guaranteed.)</p>
       <ul class="highlights-list">
         {highlights.map((h: any) => (
           <li class="highlight-item">
@@ -162,6 +143,51 @@ const highlights = ride.highlights?.slice(0, 2) || [];
     <div class="today-section">
       <h3 class="section-label">Tonight: {ride.endTown}</h3>
       <p class="overnight-narrative">{ride.overnightNarrative}</p>
+    </div>
+  )}
+
+  {ride.wcTowns && ride.wcTowns.length > 0 && (
+    <div class="today-section">
+      <h3 class="section-label">Water & Stops</h3>
+      <div class="wc-stops">
+        {ride.wcTowns.map((town: any) => (
+          <div class="wc-stop-card">
+            <div class="wc-field">
+              <span class="wc-label">MP</span>
+              <span class="wc-value">{town.distanceFromStart}</span>
+            </div>
+            <div class="wc-field">
+              <span class="wc-label">Name</span>
+              <span class="wc-value">{town.name}</span>
+            </div>
+            <div class="wc-field">
+              <span class="wc-label">Location</span>
+              <span class="wc-value">{town.location || '—'}</span>
+            </div>
+            <div class="wc-field">
+              <span class="wc-label">Type</span>
+              <span class="wc-value">{town.facilityType || town.wcType || '—'}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {ride.towns && ride.towns.length > 0 && (
+    <div class="today-section">
+      <h3 class="section-label">Towns On Route</h3>
+      <div class="towns-list">
+        {ride.towns.map((town: any) => (
+          <div class="town-item">
+            <div class="town-header">
+              <strong>{town.name}</strong>
+              <span class="town-mp">{town.distanceFromStart} mi</span>
+            </div>
+            {town.description && <p class="town-description">{town.description}</p>}
+          </div>
+        ))}
+      </div>
     </div>
   )}
 </div>
@@ -218,6 +244,7 @@ const highlights = ride.highlights?.slice(0, 2) || [];
     font-size: 0.75rem;
     font-weight: 600;
     color: #666;
+    white-space: nowrap;
   }
 
   .metric-value {
@@ -239,11 +266,19 @@ const highlights = ride.highlights?.slice(0, 2) || [];
   }
 
   .section-label {
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #666;
     margin: 0 0 0.5rem 0;
     display: block;
+  }
+
+  .seuss-quote {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #2D5016;
+    margin: 0.5rem 0 1rem 0;
+    line-height: 1.6;
   }
 
   .day-shape-label {
@@ -327,6 +362,140 @@ const highlights = ride.highlights?.slice(0, 2) || [];
     color: #555;
     line-height: 1.5;
     margin: 0;
+  }
+
+  .wc-stops {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .wc-stop-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #fafaf8;
+    border-left: 3px solid #2D5016;
+    border-radius: 3px;
+  }
+
+  .wc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .wc-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #666;
+    letter-spacing: 0.5px;
+  }
+
+  .wc-value {
+    font-size: 0.9rem;
+    color: #333;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  /* Tablet and desktop: table-like layout */
+  @media (min-width: 640px) {
+    .wc-stops {
+      display: grid;
+      gap: 0;
+    }
+
+    .wc-stop-card {
+      display: grid;
+      grid-template-columns: 60px 1fr 1fr 120px;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: transparent;
+      border-left: none;
+      border-bottom: 1px solid #eee;
+      align-items: start;
+    }
+
+    .wc-stop-card:last-child {
+      border-bottom: none;
+    }
+
+    .wc-field {
+      display: contents;
+    }
+
+    .wc-label {
+      display: none;
+    }
+
+    .wc-value {
+      font-size: 0.85rem;
+    }
+
+    .wc-stop-card .wc-field:first-child .wc-value {
+      font-weight: 600;
+      color: #2D5016;
+      white-space: nowrap;
+    }
+
+    .wc-stop-card .wc-field:nth-child(2) .wc-value {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .wc-stop-card .wc-field:nth-child(3) .wc-value {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .wc-stop-card .wc-field:nth-child(4) .wc-value {
+      color: #666;
+      font-size: 0.8rem;
+    }
+  }
+
+  .towns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .town-item {
+    background: #fafaf8;
+    border-left: 3px solid #2D5016;
+    padding: 0.75rem;
+    border-radius: 3px;
+  }
+
+  .town-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .town-header strong {
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .town-mp {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .town-description {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
   }
 
   @media (min-width: 640px) {
