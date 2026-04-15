@@ -1,0 +1,249 @@
+---
+import Layout from '../components/Layout.astro';
+import { readFileSync } from 'fs';
+import path from 'path';
+
+const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
+let tourData: any = { rides: [], tourName: 'Tour', description: '', startDate: '', endDate: '', totalMiles: '0', totalElevation: 0 };
+
+try {
+  tourData = JSON.parse(readFileSync(tourDataPath, 'utf-8'));
+} catch (err) {
+  console.warn('Could not load tour-data.json');
+}
+
+const { tourName, startDate, endDate, description, rides, totalMiles, totalElevation, endToEndRwgpsId, media } = tourData;
+const landingPanda = media?.r2Base ? `${media.r2Base}/BTF_CDM_LANDING_PANDA_v1.png` : null;
+
+function formatDate(raw: string) {
+  if (!raw) return '';
+  let month: number, day: number, year: number;
+  if (raw.includes('-')) {
+    [year, month, day] = raw.split('-').map(Number);
+  } else if (raw.includes('/')) {
+    const parts = raw.split('/').map(Number);
+    month = parts[0]; day = parts[1]; year = 2026;
+  } else {
+    return raw;
+  }
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+const rideCount = rides.filter((r: any) => r.rideType === 'ride').length;
+const restCount = rides.filter((r: any) => r.rideType === 'rest').length;
+---
+
+<Layout title={`Tour Overview — ${tourName}`} description={description}>
+  <div class="overview-hero">
+    <div class="container">
+      <a href="/" class="btn-back">← Home</a>
+      <h1>Tour Overview</h1>
+      <p class="tour-name">{tourName}</p>
+      <p class="tour-dates">{formatDate(startDate)} – {formatDate(endDate)}</p>
+    </div>
+  </div>
+
+  {landingPanda && (
+    <div class="overview-hero-image">
+      <img src={landingPanda} alt={tourName} />
+    </div>
+  )}
+
+  <section>
+    <div class="container">
+      <div class="stats-row">
+        <div class="stat-block">
+          <span class="stat-number">{rideCount}</span>
+          <span class="stat-name">Ride Days</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-number">{restCount}</span>
+          <span class="stat-name">Rest Days</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-number">{parseFloat(totalMiles).toFixed(0)}</span>
+          <span class="stat-name">Miles</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-number">{Number(totalElevation).toLocaleString()}</span>
+          <span class="stat-name">ft Elevation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="overview-content">
+        <h2>About This Route</h2>
+        <p class="route-description">{description}</p>
+
+        {endToEndRwgpsId && (
+          <div class="route-map-section">
+            <h3>Full Route Map</h3>
+            <div class="rwgps-embed">
+              <iframe
+                src={`https://ridewithgps.com/embeds?type=route&id=${endToEndRwgpsId}&sampleGraph=true`}
+                scrolling="no"
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .overview-hero {
+    padding: 2rem 0 1rem;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .btn-back {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: #2D5016;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .btn-back:hover {
+    color: #1B4F72;
+  }
+
+  .overview-hero h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #2D5016;
+  }
+
+  .tour-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0.5rem 0 0.25rem 0;
+  }
+
+  .tour-dates {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .overview-hero-image {
+    width: 100%;
+    overflow: hidden;
+    max-height: 400px;
+  }
+
+  .overview-hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  section {
+    padding: 2rem 0;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: #f9f7f2;
+    border-radius: 6px;
+    margin-bottom: 2rem;
+  }
+
+  .stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2D5016;
+  }
+
+  .stat-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+  }
+
+  .overview-content h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 1rem 0;
+  }
+
+  .route-description {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+  }
+
+  .route-map-section {
+    margin-top: 2rem;
+  }
+
+  .route-map-section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 1rem 0;
+  }
+
+  .rwgps-embed {
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .rwgps-embed iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
+
+  @media (min-width: 640px) {
+    .overview-hero h1 {
+      font-size: 2rem;
+    }
+
+    .tour-name {
+      font-size: 1.75rem;
+    }
+
+    .stats-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .overview-hero-image {
+      max-height: 500px;
+    }
+
+    .rwgps-embed iframe {
+      height: 500px;
+    }
+  }
+</style>
