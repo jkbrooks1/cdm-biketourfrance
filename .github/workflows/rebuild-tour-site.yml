@@ -60,4 +60,4 @@ jobs:
           CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
         run: |
           npm install -g wrangler
-          wrangler pages deploy dist --project-name=$CLOUDFLARE_PROJECT_NAME --production
+          wrangler pages deploy dist --project-name=$CLOUDFLARE_PROJECT_NAME --branch=main
