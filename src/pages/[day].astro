@@ -47,9 +47,24 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
 ---
 
 <Layout title={pageTitle()}>
+  <div class="day-topbar">
+    <div class="day-topbar-inner">
+      {hasPrev ? (
+        <a href={`/${dayNum - 1}`} class="btn-topbar">← Previous</a>
+      ) : (
+        <span></span>
+      )}
+      <a href="/" class="btn-topbar btn-topbar-home">⌂ Home</a>
+      {hasNext ? (
+        <a href={`/${dayNum + 1}`} class="btn-topbar">Next →</a>
+      ) : (
+        <span></span>
+      )}
+    </div>
+  </div>
+
   <div class="day-hero">
     <div class="container">
-      <a href="/" class="btn-back">← Back to Home</a>
       <h1 class="day-title">{dayHeading()}</h1>
       {subHeading() && <p class="day-date">{subHeading()}</p>}
       {ride.date && <p class="day-date" style="margin-top: 4px;">{ride.date}</p>}
