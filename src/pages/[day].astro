@@ -18,40 +18,32 @@ export async function getStaticPaths() {
 }
 
 const { ride, tourData } = Astro.props;
-const isRest    = ride.dayNumber === 'REST';
-const isArrival = ride.dayNumber === '0';
-// TRAIN: either literal 'TRAIN' or zero-mile non-arrival non-rest day after all ride days
-const numericRideDays = tourData.rides
-  .map((r: any) => parseInt(r.dayNumber))
-  .filter((n: number) => !isNaN(n) && n > 0);
-const maxRideDay = numericRideDays.length ? Math.max(...numericRideDays) : 0;
-const dayNumParsed = parseInt(ride.dayNumber);
-const isTrain = ride.dayNumber === 'TRAIN' ||
-  (ride.miles === 0 && !isRest && !isArrival && !isNaN(dayNumParsed) && dayNumParsed > maxRideDay);
+const isRest    = ride.rideType === 'rest';
+const isArrival = ride.rideType === 'arrival';
+const isTrain   = ride.rideType === 'train';
 
-// Use actual ordered neighbors for navigation (handles REST, TRAIN, gaps)
+// Ordered neighbor navigation — works for any dayNumber format
 const allDayNumbers: string[] = tourData.rides.map((r: any) => r.dayNumber);
 const currentIdx = allDayNumbers.indexOf(ride.dayNumber);
 const prevDay = currentIdx > 0 ? allDayNumbers[currentIdx - 1] : null;
 const nextDay = currentIdx < allDayNumbers.length - 1 ? allDayNumbers[currentIdx + 1] : null;
-const hasPrev = prevDay !== null && prevDay !== '0';
+const hasPrev = prevDay !== null && prevDay !== 'TourDay_00';
 const hasNext = nextDay !== null;
 
 function pageTitle() {
   if (isRest)    return `Rest Day — ${ride.startTown}`;
   if (isArrival) return `Arrival — ${ride.startTown || 'Bordeaux'}`;
   if (isTrain)   return `Train Day — ${ride.startTown} → ${ride.endTown}`;
-  return `Day ${ride.dayNumber}: ${ride.startTown} → ${ride.endTown}`;
+  return `Day ${ride.tourDayNum}: ${ride.startTown} → ${ride.endTown}`;
 }
 function dayHeading() {
   if (isRest)    return `Rest Day — ${ride.startTown}`;
   if (isArrival) return `Arrival — ${ride.startTown || 'Bordeaux'}`;
   if (isTrain)   return `Train Day`;
-  return `Day ${ride.dayNumber}`;
+  return `Day ${ride.tourDayNum}`;
 }
 function subHeading() {
   if (isRest || isArrival) return null;
-  if (isTrain) return `${ride.startTown} → ${ride.endTown}`;
   return `${ride.startTown} → ${ride.endTown}`;
 }
 const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN' && ride.lunch.name !== '';
@@ -146,7 +138,7 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
           <div class="map-key">
             <div class="map-key-header">
               <h3>
-                {isRest ? 'Rest Day' : isArrival ? 'Arrival' : isTrain ? 'Train Day' : `Ride Day ${ride.dayNumber}`}
+                {isRest ? 'Rest Day' : isArrival ? 'Arrival' : isTrain ? 'Train Day' : `Ride Day ${ride.tourDayNum}`}
               </h3>
               {!isArrival && (
                 <p>

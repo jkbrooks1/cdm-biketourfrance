@@ -31,19 +31,19 @@ function formatDate(raw: string) {
   const d = new Date(year, month - 1, day);
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
-const rideCount = rides.filter((r: any) => r.miles > 0 && r.dayNumber !== 'REST' && r.dayNumber !== 'TRAIN').length;
-const restCount = rides.filter((r: any) => r.dayNumber === 'REST').length;
+const rideCount = rides.filter((r: any) => r.rideType === 'ride').length;
+const restCount = rides.filter((r: any) => r.rideType === 'rest').length;
 
-function badgeLabel(dayNumber: string) {
-  if (dayNumber === 'REST')  return 'Rest Day';
-  if (dayNumber === 'TRAIN') return 'Train Day';
-  if (dayNumber === '0')     return 'Arrival';
-  return `Day ${dayNumber}`;
+function badgeLabel(ride: any) {
+  if (ride.rideType === 'rest')    return 'Rest Day';
+  if (ride.rideType === 'train')   return 'Train Day';
+  if (ride.rideType === 'arrival') return 'Arrival';
+  return `Day ${ride.tourDayNum}`;
 }
-function badgeClass(dayNumber: string) {
-  if (dayNumber === 'REST')  return 'ride-card-badge rest-day';
-  if (dayNumber === 'TRAIN') return 'ride-card-badge train-day';
-  if (dayNumber === '0')     return 'ride-card-badge arrival';
+function badgeClass(ride: any) {
+  if (ride.rideType === 'rest')    return 'ride-card-badge rest-day';
+  if (ride.rideType === 'train')   return 'ride-card-badge train-day';
+  if (ride.rideType === 'arrival') return 'ride-card-badge arrival';
   return 'ride-card-badge';
 }
 ---
@@ -88,8 +88,8 @@ function badgeClass(dayNumber: string) {
       <div class="ride-grid">
         {rides.map((ride: any) => (
           <a href={`/${ride.dayNumber}`} class="ride-card">
-            <span class={badgeClass(ride.dayNumber)}>
-              {badgeLabel(ride.dayNumber)}
+            <span class={badgeClass(ride)}>
+              {badgeLabel(ride)}
             </span>
             {(ride.startTown || ride.endTown) && (
               <p class="ride-card-route">

@@ -115,10 +115,21 @@ function parseTourData(tabs) {
   const rideHeader = tabs.rideDays[0] || [];
   const rideHeaderMap = createHeaderMap(rideHeader);
   
-  const rides = (tabs.rideDays.slice(1) || []).map((row, idx) => {
-    const dayNum = row[rideHeaderMap['Ride_Day']] || String(idx + 1);
+  const rides = (tabs.rideDays.slice(1) || []).map((row) => {
+    const tourDayRaw = (row[rideHeaderMap['Tour_Day']] || '').trim();
+    const rideDayRaw = (row[rideHeaderMap['Ride_Day']] || '').trim().toUpperCase();
+    const tourDayNum = parseInt(tourDayRaw);
+    if (isNaN(tourDayNum)) return null; // skip empty/malformed rows
+
+    const rideType = rideDayRaw === 'REST'  ? 'rest'    :
+                     rideDayRaw === 'TRAIN' ? 'train'   :
+                     tourDayNum === 0       ? 'arrival' : 'ride';
+
     return {
-      dayNumber: String(dayNum),
+      dayNumber:  `TourDay_${String(tourDayNum).padStart(2, '0')}`, // URL slug
+      tourDayNum,  // numeric for display: 1, 2, ...
+      rideType,    // 'arrival' | 'ride' | 'rest' | 'train'
+      rideDay: rideDayRaw, // original Ride_Day value for lookup in other tabs
       date: row[rideHeaderMap['Date']] || '',
       startTown: row[rideHeaderMap['Start_Town']] || '',
       endTown: row[rideHeaderMap['End_Town']] || '',
@@ -127,7 +138,7 @@ function parseTourData(tabs) {
       rwgpsId: row[rideHeaderMap['RWGPS_Route_ID']] || '',
       pandaImage: row[rideHeaderMap['Panda_Asset_Name']] || ''
     };
-  });
+  }).filter(Boolean);
 
   const townHeader = tabs.townNarratives[0] || [];
   const townHeaderMap = createHeaderMap(townHeader);
@@ -181,39 +192,40 @@ function parseTourData(tabs) {
   
   let logo = 'BTF_LOGO_White_on_Transparent.png';
 
-  // Fallback map when Media_Manifest rows are missing Panda_Asset_Name
+  // Fallback map keyed by Tour_Day number (0–10)
+  // Tour Day 5 = REST, Tour Days 6-9 = Ride Days 5-8
   const PANDA_FALLBACK = {
-    '0':    'BTF_CDM_RD00_KICKOFF_PANDA_v2.png',
-    '1':    'BTF_CDM_RD01_PANDA_v2.png',
-    '2':    'BTF_CDM_RD02_PANDA_v1.png',
-    '3':    'BTF_CDM_RD03_PANDA_v1.png',
-    '4':    'BTF_CDM_RD04_PANDA_v1.png',
-    'REST': 'BTF_CDM_RESTDAY_PANDA_v2.png',
-    '5':    'BTF_CDM_RD05_PANDA_v1.png',
-    '6':    'BTF_CDM_RD06_PANDA_v1.png',
-    '7':    'BTF_CDM_RD07_PANDA_v1.png',
-    '8':    'BTF_CDM_RD08_PANDA_v1.png',
+    '0':  'BTF_CDM_RD00_KICKOFF_PANDA_v2.png',
+    '1':  'BTF_CDM_RD01_PANDA_v2.png',
+    '2':  'BTF_CDM_RD02_PANDA_v1.png',
+    '3':  'BTF_CDM_RD03_PANDA_v1.png',
+    '4':  'BTF_CDM_RD04_PANDA_v1.png',
+    '5':  'BTF_CDM_RESTDAY_PANDA_v2.png',
+    '6':  'BTF_CDM_RD05_PANDA_v1.png',
+    '7':  'BTF_CDM_RD06_PANDA_v1.png',
+    '8':  'BTF_CDM_RD07_PANDA_v1.png',
+    '9':  'BTF_CDM_RD08_PANDA_v1.png',
   };
 
   const pandaAssets = { ...PANDA_FALLBACK };
 
-  // Media_Manifest entries override the fallback when present
+  // Media_Manifest entries override fallback; Day_Number maps to Tour_Day
   mediaRows.forEach((row) => {
     const day = row[mediaHeaderMap['Day_Number']];
     const assetName = row[mediaHeaderMap['Panda_Asset_Name']];
     if (day && assetName) {
-      // Normalize: strip leading zeros so '01' → '1' matches ride dayNumber
-      const normalizedDay = day.replace(/^0+(\d)/, '$1');
+      const normalizedDay = String(parseInt(day)); // '05' → '5'
       pandaAssets[normalizedDay] = assetName;
     }
   });
 
   const enrichedRides = rides.map((ride) => ({
     ...ride,
-    highlights: highlightsByDay[ride.dayNumber] || [],
-    lunch: lunchByDay[ride.dayNumber] || null,
-    pandaImageUrl: pandaAssets[ride.dayNumber]
-      ? `${R2_BASE_URL}/${pandaAssets[ride.dayNumber]}`
+    // highlights/lunch use Ride_Day values from their own sheets
+    highlights: highlightsByDay[ride.rideDay] || [],
+    lunch: lunchByDay[ride.rideDay] || null,
+    pandaImageUrl: pandaAssets[String(ride.tourDayNum)]
+      ? `${R2_BASE_URL}/${pandaAssets[String(ride.tourDayNum)]}`
       : null,
     overnightNarrative: narrativeByTown[ride.endTown.trim()] || ''
   }));
@@ -223,7 +235,7 @@ function parseTourData(tabs) {
 
   // Derive start/end dates from ride data (day 0 or day 1 → last ride day)
   const rideDates = enrichedRides
-    .filter(r => r.date && r.dayNumber !== 'TRAIN')
+    .filter(r => r.date && r.rideType !== 'train')
     .map(r => r.date);
   const derivedStartDate = rideDates[0] || TOUR_START_DATE;
   const derivedEndDate   = rideDates[rideDates.length - 1] || TOUR_END_DATE;
