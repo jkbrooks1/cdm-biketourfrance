@@ -14,6 +14,13 @@ try {
 
 const { tourName, startDate, endDate, description, rides, totalMiles, totalElevation, media } = tourData;
 const landingPanda = media?.r2Base ? `${media.r2Base}/BTF_CDM_LANDING_PANDA_v1.png` : null;
+
+function formatDate(iso: string) {
+  if (!iso) return '';
+  const [year, month, day] = iso.split('-').map(Number);
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
 const rideCount = rides.filter((r: any) => r.miles > 0 && r.dayNumber !== 'REST').length;
 const restCount = rides.filter((r: any) => r.dayNumber === 'REST').length;
 
@@ -34,7 +41,7 @@ function badgeClass(dayNumber: string) {
     <div class="container">
       <p class="hero-eyebrow">BikeTourFrance.net</p>
       <h1>{tourName}</h1>
-      <p class="hero-route">Bordeaux → Sète &nbsp;·&nbsp; {startDate} – {endDate}</p>
+      <p class="hero-route">Bordeaux → Sète &nbsp;·&nbsp; {formatDate(startDate)} – {formatDate(endDate)}</p>
       {landingPanda && (
         <img src={landingPanda} alt={tourName} class="hero-panda" />
       )}
