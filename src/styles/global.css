@@ -134,6 +134,13 @@ section { padding: 72px 0; }
   margin-bottom: 14px;
 }
 .hero h1 { margin-bottom: 10px; }
+.hero-panda {
+  width: 100%;
+  max-height: 480px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-top: 28px;
+}
 .hero-route {
   font-size: 17px;
   color: var(--color-gray-mid);
