@@ -52,19 +52,6 @@ jobs:
           R2_BASE_URL: ${{ secrets.R2_BASE_URL }}
         run: npm run build:astro
 
-      - name: Commit updated tour-data.json if changed
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -f src/data/tour-data.json
-          git diff-index --quiet HEAD || git commit -m "Update tour data from Sheets"
-
-      - name: Push changes back to repo
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

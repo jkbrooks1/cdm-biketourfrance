@@ -123,7 +123,7 @@ function parseTourData(tabs) {
       startTown: row[rideHeaderMap['Start_Town']] || '',
       endTown: row[rideHeaderMap['End_Town']] || '',
       miles: parseFloat(row[rideHeaderMap['Miles']]) || 0,
-      elevation: parseFloat(row[rideHeaderMap['Elevation']]) || 0,
+      elevation: parseFloat(row[rideHeaderMap['Hand coded Elevation']] || row[rideHeaderMap['Elevation']]) || 0,
       rwgpsId: row[rideHeaderMap['RWGPS_Route_ID']] || '',
       pandaImage: row[rideHeaderMap['Panda_Asset_Name']] || ''
     };
@@ -202,7 +202,9 @@ function parseTourData(tabs) {
     const day = row[mediaHeaderMap['Day_Number']];
     const assetName = row[mediaHeaderMap['Panda_Asset_Name']];
     if (day && assetName) {
-      pandaAssets[day] = assetName;
+      // Normalize: strip leading zeros so '01' → '1' matches ride dayNumber
+      const normalizedDay = day.replace(/^0+(\d)/, '$1');
+      pandaAssets[normalizedDay] = assetName;
     }
   });
 
