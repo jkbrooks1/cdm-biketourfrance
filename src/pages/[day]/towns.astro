@@ -1,0 +1,67 @@
+---
+import Layout from '../../components/Layout.astro';
+import TownsGrid from '../../components/TownsGrid.astro';
+import { readFileSync } from 'fs';
+import path from 'path';
+
+export async function getStaticPaths() {
+  const tourDataPath = path.join(process.cwd(), 'src/data/tour-data.json');
+  let allTourData: any = { rides: [], branding: {} };
+  try {
+    allTourData = JSON.parse(readFileSync(tourDataPath, 'utf-8'));
+  } catch (err) {
+    console.warn('Could not load tour-data.json');
+  }
+  return allTourData.rides
+    .filter((ride: any) => ride.rideType === 'ride' && ride.towns.length > 0)
+    .map((ride: any) => ({
+      params: { day: ride.dayNumber },
+      props: { ride, tourData: allTourData }
+    }));
+}
+
+const { ride, tourData } = Astro.props;
+
+function pageTitle() {
+  return `Day ${ride.tourDayNum}: Towns & Stops — ${ride.startTown} → ${ride.endTown}`;
+}
+---
+
+<Layout title={pageTitle()}>
+  <div class="day-topbar">
+    <div class="day-topbar-inner">
+      <a href={`/${ride.dayNumber}`} class="btn-topbar">← Back to Ride Overview</a>
+      <a href="/" class="btn-topbar btn-topbar-home">⌂ Home</a>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="day-hero">
+    <div class="container">
+      <h1 class="day-title">Towns & Stops</h1>
+      <p class="day-date">Day {ride.tourDayNum}: {ride.startTown} → {ride.endTown}</p>
+
+      {ride.towns && ride.towns.length > 0 && (
+        <div class="day-layout">
+          <div class="day-main">
+            <p style="margin-bottom: 2rem; color: #666; font-size: 0.95rem;">
+              Towns and stops encountered along today's route. Find bathrooms, bakeries, cafes, and detailed descriptions below.
+            </p>
+            <TownsGrid towns={ride.towns} />
+          </div>
+        </div>
+      )}
+
+      <nav class="day-nav" style="margin-top: 3rem;">
+        <a href={`/${ride.dayNumber}`} class="btn-nav">← Back to Ride Overview</a>
+        <span></span>
+      </nav>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .day-topbar, .day-hero, .container, .day-nav {
+    /* Inherit from Layout styles */
+  }
+</style>

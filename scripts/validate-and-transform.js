@@ -277,17 +277,116 @@ function parseTourData(tabs) {
     }
   });
 
-  const enrichedRides = rides.map((ride) => ({
-    ...ride,
-    // highlights/lunch use Ride_Day values from their own sheets
-    highlights: highlightsByDay[ride.rideDay] || [],
-    lunch: lunchByDay[ride.rideDay] || null,
-    pandaImageUrl: pandaAssets[String(ride.tourDayNum)]
-      ? `${R2_BASE_URL}/${pandaAssets[String(ride.tourDayNum)]}`
-      : null,
-    overnightNarrative: narrativeByTown[ride.endTown.trim()] || '',
-    towns: townsByRideDay[ride.rideDay] || []
-  }));
+  // Hardcoded day shape narratives per ride
+  const DAY_SHAPES = {
+    '1': `Bordeaux → La Réole: 45.7 miles, 1,050 ft elevation. Easy roll out through vineyards. Main climb: Sadirac area (mile 18, 2.3 mi, 240 ft gain). Route passes through Sadirac, Créon, Sauveterre-de-Guyenne. Final push into La Réole.`,
+    '2': `La Réole → Aiguillon: 28.4 miles, 120 ft elevation. Flat river valley day following Garonne River. Easy pace with minimal elevation. Route passes through Meilhan-sur-Garonne, Marmande, Le Mas d'Agenais, Clairac, Tonneins, Damazan. Perfect recovery day after Day 1.`,
+    '3': `Aiguillon → Moissac: 47.5 miles, 160 ft elevation. Longer day with gentle rolling terrain transitioning toward Lot River valley. Route passes through Agen, Bon-Encontre, Boé. Moissac marks entry to abbey country with stunning medieval landscape.`,
+    '4': `Moissac → Toulouse: 44.2 miles, 70 ft elevation. Nearly flat day building toward major city. Steady pace through Castelsarrasin, Valence-d'Agen, Montauban. Final approach into Toulouse—urban cycling as route enters metropolitan area.`,
+    '5': `REST DAY — Toulouse. Historic city day for resupply and exploration.`,
+    '6': `Toulouse → Castelnaudary: 40.1 miles, 190 ft elevation. Gentle rolling exits the city. Transition toward Canal du Midi region. Route climbs slightly through Villefranche-de-Lauragais before arriving at Castelnaudary—the heart of cassoulet country.`,
+    '7': `Castelnaudary → Carcassonne: 22.3 miles, 70 ft elevation. Short flat day. Route passes through Bram and Le Somail on or near Canal du Midi. Carcassonne—dramatic medieval fortress city—marks final fortress landmark before Mediterranean approach.`,
+    '8': `Carcassonne → Capestang: 57.3 miles, 120 ft elevation. Longest day, but flat. Full day along Canal du Midi—one of the world's most beautiful waterway routes. Route passes through Homps and Paraza. Steady pace through iconic landscape.`,
+    '9': `Capestang → Sète: 42.7 miles, 80 ft elevation. Final day to Mediterranean coast. Flat approach through Languedoc wine country. Sète—arrival at salt lagoons and working port—marks Atlantic-to-Mediterranean journey completion.`
+  };
+
+  // Function to assign confidence rating based on WC type
+  function getWCConfidence(wcType) {
+    const typeNorm = (wcType || '').toLowerCase().trim();
+    if (typeNorm.includes('public')) return 5;
+    if (typeNorm.includes('cafe') || typeNorm.includes('bar')) return 3;
+    return 2; // unknown/unverified
+  }
+
+  const enrichedRides = rides.map((ride) => {
+    // Calculate estimated ride time: miles / 10 hours
+    const rideTimeBase = ride.rideType === 'ride' && ride.miles > 0
+      ? ride.miles / 10
+      : 0;
+
+    // Round to nearest 0.5 for display
+    const rideTimeHours = Math.round(rideTimeBase * 2) / 2;
+
+    // Calculate day duration: ride time × 1.5 (ride + 50% for stops/lunch)
+    const dayDurationBase = ride.rideType === 'ride' && ride.miles > 0
+      ? rideTimeBase * 1.5
+      : 0;
+
+    const dayDurationHours = Math.round(dayDurationBase * 2) / 2;
+
+    // Time ranges for estimates (±30 min)
+    let estimatedRideTimeRange = null;
+    let estimatedDayDurationRange = null;
+    let estimatedFinishTime = null;
+
+    if (ride.rideType === 'ride' && ride.miles > 0) {
+      const rideTimeMin = rideTimeBase;
+      const rideTimeMax = rideTimeBase + 0.5;
+      estimatedRideTimeRange = {
+        min: rideTimeMin,
+        max: rideTimeMax,
+        display: `${rideTimeMin.toFixed(1)} to ${rideTimeMax.toFixed(1)} hours`
+      };
+
+      const dayDurationMin = dayDurationBase;
+      const dayDurationMax = dayDurationBase + 0.75;
+      estimatedDayDurationRange = {
+        min: dayDurationMin,
+        max: dayDurationMax,
+        display: `${dayDurationMin.toFixed(1)} to ${dayDurationMax.toFixed(1)} hours`
+      };
+
+      // Calculate finish time range (9am start + duration)
+      const startHour = 9;
+      const startMin = 0;
+      const totalMinMin = startHour * 60 + startMin + (dayDurationMin * 60);
+      const totalMinMax = startHour * 60 + startMin + (dayDurationMax * 60);
+
+      const finishHourMin = Math.floor(totalMinMin / 60);
+      const finishMinMin = Math.round(totalMinMin % 60);
+      const finishHourMax = Math.floor(totalMinMax / 60);
+      const finishMinMax = Math.round(totalMinMax % 60);
+
+      estimatedFinishTime = {
+        min: `${String(finishHourMin).padStart(2, '0')}:${String(finishMinMin).padStart(2, '0')}`,
+        max: `${String(finishHourMax).padStart(2, '0')}:${String(finishMinMax).padStart(2, '0')}`,
+        display: `${String(finishHourMin).padStart(2, '0')}:${String(finishMinMin).padStart(2, '0')}–${String(finishHourMax).padStart(2, '0')}:${String(finishMinMax).padStart(2, '0')}`
+      };
+    }
+
+    // Extract all towns with WC availability and confidence ratings
+    const towns = townsByRideDay[ride.rideDay] || [];
+    const wcTowns = towns
+      .filter((t) => t.wcAvailable)
+      .map((t) => ({
+        name: t.name,
+        distanceFromStart: t.distanceFromStart,
+        wcType: t.wcType,
+        wcLocation: t.wcLocation,
+        confidence: getWCConfidence(t.wcType)
+      }))
+      .sort((a, b) => a.distanceFromStart - b.distanceFromStart);
+
+    return {
+      ...ride,
+      // highlights/lunch use Ride_Day values from their own sheets
+      highlights: highlightsByDay[ride.rideDay] || [],
+      lunch: lunchByDay[ride.rideDay] || null,
+      pandaImageUrl: pandaAssets[String(ride.tourDayNum)]
+        ? `${R2_BASE_URL}/${pandaAssets[String(ride.tourDayNum)]}`
+        : null,
+      overnightNarrative: narrativeByTown[ride.endTown.trim()] || '',
+      towns,
+      wcTowns, // WC towns with confidence ratings
+      // Ride time calculations for operational dashboard
+      rideTimeHours,
+      estimatedRideTimeRange,
+      dayDurationHours,
+      estimatedDayDurationRange,
+      estimatedFinishTime,
+      dayShape: DAY_SHAPES[String(ride.tourDayNum)] || null
+    };
+  });
 
   const totalMiles = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.miles, 0);
   const totalElevation = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.elevation, 0);

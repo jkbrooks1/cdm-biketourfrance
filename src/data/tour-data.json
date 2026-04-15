@@ -28,7 +28,7 @@
       "dayNumber": "TourDay_00",
       "tourDayNum": 0,
       "rideType": "arrival",
-      "rideDay": "",
+      "rideDay": "OVERVIEW",
       "date": "",
       "startTown": "Bordeaux",
       "endTown": "Sète",
@@ -40,7 +40,14 @@
       "lunch": null,
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD00_KICKOFF_PANDA_v2.png",
       "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness.",
-      "towns": []
+      "towns": [],
+      "wcTowns": [],
+      "rideTimeHours": 0,
+      "estimatedRideTimeRange": null,
+      "dayDurationHours": 0,
+      "estimatedDayDurationRange": null,
+      "estimatedFinishTime": null,
+      "dayShape": null
     },
     {
       "dayNumber": "TourDay_01",
@@ -268,7 +275,104 @@
           "riderNotes": "8",
           "description": "Founded in 977 on the Garonne, La Réole is a Town of Art and History, rich in medieval fabric, priory heritage, and river trade memory."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Bordeaux",
+          "distanceFromStart": 0.3,
+          "wcType": "Public",
+          "wcLocation": "Quai Louis XVIII (Quinconces)",
+          "confidence": 5
+        },
+        {
+          "name": "Bègles",
+          "distanceFromStart": 2.4,
+          "wcType": "Public",
+          "wcLocation": "Chemin des Deux Esteys",
+          "confidence": 5
+        },
+        {
+          "name": "Bouliac",
+          "distanceFromStart": 5.6,
+          "wcType": "Public",
+          "wcLocation": "Town center",
+          "confidence": 5
+        },
+        {
+          "name": "Carignan-de-Bordeaux",
+          "distanceFromStart": 7.3,
+          "wcType": "Public",
+          "wcLocation": "Place de la Gare",
+          "confidence": 5
+        },
+        {
+          "name": "Fargues-Saint-Hilaire",
+          "distanceFromStart": 8.8,
+          "wcType": "Café",
+          "wcLocation": "Route de l'Ancienne Gare",
+          "confidence": 2
+        },
+        {
+          "name": "Sadirac",
+          "distanceFromStart": 13.3,
+          "wcType": "Public",
+          "wcLocation": "Route de l'Ancienne Gare",
+          "confidence": 5
+        },
+        {
+          "name": "Créon",
+          "distanceFromStart": 14.8,
+          "wcType": "Public",
+          "wcLocation": "62 Blvd Victor Hugo (Station Vélo)",
+          "confidence": 5
+        },
+        {
+          "name": "Targon",
+          "distanceFromStart": 20.8,
+          "wcType": "Public",
+          "wcLocation": "Near Mairie",
+          "confidence": 5
+        },
+        {
+          "name": "Blasimon",
+          "distanceFromStart": 29.7,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Abbey area",
+          "confidence": 2
+        },
+        {
+          "name": "Sauveterre-de-Guyenne",
+          "distanceFromStart": 30.1,
+          "wcType": "Public",
+          "wcLocation": "Place de la République",
+          "confidence": 5
+        },
+        {
+          "name": "La Réole",
+          "distanceFromStart": 39.1,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Les Quais",
+          "confidence": 2
+        }
+      ],
+      "rideTimeHours": 4.5,
+      "estimatedRideTimeRange": {
+        "min": 4.567,
+        "max": 5.067,
+        "display": "4.6 to 5.1 hours"
+      },
+      "dayDurationHours": 7,
+      "estimatedDayDurationRange": {
+        "min": 6.8505,
+        "max": 7.6005,
+        "display": "6.9 to 7.6 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "15:51",
+        "max": "16:36",
+        "display": "15:51–16:36"
+      },
+      "dayShape": "Bordeaux → La Réole: 45.7 miles, 1,050 ft elevation. Easy roll out through vineyards. Main climb: Sadirac area (mile 18, 2.3 mi, 240 ft gain). Route passes through Sadirac, Créon, Sauveterre-de-Guyenne. Final push into La Réole."
     },
     {
       "dayNumber": "TourDay_02",
@@ -416,7 +520,76 @@
           "riderNotes": "7",
           "description": "At the confluence of the Lot and Garonne, Aiguillon owes its importance to geography: a strategic river meeting-point with deep transport and defensive history today."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Meilhan-sur-Garonne",
+          "distanceFromStart": 42.6,
+          "wcType": "Canal/Lock",
+          "wcLocation": "L'Embarcadère",
+          "confidence": 2
+        },
+        {
+          "name": "Marmande",
+          "distanceFromStart": 51.9,
+          "wcType": "Public",
+          "wcLocation": "Esplanade de Maré",
+          "confidence": 5
+        },
+        {
+          "name": "Le Mas-d'Agenais",
+          "distanceFromStart": 54.9,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Port de Vénès",
+          "confidence": 2
+        },
+        {
+          "name": "Clairac",
+          "distanceFromStart": 64.7,
+          "wcType": "Café",
+          "wcLocation": "Place de l'Église",
+          "confidence": 2
+        },
+        {
+          "name": "Tonneins",
+          "distanceFromStart": 64.7,
+          "wcType": "Parc",
+          "wcLocation": "Jardin Public",
+          "confidence": 2
+        },
+        {
+          "name": "Damazan",
+          "distanceFromStart": 68.5,
+          "wcType": "Public",
+          "wcLocation": "Place d'Armes",
+          "confidence": 5
+        },
+        {
+          "name": "Aiguillon",
+          "distanceFromStart": 69.2,
+          "wcType": "Public",
+          "wcLocation": "Place du 14 Juillet",
+          "confidence": 5
+        }
+      ],
+      "rideTimeHours": 3,
+      "estimatedRideTimeRange": {
+        "min": 2.843,
+        "max": 3.343,
+        "display": "2.8 to 3.3 hours"
+      },
+      "dayDurationHours": 4.5,
+      "estimatedDayDurationRange": {
+        "min": 4.2645,
+        "max": 5.0145,
+        "display": "4.3 to 5.0 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "13:16",
+        "max": "14:01",
+        "display": "13:16–14:01"
+      },
+      "dayShape": "La Réole → Aiguillon: 28.4 miles, 120 ft elevation. Flat river valley day following Garonne River. Easy pace with minimal elevation. Route passes through Meilhan-sur-Garonne, Marmande, Le Mas d'Agenais, Clairac, Tonneins, Damazan. Perfect recovery day after Day 1."
     },
     {
       "dayNumber": "TourDay_03",
@@ -516,7 +689,55 @@
           "riderNotes": "5-10",
           "description": "Moissac is a major pilgrimage stop and art-historical prize, celebrated for its UNESCO-listed abbey cloister and for Chasselas grapes grown nearby for riders still today."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Agen",
+          "distanceFromStart": 80,
+          "wcType": "Public",
+          "wcLocation": "Place d'Arménie",
+          "confidence": 5
+        },
+        {
+          "name": "Bon-Encontre",
+          "distanceFromStart": 90,
+          "wcType": "Public",
+          "wcLocation": "Rue de la République",
+          "confidence": 5
+        },
+        {
+          "name": "Boé",
+          "distanceFromStart": 100,
+          "wcType": "Café",
+          "wcLocation": "Rue des Écoles",
+          "confidence": 2
+        },
+        {
+          "name": "Moissac",
+          "distanceFromStart": 120,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Quai du Tarn",
+          "confidence": 2
+        }
+      ],
+      "rideTimeHours": 4.5,
+      "estimatedRideTimeRange": {
+        "min": 4.746,
+        "max": 5.246,
+        "display": "4.7 to 5.2 hours"
+      },
+      "dayDurationHours": 7,
+      "estimatedDayDurationRange": {
+        "min": 7.119000000000001,
+        "max": 7.869000000000001,
+        "display": "7.1 to 7.9 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "16:07",
+        "max": "16:52",
+        "display": "16:07–16:52"
+      },
+      "dayShape": "Aiguillon → Moissac: 47.5 miles, 160 ft elevation. Longer day with gentle rolling terrain transitioning toward Lot River valley. Route passes through Agen, Bon-Encontre, Boé. Moissac marks entry to abbey country with stunning medieval landscape."
     },
     {
       "dayNumber": "TourDay_04",
@@ -616,7 +837,55 @@
           "riderNotes": "500+",
           "description": "The Pink City is Europe's aerospace capital, where brick architecture, student energy, rugby, Airbus, and space research give Toulouse an unusually modern historical identity today."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Castelsarrasin",
+          "distanceFromStart": 140,
+          "wcType": "Public",
+          "wcLocation": "Place de la Liberté",
+          "confidence": 5
+        },
+        {
+          "name": "Valence-d'Agen",
+          "distanceFromStart": 160,
+          "wcType": "Public",
+          "wcLocation": "Place Nationale",
+          "confidence": 5
+        },
+        {
+          "name": "Montauban",
+          "distanceFromStart": 200,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Quai de l'Adhémar",
+          "confidence": 2
+        },
+        {
+          "name": "Toulouse",
+          "distanceFromStart": 240,
+          "wcType": "Public",
+          "wcLocation": "Port Saint-Sauveur or Allées Jules Guesde",
+          "confidence": 5
+        }
+      ],
+      "rideTimeHours": 4.5,
+      "estimatedRideTimeRange": {
+        "min": 4.417,
+        "max": 4.917,
+        "display": "4.4 to 4.9 hours"
+      },
+      "dayDurationHours": 6.5,
+      "estimatedDayDurationRange": {
+        "min": 6.6255,
+        "max": 7.3755,
+        "display": "6.6 to 7.4 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "15:38",
+        "max": "16:23",
+        "display": "15:38–16:23"
+      },
+      "dayShape": "Moissac → Toulouse: 44.2 miles, 70 ft elevation. Nearly flat day building toward major city. Steady pace through Castelsarrasin, Valence-d'Agen, Montauban. Final approach into Toulouse—urban cycling as route enters metropolitan area."
     },
     {
       "dayNumber": "TourDay_05",
@@ -651,7 +920,14 @@
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD05_PANDA_v1.png",
       "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals.",
-      "towns": []
+      "towns": [],
+      "wcTowns": [],
+      "rideTimeHours": 0,
+      "estimatedRideTimeRange": null,
+      "dayDurationHours": 0,
+      "estimatedDayDurationRange": null,
+      "estimatedFinishTime": null,
+      "dayShape": "REST DAY — Toulouse. Historic city day for resupply and exploration."
     },
     {
       "dayNumber": "TourDay_06",
@@ -719,7 +995,41 @@
           "riderNotes": "5-10",
           "description": "Castelnaudary is the world capital of cassoulet, a canal town whose culinary fame easily surpasses its size and anchors Lauragais identity for riders still today."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Villefranche-de-Lauragais",
+          "distanceFromStart": 265,
+          "wcType": "Public",
+          "wcLocation": "Place Gambetta",
+          "confidence": 5
+        },
+        {
+          "name": "Castelnaudary",
+          "distanceFromStart": 290,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Grand Bassin",
+          "confidence": 2
+        }
+      ],
+      "rideTimeHours": 4,
+      "estimatedRideTimeRange": {
+        "min": 4.005,
+        "max": 4.505,
+        "display": "4.0 to 4.5 hours"
+      },
+      "dayDurationHours": 6,
+      "estimatedDayDurationRange": {
+        "min": 6.0075,
+        "max": 6.7575,
+        "display": "6.0 to 6.8 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "15:00",
+        "max": "15:45",
+        "display": "15:00–15:45"
+      },
+      "dayShape": "Toulouse → Castelnaudary: 40.1 miles, 190 ft elevation. Gentle rolling exits the city. Transition toward Canal du Midi region. Route climbs slightly through Villefranche-de-Lauragais before arriving at Castelnaudary—the heart of cassoulet country."
     },
     {
       "dayNumber": "TourDay_07",
@@ -803,7 +1113,41 @@
           "riderNotes": "30-50",
           "description": "Carcassonne is one of Europe's great fortified cities, a UNESCO-listed walled ensemble whose towers, ramparts, and restoration history make it instantly memorable for riders today."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Bram",
+          "distanceFromStart": 310,
+          "wcType": "Parc",
+          "wcLocation": "Place du Foirail",
+          "confidence": 2
+        },
+        {
+          "name": "Carcassonne",
+          "distanceFromStart": 350,
+          "wcType": "Public",
+          "wcLocation": "Square André Chénier",
+          "confidence": 5
+        }
+      ],
+      "rideTimeHours": 2,
+      "estimatedRideTimeRange": {
+        "min": 2.229,
+        "max": 2.729,
+        "display": "2.2 to 2.7 hours"
+      },
+      "dayDurationHours": 3.5,
+      "estimatedDayDurationRange": {
+        "min": 3.3435,
+        "max": 4.093500000000001,
+        "display": "3.3 to 4.1 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "12:21",
+        "max": "13:06",
+        "display": "12:21–13:06"
+      },
+      "dayShape": "Castelnaudary → Carcassonne: 22.3 miles, 70 ft elevation. Short flat day. Route passes through Bram and Le Somail on or near Canal du Midi. Carcassonne—dramatic medieval fortress city—marks final fortress landmark before Mediterranean approach."
     },
     {
       "dayNumber": "TourDay_08",
@@ -887,7 +1231,48 @@
           "riderNotes": "6",
           "description": "Capestang stands out for its massive collegiate church and canal-side setting, blending wine-village character with imposing medieval ecclesiastical ambition for riders and visitors still today."
         }
-      ]
+      ],
+      "wcTowns": [
+        {
+          "name": "Homps",
+          "distanceFromStart": 360,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Port Minervois",
+          "confidence": 2
+        },
+        {
+          "name": "Paraza",
+          "distanceFromStart": 370,
+          "wcType": "Public",
+          "wcLocation": "Mairie Paraza",
+          "confidence": 5
+        },
+        {
+          "name": "Capestang",
+          "distanceFromStart": 380,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Quai Elie Amouroux",
+          "confidence": 2
+        }
+      ],
+      "rideTimeHours": 5.5,
+      "estimatedRideTimeRange": {
+        "min": 5.7299999999999995,
+        "max": 6.2299999999999995,
+        "display": "5.7 to 6.2 hours"
+      },
+      "dayDurationHours": 8.5,
+      "estimatedDayDurationRange": {
+        "min": 8.594999999999999,
+        "max": 9.344999999999999,
+        "display": "8.6 to 9.3 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "17:36",
+        "max": "18:21",
+        "display": "17:36–18:21"
+      },
+      "dayShape": "Carcassonne → Capestang: 57.3 miles, 120 ft elevation. Longest day, but flat. Full day along Canal du Midi—one of the world's most beautiful waterway routes. Route passes through Homps and Paraza. Steady pace through iconic landscape."
     },
     {
       "dayNumber": "TourDay_09",
@@ -922,7 +1307,26 @@
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
       "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness.",
-      "towns": []
+      "towns": [],
+      "wcTowns": [],
+      "rideTimeHours": 4.5,
+      "estimatedRideTimeRange": {
+        "min": 4.274,
+        "max": 4.774,
+        "display": "4.3 to 4.8 hours"
+      },
+      "dayDurationHours": 6.5,
+      "estimatedDayDurationRange": {
+        "min": 6.411,
+        "max": 7.161,
+        "display": "6.4 to 7.2 hours"
+      },
+      "estimatedFinishTime": {
+        "min": "15:25",
+        "max": "16:10",
+        "display": "15:25–16:10"
+      },
+      "dayShape": "Capestang → Sète: 42.7 miles, 80 ft elevation. Final day to Mediterranean coast. Flat approach through Languedoc wine country. Sète—arrival at salt lagoons and working port—marks Atlantic-to-Mediterranean journey completion."
     },
     {
       "dayNumber": "TourDay_10",
@@ -940,8 +1344,15 @@
       "lunch": null,
       "pandaImageUrl": null,
       "overnightNarrative": "Bordeaux, capital of Nouvelle-Aquitaine, rose to prominence through wine trade and its strategic Garonne River port. Known as “Port of the Moon,” its crescent harbor fueled global commerce in the 18th century. The city’s limestone architecture reflects immense wealth from that era. Bordeaux also carries complex history tied to Atlantic trade. Today, it blends grand boulevards, vibrant markets, and a deep wine culture, serving as both cultural capital and gateway to southwestern France’s vineyards.",
-      "towns": []
+      "towns": [],
+      "wcTowns": [],
+      "rideTimeHours": 0,
+      "estimatedRideTimeRange": null,
+      "dayDurationHours": 0,
+      "estimatedDayDurationRange": null,
+      "estimatedFinishTime": null,
+      "dayShape": null
     }
   ],
-  "buildDate": "2026-04-15T08:03:25.134Z"
+  "buildDate": "2026-04-15T17:04:43.841Z"
 }

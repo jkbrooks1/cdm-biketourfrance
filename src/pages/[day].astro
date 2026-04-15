@@ -1,6 +1,5 @@
 ---
 import Layout from '../components/Layout.astro';
-import TownsGrid from '../components/TownsGrid.astro';
 import { readFileSync } from 'fs';
 import path from 'path';
 
@@ -48,6 +47,7 @@ function subHeading() {
   return `${ride.startTown} → ${ride.endTown}`;
 }
 const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN' && ride.lunch.name !== '';
+const hasTowns = ride.towns && ride.towns.length > 0;
 ---
 
 <Layout title={pageTitle()}>
@@ -79,35 +79,109 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
 
       <div class="day-layout">
         <div class="day-main">
-          {ride.miles > 0 && (
-            <div class="stat-grid">
-              <div class="stat-cell">
-                <span class="stat-value">{ride.miles.toFixed(1)}</span>
-                <span class="stat-label">Miles</span>
+          {!isRest && !isArrival && !isTrain && ride.miles > 0 && (
+            <>
+              {/* Day Snapshot Block */}
+              <div class="day-snapshot">
+                <div class="snapshot-row">
+                  <div class="snapshot-item">
+                    <span class="snapshot-value">{ride.miles.toFixed(1)}</span>
+                    <span class="snapshot-label">Miles</span>
+                  </div>
+                  <div class="snapshot-item">
+                    <span class="snapshot-value">{ride.elevation.toLocaleString()}</span>
+                    <span class="snapshot-label">Elevation</span>
+                  </div>
+                </div>
+
+                {ride.estimatedRideTimeRange && (
+                  <div class="snapshot-row">
+                    <div class="snapshot-item">
+                      <span class="snapshot-value">{ride.estimatedRideTimeRange.display}</span>
+                      <span class="snapshot-label">Estimated Ride Time</span>
+                    </div>
+                    <div class="snapshot-item">
+                      <span class="snapshot-value">{ride.estimatedDayDurationRange.display}</span>
+                      <span class="snapshot-label">Estimated Total Time</span>
+                    </div>
+                  </div>
+                )}
+
+                {ride.estimatedFinishTime && (
+                  <div class="snapshot-row">
+                    <div class="snapshot-item full-width">
+                      <span class="snapshot-value">{ride.estimatedFinishTime.display}</span>
+                      <span class="snapshot-label">Estimated Finish Time</span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div class="stat-cell">
-                <span class="stat-value">{ride.elevation.toLocaleString()}</span>
-                <span class="stat-label">ft Elevation</span>
-              </div>
-            </div>
+
+              {/* Day Shape */}
+              {ride.dayShape && (
+                <div class="day-shape">
+                  <h3>Today's Route</h3>
+                  <p>{ride.dayShape}</p>
+                </div>
+              )}
+
+              {/* Lunch Block */}
+              {hasLunch && (
+                <div class="lunch-block">
+                  <h3>Lunch Stop</h3>
+                  <div class="lunch-detail">
+                    <strong>{ride.lunch.name}</strong>
+                    {ride.lunch.milepost > 0 && <span> — ~Mile {ride.lunch.milepost.toFixed(1)}</span>}
+                    {ride.lunch.type && <span> ({ride.lunch.type})</span>}
+                  </div>
+                </div>
+              )}
+
+              {/* Water & Bathroom Stops */}
+              {ride.wcTowns && ride.wcTowns.length > 0 && (
+                <div class="stops-block">
+                  <h3>Water & Bathroom Stops</h3>
+                  <p>Information to help you decide if stopping is an option. All stops listed in encounter order.</p>
+                  <div class="wc-list">
+                    {ride.wcTowns.map((wc: any) => (
+                      <div class="wc-item">
+                        <div class="wc-header">
+                          <strong>{wc.name}</strong>
+                          <span class="wc-distance">Mile {wc.distanceFromStart.toFixed(1)}</span>
+                        </div>
+                        <div class="wc-details">
+                          <div class="wc-type">{wc.wcType}</div>
+                          {wc.wcLocation && <div class="wc-location">{wc.wcLocation}</div>}
+                          <div class="wc-confidence">
+                            Confidence: {'★'.repeat(wc.confidence)}{'☆'.repeat(5 - wc.confidence)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* What You'll See */}
+              {ride.highlights && ride.highlights.length > 0 && (
+                <div class="highlights">
+                  <h3>What You'll See</h3>
+                  <ul>
+                    {ride.highlights.map((h: any) => (
+                      <li>
+                        <strong>{h.title}</strong> — {h.description}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </>
           )}
 
-          {ride.highlights && ride.highlights.length > 0 && (
-            <div class="highlights">
-              <h3>Notable Sights</h3>
-              <ul>
-                {ride.highlights.map((h: any) => (
-                  <li>
-                    <strong>{h.title}</strong>
-                    <p>{h.description}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
+          {/* Full Route Map */}
           {ride.rwgpsId && ride.rwgpsId !== 'NA' && ride.rwgpsId !== '' && (
             <div class="rwgps-embed">
+              <h3>Full Route Map</h3>
               <iframe
                 src={`https://ridewithgps.com/embeds?type=route&id=${ride.rwgpsId}&sampleGraph=true`}
                 scrolling="no"
@@ -116,26 +190,21 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
             </div>
           )}
 
-          {hasLunch && (
-            <div class="lunch-section">
-              <span class="lunch-label">Lunch</span>
-              <span class="lunch-detail">
-                {ride.lunch.name}
-                {ride.lunch.type && <span> ({ride.lunch.type})</span>}
-                {ride.lunch.milepost > 0 && <span> — Mile {ride.lunch.milepost.toFixed(1)}</span>}
-              </span>
+          {/* Link to Towns & Stops */}
+          {hasTowns && (
+            <div class="towns-link-block">
+              <a href={`/${ride.dayNumber}/towns`} class="btn-towns-link">
+                View Towns & Stops →
+              </a>
             </div>
           )}
 
+          {/* Overnight Narrative */}
           {ride.overnightNarrative && (
             <div class="town-narrative">
               <h2>Arriving in {ride.endTown}</h2>
               <p>{ride.overnightNarrative}</p>
             </div>
-          )}
-
-          {ride.towns && ride.towns.length > 0 && (
-            <TownsGrid towns={ride.towns} />
           )}
         </div>
 
@@ -196,3 +265,284 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
     </div>
   </div>
 </Layout>
+
+<style>
+  /* Day Snapshot Block - Quick Reference Dashboard */
+  .day-snapshot {
+    background: linear-gradient(135deg, #f8f6f0 0%, #f5f0e8 100%);
+    border: 2px solid #2d5016;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 2px 8px rgba(45, 80, 22, 0.1);
+  }
+
+  .snapshot-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .snapshot-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .snapshot-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .snapshot-item.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .snapshot-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d5016;
+    line-height: 1.2;
+  }
+
+  .snapshot-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  /* Day Shape, Lunch, Stops Blocks */
+  .day-shape,
+  .lunch-block,
+  .stops-block {
+    margin-bottom: 2.5rem;
+  }
+
+  .day-shape h3,
+  .lunch-block h3,
+  .stops-block h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d5016;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #e8dcc8;
+    padding-bottom: 0.5rem;
+  }
+
+  .lunch-detail {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .lunch-detail strong {
+    color: #2d5016;
+    font-weight: 600;
+  }
+
+  .stops-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .stops-list li {
+    padding: 0.75rem;
+    background: #fafaf8;
+    border-left: 3px solid #2d5016;
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  /* Highlights (What You'll See) */
+  .highlights {
+    margin-bottom: 2.5rem;
+  }
+
+  .highlights h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d5016;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e8dcc8;
+    padding-bottom: 0.5rem;
+  }
+
+  .highlights ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .highlights li {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #e8dcc8;
+    line-height: 1.6;
+  }
+
+  .highlights li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .highlights strong {
+    color: #2d5016;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Route Map */
+  .rwgps-embed {
+    margin-bottom: 2.5rem;
+  }
+
+  .rwgps-embed h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d5016;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e8dcc8;
+    padding-bottom: 0.5rem;
+  }
+
+  .rwgps-embed iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    border-radius: 4px;
+  }
+
+  /* Towns Link Block */
+  .towns-link-block {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: #2d5016;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .btn-towns-link {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #2d5016;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 2px solid #fff;
+  }
+
+  .btn-towns-link:hover {
+    background: #f5f0e8;
+    box-shadow: 0 4px 12px rgba(45, 80, 22, 0.2);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .day-snapshot {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .snapshot-row {
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .snapshot-value {
+      font-size: 1.25rem;
+    }
+
+    .stops-list {
+      grid-template-columns: 1fr;
+    }
+
+    .rwgps-embed iframe {
+      height: 300px;
+    }
+
+    .towns-link-block {
+      margin: 2rem 0;
+      padding: 1.5rem;
+    }
+  }
+
+  /* Water & Bathroom Stops List */
+  .wc-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .wc-item {
+    background: #fafaf8;
+    border-left: 4px solid #2d5016;
+    padding: 1rem;
+    border-radius: 4px;
+  }
+
+  .wc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+  }
+
+  .wc-header strong {
+    color: #2d5016;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .wc-distance {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .wc-details {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .wc-type {
+    color: #333;
+    font-weight: 500;
+  }
+
+  .wc-location {
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  .wc-confidence {
+    color: #999;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Mobile adjustments for WC list */
+  @media (max-width: 768px) {
+    .wc-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .wc-distance {
+      white-space: normal;
+    }
+  }
+</style>
