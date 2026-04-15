@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
+import HomepageContent from '../components/HomepageContent.astro';
 import { readFileSync } from 'fs';
 import path from 'path';
 
@@ -12,111 +13,9 @@ try {
   console.warn('Could not load tour-data.json');
 }
 
-const { tourName, startDate, endDate, description, rides, totalMiles, totalElevation, endToEndRwgpsId, media } = tourData;
-const landingPanda = media?.r2Base ? `${media.r2Base}/BTF_CDM_LANDING_PANDA_v1.png` : null;
-
-function formatDate(raw: string) {
-  if (!raw) return '';
-  let month: number, day: number, year: number;
-  if (raw.includes('-')) {
-    // ISO format: YYYY-MM-DD
-    [year, month, day] = raw.split('-').map(Number);
-  } else if (raw.includes('/')) {
-    // Sheet format: M/DD or MM/DD (year assumed 2026)
-    const parts = raw.split('/').map(Number);
-    month = parts[0]; day = parts[1]; year = 2026;
-  } else {
-    return raw;
-  }
-  const d = new Date(year, month - 1, day);
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
-const rideCount = rides.filter((r: any) => r.rideType === 'ride').length;
-const restCount = rides.filter((r: any) => r.rideType === 'rest').length;
-
-function badgeLabel(ride: any) {
-  if (ride.rideType === 'rest')    return 'Rest Day';
-  if (ride.rideType === 'train')   return 'Train Day';
-  if (ride.rideType === 'arrival') return 'Arrival';
-  return `Day ${ride.tourDayNum}`;
-}
-function badgeClass(ride: any) {
-  if (ride.rideType === 'rest')    return 'ride-card-badge rest-day';
-  if (ride.rideType === 'train')   return 'ride-card-badge train-day';
-  if (ride.rideType === 'arrival') return 'ride-card-badge arrival';
-  return 'ride-card-badge';
-}
+const { tourName, startDate, endDate, description, rides, endToEndRwgpsId } = tourData;
 ---
 
 <Layout title={tourName} description={description}>
-  <div class="hero">
-    <div class="container">
-      <p class="hero-eyebrow">BikeTourFrance.net</p>
-      <h1>{tourName}</h1>
-      <p class="hero-route">Bordeaux → Sète &nbsp;·&nbsp; {formatDate(startDate)} – {formatDate(endDate)}</p>
-      {landingPanda && (
-        <img src={landingPanda} alt={tourName} class="hero-panda" />
-      )}
-
-      <div class="stat-grid">
-        <div class="stat-cell">
-          <span class="stat-value">{rideCount}</span>
-          <span class="stat-label">Ride Days</span>
-        </div>
-        <div class="stat-cell">
-          <span class="stat-value">{restCount}</span>
-          <span class="stat-label">Rest Days</span>
-        </div>
-        <div class="stat-cell">
-          <span class="stat-value">{parseFloat(totalMiles).toFixed(0)}</span>
-          <span class="stat-label">Miles</span>
-        </div>
-        <div class="stat-cell">
-          <span class="stat-value">{Number(totalElevation).toLocaleString()}</span>
-          <span class="stat-label">ft Elevation</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <section>
-    <div class="container">
-      <div class="section-header">
-        <h2>The Route</h2>
-        <p>{description}</p>
-      </div>
-      {endToEndRwgpsId && (
-        <div class="rwgps-embed">
-          <iframe
-            src={`https://ridewithgps.com/embeds?type=route&id=${endToEndRwgpsId}&sampleGraph=true`}
-            scrolling="no"
-            loading="lazy"
-          ></iframe>
-        </div>
-      )}
-      <div class="ride-grid">
-        {rides.map((ride: any) => (
-          <a href={`/${ride.dayNumber}`} class="ride-card">
-            <span class={badgeClass(ride)}>
-              {badgeLabel(ride)}
-            </span>
-            {(ride.startTown || ride.endTown) && (
-              <p class="ride-card-route">
-                {ride.startTown}
-                {ride.startTown && ride.endTown && <span class="ride-card-arrow"> → </span>}
-                {ride.endTown}
-              </p>
-            )}
-            {ride.miles > 0 && (
-              <div class="ride-card-stats">
-                <span>{ride.miles.toFixed(0)} mi</span>
-                <span>{ride.elevation.toLocaleString()} ft</span>
-              </div>
-            )}
-            {ride.date && <p class="ride-card-date">{ride.date}</p>}
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <HomepageContent {rides} {tourName} {startDate} {endDate} {description} {endToEndRwgpsId} />
 </Layout>

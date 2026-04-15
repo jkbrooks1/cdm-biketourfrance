@@ -1,0 +1,323 @@
+---
+interface Props {
+  ride: any;
+  date?: string;
+}
+
+const { ride, date } = Astro.props;
+
+// Helper functions
+function formatDate(raw: string) {
+  if (!raw) return '';
+  let month: number, day: number, year: number;
+  if (raw.includes('-')) {
+    [year, month, day] = raw.split('-').map(Number);
+  } else if (raw.includes('/')) {
+    const parts = raw.split('/').map(Number);
+    month = parts[0]; day = parts[1]; year = 2026;
+  } else {
+    return raw;
+  }
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+function calculateRideTime(miles: number): number {
+  // Typical touring pace: 12 mph
+  return miles / 12;
+}
+
+function calculateTotalDayTime(miles: number): number {
+  // Ride time + ~1.5 hours for stops, lunch, breaks
+  const rideTime = calculateRideTime(miles);
+  return rideTime + 1.5;
+}
+
+function calculateFinishTime(totalHours: number): string {
+  // Assuming 9am start
+  const startHour = 9;
+  const startMinutes = 0;
+  const totalMinutes = startHour * 60 + startMinutes + Math.round(totalHours * 60);
+  const finishHour = Math.floor(totalMinutes / 60) % 24;
+  const finishMin = totalMinutes % 60;
+  const period = finishHour >= 12 ? 'pm' : 'am';
+  const displayHour = finishHour > 12 ? finishHour - 12 : finishHour === 0 ? 12 : finishHour;
+  return `${displayHour}:${finishMin.toString().padStart(2, '0')} ${period}`;
+}
+
+function getDayShape(miles: number, elevation: number): { label: string; description: string } {
+  const effortRatio = elevation / miles;
+  if (effortRatio < 25) {
+    return { label: 'Mostly flat', description: 'Easy rolling, good for strong pace' };
+  } else if (effortRatio < 45) {
+    return { label: 'Rolling hills', description: 'Steady climbing, moderate effort' };
+  } else {
+    return { label: 'Hilly/climbing', description: 'Sustained elevation, plan for slower pace' };
+  }
+}
+
+function calculateLunchTime(miles: number): string {
+  // Lunch around midday, typically at ~50% of ride distance
+  const rideTime = calculateRideTime(miles);
+  const lunchHour = Math.floor(9 + (rideTime / 2));
+  const lunchMin = Math.round((((9 + rideTime / 2) % 1) * 60));
+  const period = lunchHour >= 12 ? 'pm' : 'am';
+  const displayHour = lunchHour > 12 ? lunchHour - 12 : lunchHour === 0 ? 12 : lunchHour;
+  return `~${displayHour}:${lunchMin.toString().padStart(2, '0')} ${period}`;
+}
+
+const rideTime = calculateRideTime(ride.miles);
+const totalDayTime = calculateTotalDayTime(ride.miles);
+const finishTime = calculateFinishTime(totalDayTime);
+const dayShape = getDayShape(ride.miles, ride.elevation);
+const lunchTime = calculateLunchTime(ride.miles);
+
+// Get first 2 highlights
+const highlights = ride.highlights?.slice(0, 2) || [];
+---
+
+<div class="today-block">
+  <div class="today-header">
+    <h2 class="today-title">Day {ride.tourDayNum}</h2>
+    <p class="today-route">{ride.startTown} → {ride.endTown}</p>
+    {ride.date && <p class="today-date">{formatDate(ride.date)}</p>}
+  </div>
+
+  <div class="today-metrics">
+    <div class="metric-pair">
+      <span class="metric-label">Distance</span>
+      <span class="metric-value">{ride.miles.toFixed(0)} mi</span>
+    </div>
+    <div class="metric-pair">
+      <span class="metric-label">Elevation</span>
+      <span class="metric-value">{ride.elevation.toLocaleString()} ft</span>
+    </div>
+    <div class="metric-pair">
+      <span class="metric-label">Ride Time</span>
+      <span class="metric-value">{Math.floor(rideTime)}h {Math.round((rideTime % 1) * 60)}m</span>
+    </div>
+    <div class="metric-pair">
+      <span class="metric-label">Total Time</span>
+      <span class="metric-value">{Math.floor(totalDayTime)}h {Math.round((totalDayTime % 1) * 60)}m</span>
+    </div>
+  </div>
+
+  <div class="today-section">
+    <h3 class="section-label">Day Shape</h3>
+    <p class="day-shape-label">{dayShape.label}</p>
+    <p class="day-shape-description">{dayShape.description}</p>
+  </div>
+
+  <div class="today-section">
+    <h3 class="section-label">Finish Window</h3>
+    <p class="finish-time">Finish: <strong>{finishTime}</strong> (assuming 9am start)</p>
+  </div>
+
+  <div class="today-section">
+    <h3 class="section-label">Lunch</h3>
+    {ride.lunch?.name && ride.lunch.name !== 'PER JOHN' ? (
+      <>
+        <p class="lunch-location">{ride.lunch.name}</p>
+        <p class="lunch-timing">Around {lunchTime}</p>
+      </>
+    ) : (
+      <p class="lunch-tbd">Location to be determined</p>
+    )}
+  </div>
+
+  <div class="today-section">
+    <h3 class="section-label">Water & Stops</h3>
+    <p class="stops-info">Water every 10–15 miles. Bathrooms available in towns along route.</p>
+  </div>
+
+  {highlights.length > 0 && (
+    <div class="today-section">
+      <h3 class="section-label">What You'll See</h3>
+      <ul class="highlights-list">
+        {highlights.map((h: any) => (
+          <li class="highlight-item">
+            <strong>{h.title}</strong>
+            <p>{h.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {ride.overnightNarrative && (
+    <div class="today-section">
+      <h3 class="section-label">Tonight: {ride.endTown}</h3>
+      <p class="overnight-narrative">{ride.overnightNarrative}</p>
+    </div>
+  )}
+</div>
+
+<style>
+  .today-block {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .today-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .today-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #2D5016;
+  }
+
+  .today-route {
+    font-size: 1.125rem;
+    margin: 0.25rem 0;
+    color: #333;
+  }
+
+  .today-date {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0.25rem 0 0 0;
+  }
+
+  .today-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f9f7f2;
+    border-radius: 4px;
+  }
+
+  .metric-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .metric-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #666;
+  }
+
+  .metric-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2D5016;
+  }
+
+  .today-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .today-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .section-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #666;
+    margin: 0 0 0.5rem 0;
+    display: block;
+  }
+
+  .day-shape-label {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .day-shape-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .finish-time {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 0;
+  }
+
+  .lunch-location {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .lunch-timing {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .lunch-tbd {
+    font-size: 0.95rem;
+    color: #999;
+    margin: 0;
+  }
+
+  .stops-info {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 0;
+  }
+
+  .highlights-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .highlight-item {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .highlight-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .highlight-item strong {
+    display: block;
+    color: #2D5016;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .highlight-item p {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .overnight-narrative {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .today-metrics {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+  }
+</style>

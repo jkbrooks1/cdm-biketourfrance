@@ -1,0 +1,118 @@
+---
+interface Props {
+  rides: any[];
+  selectedDayNumber: string;
+}
+
+const { rides, selectedDayNumber } = Astro.props;
+
+// Filter to only ride days and exclude the selected day
+const rideDays = rides.filter((r: any) => r.rideType === 'ride' && r.dayNumber !== selectedDayNumber);
+
+function formatDate(raw: string) {
+  if (!raw) return '';
+  let month: number, day: number, year: number;
+  if (raw.includes('-')) {
+    [year, month, day] = raw.split('-').map(Number);
+  } else if (raw.includes('/')) {
+    const parts = raw.split('/').map(Number);
+    month = parts[0]; day = parts[1]; year = 2026;
+  } else {
+    return raw;
+  }
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+---
+
+<div class="upcoming-days">
+  <h3 class="upcoming-title">Upcoming Days</h3>
+  <div class="days-list">
+    {rideDays.length === 0 ? (
+      <p class="no-upcoming">No upcoming ride days</p>
+    ) : (
+      rideDays.map((ride: any) => (
+        <a href={`/${ride.dayNumber}`} class="upcoming-card">
+          <div class="upcoming-date">{formatDate(ride.date)}</div>
+          <div class="upcoming-route">
+            {ride.startTown}
+            <span class="upcoming-arrow">→</span>
+            {ride.endTown}
+          </div>
+          <div class="upcoming-distance">{ride.miles.toFixed(0)} mi</div>
+        </a>
+      ))
+    )}
+  </div>
+</div>
+
+<style>
+  .upcoming-days {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+  }
+
+  .upcoming-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 1rem 0;
+  }
+
+  .days-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .upcoming-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .upcoming-card:hover {
+    border-color: #2D5016;
+    background-color: #f9f7f2;
+  }
+
+  .upcoming-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+    min-width: 60px;
+  }
+
+  .upcoming-route {
+    flex: 1;
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  .upcoming-arrow {
+    color: #999;
+    margin: 0 0.25rem;
+  }
+
+  .upcoming-distance {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2D5016;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  .no-upcoming {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0;
+    padding: 0.5rem 0;
+  }
+</style>

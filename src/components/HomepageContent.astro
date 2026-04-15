@@ -1,0 +1,352 @@
+---
+import DaySelector from './DaySelector.astro';
+import TodayBlock from './TodayBlock.astro';
+import UpcomingDays from './UpcomingDays.astro';
+
+interface Props {
+  rides: any[];
+  tourName: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+  endToEndRwgpsId: string;
+}
+
+const { rides, tourName, startDate, endDate, description, endToEndRwgpsId } = Astro.props;
+
+// Filter to only ride days
+const rideDays = rides.filter((r: any) => r.rideType === 'ride');
+
+function formatDate(raw: string) {
+  if (!raw) return '';
+  let month: number, day: number, year: number;
+  if (raw.includes('-')) {
+    [year, month, day] = raw.split('-').map(Number);
+  } else if (raw.includes('/')) {
+    const parts = raw.split('/').map(Number);
+    month = parts[0]; day = parts[1]; year = 2026;
+  } else {
+    return raw;
+  }
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+// Default to first ride day
+const defaultDay = rideDays[0];
+---
+
+<div class="homepage-content">
+  <div class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">BikeTourFrance.net</p>
+      <h1>{tourName}</h1>
+      <p class="hero-route">Bordeaux → Sète &nbsp;·&nbsp; {formatDate(startDate)} – {formatDate(endDate)}</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="container">
+      <DaySelector rides={rides} />
+
+      <div class="content-wrapper">
+        <div id="today-container">
+          <TodayBlock ride={defaultDay} date={defaultDay.date} />
+        </div>
+        <UpcomingDays rides={rideDays} selectedDayNumber={defaultDay.dayNumber} />
+      </div>
+
+      {endToEndRwgpsId && (
+        <div class="route-section">
+          <h3>Full Route Map</h3>
+          <div class="rwgps-embed">
+            <iframe
+              src={`https://ridewithgps.com/embeds?type=route&id=${endToEndRwgpsId}&sampleGraph=true`}
+              scrolling="no"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</div>
+
+<script define:vars={{ rides }}>
+  // Find ride by dayNumber
+  function getRideByDayNumber(dayNumber) {
+    return rides.find(r => r.dayNumber === dayNumber);
+  }
+
+  // Format date for display
+  function formatDate(raw) {
+    if (!raw) return '';
+    let month, day, year;
+    if (raw.includes('-')) {
+      [year, month, day] = raw.split('-').map(Number);
+    } else if (raw.includes('/')) {
+      const parts = raw.split('/').map(Number);
+      month = parts[0]; day = parts[1]; year = 2026;
+    } else {
+      return raw;
+    }
+    const d = new Date(year, month - 1, day);
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  // Calculate ride time
+  function calculateRideTime(miles) {
+    return miles / 12;
+  }
+
+  // Calculate total day time
+  function calculateTotalDayTime(miles) {
+    const rideTime = calculateRideTime(miles);
+    return rideTime + 1.5;
+  }
+
+  // Calculate finish time
+  function calculateFinishTime(totalHours) {
+    const startHour = 9;
+    const startMinutes = 0;
+    const totalMinutes = startHour * 60 + startMinutes + Math.round(totalHours * 60);
+    const finishHour = Math.floor(totalMinutes / 60) % 24;
+    const finishMin = totalMinutes % 60;
+    const period = finishHour >= 12 ? 'pm' : 'am';
+    const displayHour = finishHour > 12 ? finishHour - 12 : finishHour === 0 ? 12 : finishHour;
+    return `${displayHour}:${finishMin.toString().padStart(2, '0')} ${period}`;
+  }
+
+  // Get day shape
+  function getDayShape(miles, elevation) {
+    const effortRatio = elevation / miles;
+    if (effortRatio < 25) {
+      return { label: 'Mostly flat', description: 'Easy rolling, good for strong pace' };
+    } else if (effortRatio < 45) {
+      return { label: 'Rolling hills', description: 'Steady climbing, moderate effort' };
+    } else {
+      return { label: 'Hilly/climbing', description: 'Sustained elevation, plan for slower pace' };
+    }
+  }
+
+  // Calculate lunch time
+  function calculateLunchTime(miles) {
+    const rideTime = calculateRideTime(miles);
+    const lunchHour = Math.floor(9 + (rideTime / 2));
+    const lunchMin = Math.round((((9 + rideTime / 2) % 1) * 60));
+    const period = lunchHour >= 12 ? 'pm' : 'am';
+    const displayHour = lunchHour > 12 ? lunchHour - 12 : lunchHour === 0 ? 12 : lunchHour;
+    return `~${displayHour}:${lunchMin.toString().padStart(2, '0')} ${period}`;
+  }
+
+  // Render today block
+  function renderTodayBlock(ride) {
+    const rideTime = calculateRideTime(ride.miles);
+    const totalDayTime = calculateTotalDayTime(ride.miles);
+    const finishTime = calculateFinishTime(totalDayTime);
+    const dayShape = getDayShape(ride.miles, ride.elevation);
+    const lunchTime = calculateLunchTime(ride.miles);
+    const highlights = (ride.highlights || []).slice(0, 2);
+
+    let html = `
+      <div class="today-block">
+        <div class="today-header">
+          <h2 class="today-title">Day ${ride.tourDayNum}</h2>
+          <p class="today-route">${ride.startTown} → ${ride.endTown}</p>
+          ${ride.date ? `<p class="today-date">${formatDate(ride.date)}</p>` : ''}
+        </div>
+
+        <div class="today-metrics">
+          <div class="metric-pair">
+            <span class="metric-label">Distance</span>
+            <span class="metric-value">${ride.miles.toFixed(0)} mi</span>
+          </div>
+          <div class="metric-pair">
+            <span class="metric-label">Elevation</span>
+            <span class="metric-value">${ride.elevation.toLocaleString()} ft</span>
+          </div>
+          <div class="metric-pair">
+            <span class="metric-label">Ride Time</span>
+            <span class="metric-value">${Math.floor(rideTime)}h ${Math.round((rideTime % 1) * 60)}m</span>
+          </div>
+          <div class="metric-pair">
+            <span class="metric-label">Total Time</span>
+            <span class="metric-value">${Math.floor(totalDayTime)}h ${Math.round((totalDayTime % 1) * 60)}m</span>
+          </div>
+        </div>
+
+        <div class="today-section">
+          <h3 class="section-label">Day Shape</h3>
+          <p class="day-shape-label">${dayShape.label}</p>
+          <p class="day-shape-description">${dayShape.description}</p>
+        </div>
+
+        <div class="today-section">
+          <h3 class="section-label">Finish Window</h3>
+          <p class="finish-time">Finish: <strong>${finishTime}</strong> (assuming 9am start)</p>
+        </div>
+
+        <div class="today-section">
+          <h3 class="section-label">Lunch</h3>
+          ${ride.lunch?.name && ride.lunch.name !== 'PER JOHN' ? `
+            <p class="lunch-location">${ride.lunch.name}</p>
+            <p class="lunch-timing">Around ${lunchTime}</p>
+          ` : `
+            <p class="lunch-tbd">Location to be determined</p>
+          `}
+        </div>
+
+        <div class="today-section">
+          <h3 class="section-label">Water & Stops</h3>
+          <p class="stops-info">Water every 10–15 miles. Bathrooms available in towns along route.</p>
+        </div>
+
+        ${highlights.length > 0 ? `
+          <div class="today-section">
+            <h3 class="section-label">What You'll See</h3>
+            <ul class="highlights-list">
+              ${highlights.map(h => `
+                <li class="highlight-item">
+                  <strong>${h.title}</strong>
+                  <p>${h.description}</p>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        ` : ''}
+
+        ${ride.overnightNarrative ? `
+          <div class="today-section">
+            <h3 class="section-label">Tonight: ${ride.endTown}</h3>
+            <p class="overnight-narrative">${ride.overnightNarrative}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    return html;
+  }
+
+  // Update upcoming days
+  function renderUpcomingDays(selectedDayNumber) {
+    const rideDays = rides.filter(r => r.rideType === 'ride' && r.dayNumber !== selectedDayNumber);
+
+    let html = `
+      <div class="upcoming-days">
+        <h3 class="upcoming-title">Upcoming Days</h3>
+        <div class="days-list">
+          ${rideDays.length === 0 ? `
+            <p class="no-upcoming">No upcoming ride days</p>
+          ` : `
+            ${rideDays.map(ride => `
+              <a href="/${ride.dayNumber}" class="upcoming-card">
+                <div class="upcoming-date">${formatDate(ride.date)}</div>
+                <div class="upcoming-route">
+                  ${ride.startTown}
+                  <span class="upcoming-arrow">→</span>
+                  ${ride.endTown}
+                </div>
+                <div class="upcoming-distance">${ride.miles.toFixed(0)} mi</div>
+              </a>
+            `).join('')}
+          `}
+        </div>
+      </div>
+    `;
+
+    return html;
+  }
+
+  // Listen for day selection
+  const dayPicker = document.getElementById('day-picker');
+  const todayContainer = document.getElementById('today-container');
+
+  if (dayPicker && todayContainer) {
+    dayPicker.addEventListener('change', (e) => {
+      const selectedDayNumber = e.target.value;
+      const selectedRide = getRideByDayNumber(selectedDayNumber);
+
+      if (selectedRide) {
+        // Update today block
+        todayContainer.innerHTML = renderTodayBlock(selectedRide);
+
+        // Update upcoming days (replace the upcoming section)
+        const upcomingSection = document.querySelector('.upcoming-days');
+        if (upcomingSection) {
+          upcomingSection.outerHTML = renderUpcomingDays(selectedDayNumber);
+        } else {
+          const contentWrapper = document.querySelector('.content-wrapper');
+          if (contentWrapper) {
+            contentWrapper.insertAdjacentHTML('afterend', renderUpcomingDays(selectedDayNumber));
+          }
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    padding: 2rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #666;
+    margin: 0;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    color: #2D5016;
+  }
+
+  .hero-route {
+    font-size: 1rem;
+    color: #666;
+    margin: 0.5rem 0 0 0;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  section {
+    padding: 2rem 0;
+  }
+
+  .content-wrapper {
+    position: relative;
+  }
+
+  .route-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+
+  .route-section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 1rem 0;
+  }
+
+  .rwgps-embed {
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .rwgps-embed iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
+</style>

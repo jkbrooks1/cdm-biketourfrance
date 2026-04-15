@@ -1,0 +1,93 @@
+---
+interface Props {
+  rides: any[];
+}
+
+const { rides } = Astro.props;
+
+// Filter to only ride days (not arrival, rest, train)
+const rideDays = rides.filter((r: any) => r.rideType === 'ride');
+
+function formatDate(raw: string) {
+  if (!raw) return '';
+  let month: number, day: number, year: number;
+  if (raw.includes('-')) {
+    [year, month, day] = raw.split('-').map(Number);
+  } else if (raw.includes('/')) {
+    const parts = raw.split('/').map(Number);
+    month = parts[0]; day = parts[1]; year = 2026;
+  } else {
+    return raw;
+  }
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+---
+
+<div class="day-selector-wrapper">
+  <div class="day-selector">
+    <label for="day-picker">Select a day:</label>
+    <select id="day-picker" class="day-picker">
+      {rideDays.map((day: any) => (
+        <option value={day.dayNumber}>
+          {formatDate(day.date)} • {day.startTown} → {day.endTown} • {day.miles.toFixed(0)} mi
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
+<script>
+  // Initialize day selection from localStorage or default to first ride day
+  const dayPicker = document.getElementById('day-picker') as HTMLSelectElement;
+
+  if (dayPicker) {
+    const savedDay = localStorage.getItem('selectedRideDay');
+    if (savedDay) {
+      dayPicker.value = savedDay;
+    } else {
+      // Default to first ride day
+      dayPicker.value = dayPicker.options[0].value;
+    }
+
+    // Save selection to localStorage and trigger update
+    dayPicker.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      localStorage.setItem('selectedRideDay', target.value);
+      window.dispatchEvent(new CustomEvent('daySelected', { detail: { dayNumber: target.value } }));
+    });
+  }
+</script>
+
+<style>
+  .day-selector-wrapper {
+    padding: 1rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .day-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .day-selector label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .day-picker {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .day-picker:focus {
+    outline: none;
+    border-color: #2D5016;
+    box-shadow: 0 0 0 2px rgba(45, 80, 22, 0.2);
+  }
+</style>
