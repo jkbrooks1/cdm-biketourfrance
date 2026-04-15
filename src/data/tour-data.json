@@ -1,7 +1,7 @@
 {
   "tourName": "Canal des Deux Mers 2026",
   "tourSlug": "cdm-2026",
-  "startDate": "8/28",
+  "startDate": "8/29",
   "endDate": "9/6",
   "description": "Bordeaux to Sète: 289 miles, 8 days, self-supported cycling",
   "totalMiles": "328.1",
@@ -39,24 +39,8 @@
       "highlights": [],
       "lunch": null,
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD00_KICKOFF_PANDA_v2.png",
-      "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
-    },
-    {
-      "dayNumber": "TourDay_00",
-      "tourDayNum": 0,
-      "rideType": "arrival",
-      "rideDay": "0",
-      "date": "8/28",
-      "startTown": "ARR:Bordeaux",
-      "endTown": "",
-      "miles": 0,
-      "elevation": 0,
-      "rwgpsId": "",
-      "pandaImage": "",
-      "highlights": [],
-      "lunch": null,
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD00_KICKOFF_PANDA_v2.png",
-      "overnightNarrative": ""
+      "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness.",
+      "towns": []
     },
     {
       "dayNumber": "TourDay_01",
@@ -90,7 +74,201 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v1.png",
-      "overnightNarrative": "La Réole, one of the oldest towns along the Garonne, traces its roots to a powerful Benedictine priory founded in the 8th century. Its name derives from “Regula,” reflecting monastic rule. The town’s steep streets and arcaded square reveal medieval importance as a trading hub. Each summer, it hosts cultural festivals celebrating music and heritage. Quiet today, La Réole retains a sense of faded authority, with stone facades and river views marking its former strategic and religious significance."
+      "overnightNarrative": "La Réole, one of the oldest towns along the Garonne, traces its roots to a powerful Benedictine priory founded in the 8th century. Its name derives from “Regula,” reflecting monastic rule. The town’s steep streets and arcaded square reveal medieval importance as a trading hub. Each summer, it hosts cultural festivals celebrating music and heritage. Quiet today, La Réole retains a sense of faded authority, with stone facades and river views marking its former strategic and religious significance.",
+      "towns": [
+        {
+          "name": "Bordeaux",
+          "population": 254821,
+          "distanceFromStart": 0.3,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Quai Louis XVIII (Quinconces)",
+          "boulangerieName": "La Boulangerie Saint-Michel",
+          "boulangieAddress": "28 Rue du Pas-Saint-Georges 33000 Bordeaux",
+          "distFromRoute": "~90m",
+          "googleMapsLink": "https://www.google.com/maps/search/La+Boulangerie+Saint-Michel+28+Rue+du+Pas-Saint-Georges+Bordeaux",
+          "appleMapsLink": "maps://maps.apple.com/?address=28+Rue+du+Pas-Saint-Georges,+France",
+          "cafes": "+33000+Bordeaux",
+          "riderNotes": "500+",
+          "description": "UNESCO-listed Bordeaux grew rich from Atlantic trade and wine shipping; today it blends grand eighteenth-century architecture, riverfront energy, and global renown as France's wine capital."
+        },
+        {
+          "name": "Bègles",
+          "population": 25693,
+          "distanceFromStart": 2.4,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Chemin des Deux Esteys",
+          "boulangerieName": "Boulangerie Ange",
+          "boulangieAddress": "Rte de Toulouse 33130 Bègles",
+          "distFromRoute": "~220m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Ange+Route+de+Toulouse+Bègles",
+          "appleMapsLink": "maps://maps.apple.com/?address=Route+de+Toulouse,+France",
+          "cafes": "+33130+Bègles",
+          "riderNotes": "15+",
+          "description": "Bègles is Bordeaux's gritty southern neighbor, historically industrial and river-facing, now increasingly residential and creative, with markets, sports culture, and urban renewal reshaping identity today."
+        },
+        {
+          "name": "Bouliac",
+          "population": 2812,
+          "distanceFromStart": 5.6,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Town center",
+          "boulangerieName": "Le Fournil de Carignan",
+          "boulangieAddress": "Centre village 33360 Carignan",
+          "distFromRoute": "off-route",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+de+Carignan+Carignan-de-Bordeaux",
+          "appleMapsLink": "maps://maps.apple.com/?address=Carignan-de-Bordeaux,+France",
+          "cafes": "+33360",
+          "riderNotes": "2",
+          "description": "Perched above the Garonne, Bouliac is a polished hillside village best known for vineyard landscapes, sweeping Bordeaux views, and a quietly upscale gastronomic reputation today."
+        },
+        {
+          "name": "Carignan-de-Bordeaux",
+          "population": 7483,
+          "distanceFromStart": 7.3,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place de la Gare",
+          "boulangerieName": "Le Fournil de Carignan",
+          "boulangieAddress": "Centre 33360 Carignan",
+          "distFromRoute": "~180m",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+de+Carignan+Centre+Carignan",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Carignan,+France",
+          "cafes": "+33360",
+          "riderNotes": "4",
+          "description": "This small Entre-deux-Mers commune reflects classic Bordeaux hinterland life: vineyards, stone houses, parish heritage, and the steady agricultural tempo of the surrounding countryside still today."
+        },
+        {
+          "name": "Fargues-Saint-Hilaire",
+          "population": 2091,
+          "distanceFromStart": 8.8,
+          "wcAvailable": true,
+          "wcType": "Café",
+          "wcLocation": "Route de l'Ancienne Gare",
+          "boulangerieName": "Le Fournil de Sadirac",
+          "boulangieAddress": "Sadirac Centre 33670",
+          "distFromRoute": "nearby",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+de+Sadirac+Sadirac",
+          "appleMapsLink": "maps://maps.apple.com/?address=Sadirac,+France",
+          "cafes": "+33670",
+          "riderNotes": "3",
+          "description": "A commuter village east of Bordeaux, Fargues-Saint-Hilaire mixes suburban growth with wine-country roots, serving as a practical crossroads between city influence and rural Gironde today."
+        },
+        {
+          "name": "Sadirac",
+          "population": 3954,
+          "distanceFromStart": 13.3,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Route de l'Ancienne Gare",
+          "boulangerieName": "Le Fournil de Sadirac",
+          "boulangieAddress": "Centre 33670 Sadirac",
+          "distFromRoute": "~120m",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+de+Sadirac+Centre+Sadirac",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Sadirac,+France",
+          "cafes": "+33670",
+          "riderNotes": "3",
+          "description": "Sadirac stands out for its pottery heritage; local clay fed a long ceramics tradition, giving this otherwise quiet village an unusually tangible artisanal identity today."
+        },
+        {
+          "name": "Créon",
+          "population": 2331,
+          "distanceFromStart": 14.8,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "62 Blvd Victor Hugo (Station Vélo)",
+          "boulangerieName": "Boulangerie l'Artisane",
+          "boulangieAddress": "Centre village 33670 Créon",
+          "distFromRoute": "~60m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+l'Artisane+Créon",
+          "appleMapsLink": "maps://maps.apple.com/?address=Créon,+France",
+          "cafes": "+33670",
+          "riderNotes": "10+",
+          "description": "Créon is a classic bastide town with an arcaded center and strong cycling culture today, thanks to the Roger Lapébie greenway through Entre-deux-Mers still today."
+        },
+        {
+          "name": "Targon",
+          "population": 2100,
+          "distanceFromStart": 20.8,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Near Mairie",
+          "boulangerieName": "Le Fournil Targon",
+          "boulangieAddress": "Centre 33760 Targon",
+          "distFromRoute": "~130m",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+Targon+Centre+Targon",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Targon,+France",
+          "cafes": "+33760",
+          "riderNotes": "1-2",
+          "description": "Targon has long functioned as a local service center for surrounding vineyards and farms, more crossroads than showpiece, but useful for understanding everyday Gironde commerce."
+        },
+        {
+          "name": "Frontenac",
+          "population": 800,
+          "distanceFromStart": 25.3,
+          "wcAvailable": false,
+          "wcType": "Uncertain",
+          "wcLocation": "Village center",
+          "boulangerieName": "Boulangerie Frontenac",
+          "boulangieAddress": "Centre 33760 Frontenac",
+          "distFromRoute": "uncertain",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Frontenac",
+          "appleMapsLink": "maps://maps.apple.com/?address=Frontenac,+France",
+          "cafes": "+33760",
+          "riderNotes": "0",
+          "description": "Frontenac is a modest wine-country stop whose interest lies in landscape rather than spectacle: rolling vines, limestone plateaus, and the understated rhythm of rural Bordeaux."
+        },
+        {
+          "name": "Blasimon",
+          "population": 650,
+          "distanceFromStart": 29.7,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Abbey area",
+          "boulangerieName": "Boulangerie Blasimon",
+          "boulangieAddress": "Centre 33540 Blasimon",
+          "distFromRoute": "~100m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Blasimon+Blasimon",
+          "appleMapsLink": "maps://maps.apple.com/?address=Blasimon,+France",
+          "cafes": "+33540",
+          "riderNotes": "0",
+          "description": "Blasimon is best known for its former Benedictine abbey and peaceful wooded setting, a place where monastic history meets quiet agricultural life today still today."
+        },
+        {
+          "name": "Sauveterre-de-Guyenne",
+          "population": 2100,
+          "distanceFromStart": 30.1,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place de la République",
+          "boulangerieName": "Laurent Moreau",
+          "boulangieAddress": "Place République 33540 Sauveterre",
+          "distFromRoute": "~60m",
+          "googleMapsLink": "https://www.google.com/maps/search/Laurent+Moreau+Boulangerie+Sauveterre-de-Guyenne",
+          "appleMapsLink": "maps://maps.apple.com/?address=Place+République,+France",
+          "cafes": "+33540+Sauveterre",
+          "riderNotes": "6",
+          "description": "Founded as an English bastide in 1281, Sauveterre-de-Guyenne still shows its fortified plan and remains a lively market center for the surrounding wine country today."
+        },
+        {
+          "name": "La Réole",
+          "population": 3679,
+          "distanceFromStart": 39.1,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Les Quais",
+          "boulangerieName": "Boulangerie Pâtisserie de la Réole",
+          "boulangieAddress": "Rue des Tilleuls 33190 La Réole",
+          "distFromRoute": "~90m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Pâtisserie+de+la+Réole+La+Réole",
+          "appleMapsLink": "maps://maps.apple.com/?address=Rue+des+Tilleuls,+France",
+          "cafes": "+33190+La+Réole",
+          "riderNotes": "8",
+          "description": "Founded in 977 on the Garonne, La Réole is a Town of Art and History, rich in medieval fabric, priory heritage, and river trade memory."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_02",
@@ -124,7 +302,121 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD02_PANDA_v1.png",
-      "overnightNarrative": "Aiguillon sits at the confluence of the Lot and Garonne rivers, a position that made it strategically vital for centuries. The Dukes of Aiguillon once held significant political influence, and the town became associated with regional power struggles. Its fertile surroundings support agriculture, especially plum production for prunes. While modest in scale, Aiguillon reflects classic river-town France, where waterways shaped commerce, defense, and daily life, leaving behind a quietly layered historical identity rooted in geography."
+      "overnightNarrative": "Aiguillon sits at the confluence of the Lot and Garonne rivers, a position that made it strategically vital for centuries. The Dukes of Aiguillon once held significant political influence, and the town became associated with regional power struggles. Its fertile surroundings support agriculture, especially plum production for prunes. While modest in scale, Aiguillon reflects classic river-town France, where waterways shaped commerce, defense, and daily life, leaving behind a quietly layered historical identity rooted in geography.",
+      "towns": [
+        {
+          "name": "Meilhan-sur-Garonne",
+          "population": 780,
+          "distanceFromStart": 42.6,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "L'Embarcadère",
+          "boulangerieName": "Phil au Fournil",
+          "boulangieAddress": "Centre 47180 Meilhan",
+          "distFromRoute": "~140m",
+          "googleMapsLink": "https://www.google.com/maps/search/Phil+au+Fournil+Meilhan-sur-Garonne",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Meilhan,+France",
+          "cafes": "+47180",
+          "riderNotes": "2",
+          "description": "Meilhan-sur-Garonne is a small river village where agriculture and floodplain geography matter most, offering a calm snapshot of life along the middle Garonne still today."
+        },
+        {
+          "name": "Marmande",
+          "population": 17239,
+          "distanceFromStart": 51.9,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Esplanade de Maré",
+          "boulangerieName": "Boulangerie L'Ami du Pain",
+          "boulangieAddress": "1 Bd Liberté 47200 Marmande",
+          "distFromRoute": "~110m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+L'Ami+du+Pain+1+Boulevard+Liberté+Marmande",
+          "appleMapsLink": "maps://maps.apple.com/?address=1+Boulevard+Liberté,+France",
+          "cafes": "+47200+Marmande",
+          "riderNotes": "20+",
+          "description": "Marmande is nationally associated with tomatoes, a commercial identity that complements its Garonne position, market-town feel, and role as a practical center for local agriculture."
+        },
+        {
+          "name": "Le Mas-d'Agenais",
+          "population": 1450,
+          "distanceFromStart": 54.9,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Port de Vénès",
+          "boulangerieName": "Au Fournil du Mas",
+          "boulangieAddress": "Centre 47430 Le Mas",
+          "distFromRoute": "~120m",
+          "googleMapsLink": "https://www.google.com/maps/search/Au+Fournil+du+Mas+Le+Mas-d'Agenais",
+          "appleMapsLink": "maps://maps.apple.com/?address=Le+Mas-d'Agenais,+France",
+          "cafes": "+47430",
+          "riderNotes": "3",
+          "description": "Le Mas-d'Agenais punches above its size: this old village shelters a Rembrandt in its church, alongside deep Garonne history and handsome traditional streets still today."
+        },
+        {
+          "name": "Clairac",
+          "population": 2432,
+          "distanceFromStart": 64.7,
+          "wcAvailable": true,
+          "wcType": "Café",
+          "wcLocation": "Place de l'Église",
+          "boulangerieName": "Boulangerie du Lot",
+          "boulangieAddress": "Centre 47320 Clairac",
+          "distFromRoute": "~140m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+du+Lot+Clairac",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Clairac,+France",
+          "cafes": "+47320",
+          "riderNotes": "5",
+          "description": "Clairac combines monastic roots with a long riverine history; today its appeal is quieter, shaped by the Lot valley, old buildings, and agricultural surroundings today."
+        },
+        {
+          "name": "Tonneins",
+          "population": 9337,
+          "distanceFromStart": 64.7,
+          "wcAvailable": true,
+          "wcType": "Parc",
+          "wcLocation": "Jardin Public",
+          "boulangerieName": "La Mie Câline",
+          "boulangieAddress": "Centre 47400 Tonneins",
+          "distFromRoute": "~120m",
+          "googleMapsLink": "https://www.google.com/maps/search/La+Mie+Câline+Tonneins",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Tonneins,+France",
+          "cafes": "+47400",
+          "riderNotes": "10",
+          "description": "Tonneins became important through river trade and later tobacco-related industry, giving this Garonne town a more commercial, working character than many nearby villages still today."
+        },
+        {
+          "name": "Damazan",
+          "population": 1358,
+          "distanceFromStart": 68.5,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place d'Armes",
+          "boulangerieName": "Le Fournil de Damazan",
+          "boulangieAddress": "Centre 47160 Damazan",
+          "distFromRoute": "~90m",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+de+Damazan",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Damazan,+France",
+          "cafes": "+47160",
+          "riderNotes": "4",
+          "description": "Damazan is a tidy bastide near the canal, more functional than famous, but its regular plan and agricultural setting make it a classic southwest stop."
+        },
+        {
+          "name": "Aiguillon",
+          "population": 2800,
+          "distanceFromStart": 69.2,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place du 14 Juillet",
+          "boulangerieName": "Boulangerie Maison Marès",
+          "boulangieAddress": "Place du 14 Juillet 47190 Aiguillon",
+          "distFromRoute": "~100m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Maison+Marès+Place+du+14+Juillet+Aiguillon",
+          "appleMapsLink": "maps://maps.apple.com/?address=Place+du+14+Juillet,+France",
+          "cafes": "+47190+Aiguillon",
+          "riderNotes": "7",
+          "description": "At the confluence of the Lot and Garonne, Aiguillon owes its importance to geography: a strategic river meeting-point with deep transport and defensive history today."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_03",
@@ -158,7 +450,73 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD03_PANDA_v1.png",
-      "overnightNarrative": "Moissac is renowned for the Abbey of Saint-Pierre, a UNESCO-listed masterpiece of Romanesque art. Its cloister and sculpted tympanum are considered among the finest in Europe, drawing pilgrims for centuries along the Camino de Santiago. Legend holds that monks once tamed the surrounding land from wilderness through devotion and labor. The town thrives on this spiritual heritage, blending pilgrimage culture with canal-side tranquility, making it a key historical and cultural stop in southwestern France."
+      "overnightNarrative": "Moissac is renowned for the Abbey of Saint-Pierre, a UNESCO-listed masterpiece of Romanesque art. Its cloister and sculpted tympanum are considered among the finest in Europe, drawing pilgrims for centuries along the Camino de Santiago. Legend holds that monks once tamed the surrounding land from wilderness through devotion and labor. The town thrives on this spiritual heritage, blending pilgrimage culture with canal-side tranquility, making it a key historical and cultural stop in southwestern France.",
+      "towns": [
+        {
+          "name": "Agen",
+          "population": 33000,
+          "distanceFromStart": 80,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place d'Arménie",
+          "boulangerieName": "Boulangerie l'Ami du Pain",
+          "boulangieAddress": "41 Boulevard République 47000 Agen",
+          "distFromRoute": "~80m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+l'Ami+du+Pain+41+Boulevard+République+Agen",
+          "appleMapsLink": "maps://maps.apple.com/?address=41+Boulevard+République,+France",
+          "cafes": "+47000+Agen",
+          "riderNotes": "50+",
+          "description": "Agen is France's prune capital, a river city whose identity mixes produce, markets, and administrative importance with an easygoing southwest urban character for riders today."
+        },
+        {
+          "name": "Bon-Encontre",
+          "population": 6500,
+          "distanceFromStart": 90,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Rue de la République",
+          "boulangerieName": "L'Amandine",
+          "boulangieAddress": "Centre 47240 Bon-Encontre",
+          "distFromRoute": "~140m",
+          "googleMapsLink": "https://www.google.com/maps/search/L'Amandine+Bon-Encontre",
+          "appleMapsLink": "maps://maps.apple.com/?address=Bon-Encontre,+France",
+          "cafes": "+47240",
+          "riderNotes": "5",
+          "description": "Bon-Encontre is notable for its hilltop basilica and pilgrimage tradition, pairing suburban Agen proximity with a more devotional and panoramic local identity for riders today."
+        },
+        {
+          "name": "Boé",
+          "population": 5600,
+          "distanceFromStart": 100,
+          "wcAvailable": true,
+          "wcType": "Café",
+          "wcLocation": "Rue des Écoles",
+          "boulangerieName": "Boulangerie de Boé",
+          "boulangieAddress": "Centre 47550 Boé",
+          "distFromRoute": "~160m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+de+Boé",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Boé,+France",
+          "cafes": "+47550",
+          "riderNotes": "3",
+          "description": "Boé functions largely as Agen's commercial and residential extension, useful rather than picturesque, with retail zones and suburban growth reflecting the area's modern economy today."
+        },
+        {
+          "name": "Moissac",
+          "population": 12500,
+          "distanceFromStart": 120,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Quai du Tarn",
+          "boulangerieName": "Boulangerie Pâtisserie Delcasse",
+          "boulangieAddress": "2 Place Récollets 82200 Moissac",
+          "distFromRoute": "~90m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Delcasse+2+Place+Récollets+Moissac",
+          "appleMapsLink": "maps://maps.apple.com/?address=2+Place+Récollets,+France",
+          "cafes": "+82200+Moissac",
+          "riderNotes": "5-10",
+          "description": "Moissac is a major pilgrimage stop and art-historical prize, celebrated for its UNESCO-listed abbey cloister and for Chasselas grapes grown nearby for riders still today."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_04",
@@ -192,7 +550,73 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD04_PANDA_v1.png",
-      "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
+      "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals.",
+      "towns": [
+        {
+          "name": "Castelsarrasin",
+          "population": 12000,
+          "distanceFromStart": 140,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place de la Liberté",
+          "boulangerieName": "Le Patissarium",
+          "boulangieAddress": "19 Place Liberté 82100 Castelsarrasin",
+          "distFromRoute": "~110m",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Patissarium+19+Place+de+la+Liberté+Castelsarrasin",
+          "appleMapsLink": "maps://maps.apple.com/?address=19+Place+de+la+Liberté,+France",
+          "cafes": "+82100+Castelsarrasin",
+          "riderNotes": "5-10",
+          "description": "Castelsarrasin is a canal town with a lively marina, reflecting the region's boating culture and practical trading geography more than monumental spectacle for riders today."
+        },
+        {
+          "name": "Valence-d'Agen",
+          "population": 3600,
+          "distanceFromStart": 160,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place Nationale",
+          "boulangerieName": "Le Fournil Valencien",
+          "boulangieAddress": "Centre 82400 Valence",
+          "distFromRoute": "~90m",
+          "googleMapsLink": "https://www.google.com/maps/search/Le+Fournil+Valencien+Valence-d'Agen",
+          "appleMapsLink": "maps://maps.apple.com/?address=Valence-d'Agen,+France",
+          "cafes": "+82400",
+          "riderNotes": "3-5",
+          "description": "Valence-d'Agen combines arcaded bastide heritage with canal proximity, making it one of the more characterful historic stops in this stretch of valley country still today."
+        },
+        {
+          "name": "Montauban",
+          "population": 60000,
+          "distanceFromStart": 200,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Quai de l'Adhémar",
+          "boulangerieName": "Boulangerie l'Ami du Pain",
+          "boulangieAddress": "Quai Adhémar 82000 Montauban",
+          "distFromRoute": "~120m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+l'Ami+du+Pain+Montauban",
+          "appleMapsLink": "maps://maps.apple.com/?address=Quai+Adhémar,+France",
+          "cafes": "+82000+Montauban",
+          "riderNotes": "40+",
+          "description": "Major city - verified chain on waterfront"
+        },
+        {
+          "name": "Toulouse",
+          "population": 479600,
+          "distanceFromStart": 240,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Port Saint-Sauveur or Allées Jules Guesde",
+          "boulangerieName": "Boulangerie Saint-Aubin",
+          "boulangieAddress": "2 Place Saint-Aubin 31000 Toulouse",
+          "distFromRoute": "~70m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Saint-Aubin+Toulouse",
+          "appleMapsLink": "maps://maps.apple.com/?address=2+Place+Saint-Aubin,+France",
+          "cafes": "+31000+Toulouse",
+          "riderNotes": "500+",
+          "description": "The Pink City is Europe's aerospace capital, where brick architecture, student energy, rugby, Airbus, and space research give Toulouse an unusually modern historical identity today."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_05",
@@ -226,7 +650,8 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD05_PANDA_v1.png",
-      "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals."
+      "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals.",
+      "towns": []
     },
     {
       "dayNumber": "TourDay_06",
@@ -260,7 +685,41 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD06_PANDA_v1.png",
-      "overnightNarrative": "Castelnaudary is widely regarded as the birthplace of cassoulet, the rich bean and meat stew that defines regional cuisine. Legend claims the dish sustained locals during a medieval siege, symbolizing resilience. Positioned along the Canal du Midi, the town became an important waypoint for trade and transport. Its Grand Bassin remains one of the canal’s largest water expanses. Castelnaudary’s identity is deeply tied to food culture, slow travel, and the enduring rhythms of southwestern France."
+      "overnightNarrative": "Castelnaudary is widely regarded as the birthplace of cassoulet, the rich bean and meat stew that defines regional cuisine. Legend claims the dish sustained locals during a medieval siege, symbolizing resilience. Positioned along the Canal du Midi, the town became an important waypoint for trade and transport. Its Grand Bassin remains one of the canal’s largest water expanses. Castelnaudary’s identity is deeply tied to food culture, slow travel, and the enduring rhythms of southwestern France.",
+      "towns": [
+        {
+          "name": "Villefranche-de-Lauragais",
+          "population": 3200,
+          "distanceFromStart": 265,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Place Gambetta",
+          "boulangerieName": "Boulangerie du Lauragais",
+          "boulangieAddress": "Centre 31290 Villefranche",
+          "distFromRoute": "~100m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+du+Lauragais",
+          "appleMapsLink": "maps://maps.apple.com/?address=Villefranche-de-Lauragais,+France",
+          "cafes": "+31290",
+          "riderNotes": "3-5",
+          "description": "Villefranche-de-Lauragais is a traditional Lauragais market town, historically tied to grain wealth and still a service hub for the surrounding plain for riders still today."
+        },
+        {
+          "name": "Castelnaudary",
+          "population": 4900,
+          "distanceFromStart": 290,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Grand Bassin",
+          "boulangerieName": "Boulangerie La Fabrique",
+          "boulangieAddress": "Quai Port 11400 Castelnaudary",
+          "distFromRoute": "~80m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+La+Fabrique+Castelnaudary",
+          "appleMapsLink": "maps://maps.apple.com/?address=Quai+du+Port,+France",
+          "cafes": "+11400+Castelnaudary",
+          "riderNotes": "5-10",
+          "description": "Castelnaudary is the world capital of cassoulet, a canal town whose culinary fame easily surpasses its size and anchors Lauragais identity for riders still today."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_07",
@@ -294,7 +753,57 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD07_PANDA_v1.png",
-      "overnightNarrative": "Carcassonne is famed for its fortified medieval citadel, La Cité, with double walls and watchtowers that appear almost mythical. Restored in the 19th century by Viollet-le-Duc, it embodies the idealized image of a medieval fortress. Historically, it played a key role during the Albigensian Crusade against the Cathars. Today, Carcassonne attracts visitors drawn to its dramatic skyline, blending legend and history into one of France’s most iconic and visually striking destinations."
+      "overnightNarrative": "Carcassonne is famed for its fortified medieval citadel, La Cité, with double walls and watchtowers that appear almost mythical. Restored in the 19th century by Viollet-le-Duc, it embodies the idealized image of a medieval fortress. Historically, it played a key role during the Albigensian Crusade against the Cathars. Today, Carcassonne attracts visitors drawn to its dramatic skyline, blending legend and history into one of France’s most iconic and visually striking destinations.",
+      "towns": [
+        {
+          "name": "Bram",
+          "population": 1300,
+          "distanceFromStart": 310,
+          "wcAvailable": true,
+          "wcType": "Parc",
+          "wcLocation": "Place du Foirail",
+          "boulangerieName": "Boulangerie de Bram",
+          "boulangieAddress": "Centre 11150 Bram",
+          "distFromRoute": "~100m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+de+Bram",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Bram,+France",
+          "cafes": "+11150",
+          "riderNotes": "1-3",
+          "description": "Bram is famous for its circular village plan, one of the best examples of a circulade, with roots stretching back to antiquity for riders today."
+        },
+        {
+          "name": "Le Somail",
+          "population": 1100,
+          "distanceFromStart": 330,
+          "wcAvailable": false,
+          "wcType": "Uncertain",
+          "wcLocation": "Halte nautique",
+          "boulangerieName": "Boulangerie (go 2km to Ginestas)",
+          "boulangieAddress": "Ginestas 11120",
+          "distFromRoute": "2km detour",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Ginestas",
+          "appleMapsLink": "maps://maps.apple.com/?address=Ginestas,+France",
+          "cafes": "+11120",
+          "riderNotes": "1-2",
+          "description": "⚠️ Minimal services - consider Ginestas"
+        },
+        {
+          "name": "Carcassonne",
+          "population": 46000,
+          "distanceFromStart": 350,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Square André Chénier",
+          "boulangerieName": "Boulangerie Papineau",
+          "boulangieAddress": "Centre 11000 Carcassonne",
+          "distFromRoute": "~90m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Papineau+Carcassonne",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Carcassonne,+France",
+          "cafes": "+11000",
+          "riderNotes": "30-50",
+          "description": "Carcassonne is one of Europe's great fortified cities, a UNESCO-listed walled ensemble whose towers, ramparts, and restoration history make it instantly memorable for riders today."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_08",
@@ -328,7 +837,57 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
-      "overnightNarrative": "Capestang grew around its imposing collegiate church, Saint-Étienne, whose unfinished tower reflects ambitious medieval plans. The town sits along the Canal du Midi, giving it a quiet but steady connection to trade and travel. Nearby wetlands and vineyards shape its landscape. Capestang is known for its relaxed pace and local wine culture, offering a contrast to larger destinations. It remains a place where canal life, agriculture, and history intersect in understated but authentic ways."
+      "overnightNarrative": "Capestang grew around its imposing collegiate church, Saint-Étienne, whose unfinished tower reflects ambitious medieval plans. The town sits along the Canal du Midi, giving it a quiet but steady connection to trade and travel. Nearby wetlands and vineyards shape its landscape. Capestang is known for its relaxed pace and local wine culture, offering a contrast to larger destinations. It remains a place where canal life, agriculture, and history intersect in understated but authentic ways.",
+      "towns": [
+        {
+          "name": "Homps",
+          "population": 600,
+          "distanceFromStart": 360,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Port Minervois",
+          "boulangerieName": "Boulangerie Homps Centre",
+          "boulangieAddress": "Quai des Tonneliers 11200 Homps",
+          "distFromRoute": "~120m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+Homps+Centre",
+          "appleMapsLink": "maps://maps.apple.com/?address=Quai+des+Tonneliers,+France",
+          "cafes": "+11200+Homps",
+          "riderNotes": "1-3",
+          "description": "Small services - buy coffee"
+        },
+        {
+          "name": "Paraza",
+          "population": 700,
+          "distanceFromStart": 370,
+          "wcAvailable": true,
+          "wcType": "Public",
+          "wcLocation": "Mairie Paraza",
+          "boulangerieName": "⚠️ Small boulangerie - inconsistent",
+          "boulangieAddress": "2km detour to Roubia",
+          "distFromRoute": "https://www.google.com/maps/search/Boulangerie+Roubia",
+          "googleMapsLink": "maps://maps.apple.com/?address=Roubia",
+          "appleMapsLink": "+11120,+France",
+          "cafes": "0",
+          "riderNotes": "⚠️ Go 2km to Roubia OR wait for Capestang",
+          "description": "Paraza pairs canal frontage with winegrowing prestige and an elegant château, making it one of the more picturesque settlements on this section for riders today."
+        },
+        {
+          "name": "Capestang",
+          "population": 2550,
+          "distanceFromStart": 380,
+          "wcAvailable": true,
+          "wcType": "Canal/Lock",
+          "wcLocation": "Quai Elie Amouroux",
+          "boulangerieName": "Boulangerie La Panetière",
+          "boulangieAddress": "Centre 34310 Capestang",
+          "distFromRoute": "~80m",
+          "googleMapsLink": "https://www.google.com/maps/search/Boulangerie+La+Panetière+Capestang",
+          "appleMapsLink": "maps://maps.apple.com/?address=Centre+Capestang,+France",
+          "cafes": "+34310",
+          "riderNotes": "6",
+          "description": "Capestang stands out for its massive collegiate church and canal-side setting, blending wine-village character with imposing medieval ecclesiastical ambition for riders and visitors still today."
+        }
+      ]
     },
     {
       "dayNumber": "TourDay_09",
@@ -362,7 +921,8 @@
         "milepost": 0
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
-      "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
+      "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness.",
+      "towns": []
     },
     {
       "dayNumber": "TourDay_10",
@@ -379,25 +939,9 @@
       "highlights": [],
       "lunch": null,
       "pandaImageUrl": null,
-      "overnightNarrative": "Bordeaux, capital of Nouvelle-Aquitaine, rose to prominence through wine trade and its strategic Garonne River port. Known as “Port of the Moon,” its crescent harbor fueled global commerce in the 18th century. The city’s limestone architecture reflects immense wealth from that era. Bordeaux also carries complex history tied to Atlantic trade. Today, it blends grand boulevards, vibrant markets, and a deep wine culture, serving as both cultural capital and gateway to southwestern France’s vineyards."
-    },
-    {
-      "dayNumber": "TourDay_01",
-      "tourDayNum": 1,
-      "rideType": "ride",
-      "rideDay": "",
-      "date": "",
-      "startTown": "",
-      "endTown": "",
-      "miles": 0,
-      "elevation": 0,
-      "rwgpsId": "",
-      "pandaImage": "",
-      "highlights": [],
-      "lunch": null,
-      "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v1.png",
-      "overnightNarrative": ""
+      "overnightNarrative": "Bordeaux, capital of Nouvelle-Aquitaine, rose to prominence through wine trade and its strategic Garonne River port. Known as “Port of the Moon,” its crescent harbor fueled global commerce in the 18th century. The city’s limestone architecture reflects immense wealth from that era. Bordeaux also carries complex history tied to Atlantic trade. Today, it blends grand boulevards, vibrant markets, and a deep wine culture, serving as both cultural capital and gateway to southwestern France’s vineyards.",
+      "towns": []
     }
   ],
-  "buildDate": "2026-04-15T04:53:23.885Z"
+  "buildDate": "2026-04-15T08:03:25.134Z"
 }

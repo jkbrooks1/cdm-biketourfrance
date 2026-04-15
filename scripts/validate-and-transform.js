@@ -71,11 +71,12 @@ async function validateAndTransform() {
     const response = await sheets.spreadsheets.values.batchGet({
       spreadsheetId: SHEETS_ID,
       ranges: [
-        'Ride_Days_Master!A:Z',
-        'Towns_75_WordWrite-ups!A:Z',
-        'RD_Highlights!A:Z',
-        'Lunch_Option!A:Z',
-        'Media_Manifest!A:Z'
+        'RDE_Days_Master!A:Z',
+        'TWN_Narratives!A:Z',
+        'RDE_Highlights!A:Z',
+        'RDE_Lunch_Options!A:Z',
+        'RDE_Media_Assets!A:Z',
+        'TWN_Infrastructure!A:Z'
       ]
     });
 
@@ -86,7 +87,8 @@ async function validateAndTransform() {
       townNarratives: response.data.valueRanges[1].values || [],
       highlights: response.data.valueRanges[2].values || [],
       lunchOptions: response.data.valueRanges[3].values || [],
-      mediaManifest: response.data.valueRanges[4].values || []
+      mediaManifest: response.data.valueRanges[4].values || [],
+      townsInfrastructure: response.data.valueRanges[5].values || []
     };
 
     const tourData = parseTourData(tabs);
@@ -139,6 +141,18 @@ function parseTourData(tabs) {
       pandaImage: row[rideHeaderMap['Panda_Asset_Name']] || ''
     };
   }).filter(Boolean);
+
+  // Deduplicate rides by dayNumber, keeping the first valid (non-empty) entry
+  const seenDays = new Set();
+  const uniqueRides = [];
+  for (const ride of rides) {
+    if (!seenDays.has(ride.dayNumber)) {
+      seenDays.add(ride.dayNumber);
+      uniqueRides.push(ride);
+    }
+  }
+  rides.length = 0;
+  rides.push(...uniqueRides);
 
   const townHeader = tabs.townNarratives[0] || [];
   const townHeaderMap = createHeaderMap(townHeader);
@@ -219,6 +233,50 @@ function parseTourData(tabs) {
     }
   });
 
+  // Parse towns infrastructure data
+  const townsInfraHeader = tabs.townsInfrastructure[0] || [];
+  const townsInfraHeaderMap = createHeaderMap(townsInfraHeader);
+  const townsByRideDay = {};
+
+  (tabs.townsInfrastructure.slice(1) || []).forEach((row) => {
+    const rideDay = (row[townsInfraHeaderMap['Ride_Day']] || '').trim();
+    if (!rideDay) return;
+
+    if (!townsByRideDay[rideDay]) {
+      townsByRideDay[rideDay] = [];
+    }
+
+    const boulangieAddress = row[townsInfraHeaderMap['Boulangerie_Address']] || '';
+    const appleMapsLinkRaw = row[townsInfraHeaderMap['Apple_Maps_Link']] || '';
+
+    // Append ", France" to Apple Maps links to ensure they resolve to French locations
+    let appleMapsLink = appleMapsLinkRaw;
+    if (appleMapsLinkRaw && !appleMapsLinkRaw.includes('France')) {
+      appleMapsLink = appleMapsLinkRaw.replace('/?address=', '/?address=').replace(/([^=]+)$/, '$1,+France');
+    }
+
+    const town = {
+      name: row[townsInfraHeaderMap['Town_Name']] || '',
+      population: parseInt(row[townsInfraHeaderMap['Population']]) || 0,
+      distanceFromStart: parseFloat(row[townsInfraHeaderMap['Distance_From_Start_Miles']]) || 0,
+      wcAvailable: (row[townsInfraHeaderMap['WC_Available']] || '').toUpperCase() === 'Y',
+      wcType: row[townsInfraHeaderMap['WC_Type']] || '',
+      wcLocation: row[townsInfraHeaderMap['WC_Location']] || '',
+      boulangerieName: row[townsInfraHeaderMap['Boulangerie_Name']] || '',
+      boulangieAddress,
+      distFromRoute: row[townsInfraHeaderMap['Distance_From_Route']] || '',
+      googleMapsLink: row[townsInfraHeaderMap['Google_Maps_Link']] || '',
+      appleMapsLink,
+      cafes: row[townsInfraHeaderMap['Cafe_Count']] || '',
+      riderNotes: row[townsInfraHeaderMap['Rider_Notes']] || '',
+      description: row[townsInfraHeaderMap['Town_Description']] || ''
+    };
+
+    if (town.name) {
+      townsByRideDay[rideDay].push(town);
+    }
+  });
+
   const enrichedRides = rides.map((ride) => ({
     ...ride,
     // highlights/lunch use Ride_Day values from their own sheets
@@ -227,7 +285,8 @@ function parseTourData(tabs) {
     pandaImageUrl: pandaAssets[String(ride.tourDayNum)]
       ? `${R2_BASE_URL}/${pandaAssets[String(ride.tourDayNum)]}`
       : null,
-    overnightNarrative: narrativeByTown[ride.endTown.trim()] || ''
+    overnightNarrative: narrativeByTown[ride.endTown.trim()] || '',
+    towns: townsByRideDay[ride.rideDay] || []
   }));
 
   const totalMiles = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.miles, 0);

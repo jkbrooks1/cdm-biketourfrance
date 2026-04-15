@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
+import TownsGrid from '../components/TownsGrid.astro';
 import { readFileSync } from 'fs';
 import path from 'path';
 
@@ -131,6 +132,10 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
               <h2>Arriving in {ride.endTown}</h2>
               <p>{ride.overnightNarrative}</p>
             </div>
+          )}
+
+          {ride.towns && ride.towns.length > 0 && (
+            <TownsGrid towns={ride.towns} />
           )}
         </div>
 

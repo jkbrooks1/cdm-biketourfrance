@@ -1,0 +1,281 @@
+---
+interface Town {
+  name: string;
+  population: number;
+  distanceFromStart: number;
+  wcAvailable: boolean;
+  wcType?: string;
+  wcLocation?: string;
+  boulangerieName: string;
+  boulangieAddress: string;
+  distFromRoute: string;
+  googleMapsLink: string;
+  appleMapsLink: string;
+  cafes: string;
+  riderNotes: string;
+  description?: string;
+}
+
+interface Props {
+  towns?: Town[];
+}
+
+const { towns = [] } = Astro.props;
+---
+
+{towns && towns.length > 0 && (
+  <div class="towns-grid-wrapper">
+    <h2>Towns Along the Route</h2>
+    <div class="towns-grid">
+      {towns.map((town) => (
+        <div class="town-card">
+          <div class="town-header">
+            <h3>{town.name}</h3>
+            <span class="town-distance">{town.distanceFromStart}mi</span>
+          </div>
+
+          <div class="town-content">
+            {/* Town Description */}
+            {town.description && (
+              <div class="info-section town-description-section">
+                <div class="town-description">{town.description}</div>
+              </div>
+            )}
+
+            {/* Bathroom Info */}
+            {town.wcAvailable && (
+              <div class="info-section">
+                <div class="info-label">Bathroom</div>
+                <div class="info-detail">
+                  <span class="wc-type">{town.wcType}</span>
+                  <span class="wc-location">{town.wcLocation}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Bakery Info */}
+            <div class="info-section">
+              <div class="info-label">Bakery</div>
+              <div class="info-detail">
+                <div class="bakery-name">{town.boulangerieName}</div>
+                <div class="bakery-distance">{town.distFromRoute}</div>
+                <div class="bakery-address">{town.boulangieAddress}</div>
+                <div class="nav-links">
+                  <a href={town.googleMapsLink} target="_blank" rel="noopener" class="nav-btn maps-btn">
+                    Google
+                  </a>
+                  <a href={town.appleMapsLink} target="_blank" rel="noopener" class="nav-btn apple-btn">
+                    Apple
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Cafes */}
+            <div class="info-section">
+              <div class="info-label">Cafes</div>
+              <div class="info-detail">
+                <span class="cafe-count">{town.cafes}</span>
+              </div>
+            </div>
+
+            {/* Rider Notes */}
+            {town.riderNotes && (
+              <div class="info-section rider-notes-section">
+                <div class="rider-notes">{town.riderNotes}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .towns-grid-wrapper {
+    margin: 3rem 0;
+    padding: 0;
+  }
+
+  .towns-grid-wrapper h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .towns-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .towns-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .towns-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  .town-card {
+    background: white;
+    border: 1px solid #e0dcc8;
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .town-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f0ebe0;
+  }
+
+  .town-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--color-primary, #2D5016);
+  }
+
+  .town-distance {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .town-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #999;
+  }
+
+  .info-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  .wc-type {
+    font-weight: 600;
+    color: #0066cc;
+  }
+
+  .wc-location {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .bakery-name {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .bakery-distance {
+    font-size: 0.85rem;
+    color: #999;
+  }
+
+  .bakery-address {
+    font-size: 0.8rem;
+    color: #999;
+    line-height: 1.3;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .nav-btn {
+    flex: 1;
+    display: inline-block;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .maps-btn {
+    background: #4285F4;
+    color: white;
+  }
+
+  .maps-btn:hover {
+    background: #357ae8;
+  }
+
+  .apple-btn {
+    background: #555;
+    color: white;
+  }
+
+  .apple-btn:hover {
+    background: #333;
+  }
+
+  .cafe-count {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .rider-notes-section {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f0ebe0;
+  }
+
+  .rider-notes {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+  }
+
+  .town-description-section {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0ebe0;
+  }
+
+  .town-description {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+</style>
