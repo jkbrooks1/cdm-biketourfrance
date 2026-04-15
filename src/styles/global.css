@@ -696,6 +696,7 @@ section { padding: 72px 0; }
 
 @media (max-width: 540px) {
   .nav-logo span { display: none; }
+  .nav-links .hide-mobile { display: none; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .ride-grid { grid-template-columns: 1fr; }
   .logistics-grid { grid-template-columns: repeat(2, 1fr); }
