@@ -315,7 +315,21 @@
       },
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
       "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness."
+    },
+    {
+      "dayNumber": "11",
+      "date": "",
+      "startTown": "",
+      "endTown": "",
+      "miles": 0,
+      "elevation": 0,
+      "rwgpsId": "",
+      "pandaImage": "",
+      "highlights": [],
+      "lunch": null,
+      "pandaImageUrl": null,
+      "overnightNarrative": ""
     }
   ],
-  "buildDate": "2026-04-15T00:10:47.770Z"
+  "buildDate": "2026-04-15T00:29:58.810Z"
 }
