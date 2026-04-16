@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
+import OptionalStops from '../components/OptionalStops.astro';
 import { readFileSync } from 'fs';
 import path from 'path';
 
@@ -161,49 +162,8 @@ const hasTowns = ride.towns && ride.towns.length > 0;
                 </div>
               )}
 
-              {/* ROUTE STOPS — Rider Planning Data */}
-              {ride.routeStops && ride.routeStops.length > 0 && (
-                <div class="route-stops-section">
-                  <h3>Towns & Stops Along Route</h3>
-                  <p class="route-stops-intro">Plan your day with stops for water, food, and facilities.</p>
-
-                  {/* Group stops by rendered town name */}
-                  {(() => {
-                    const stopsGroupedByTown: { [key: string]: any[] } = {};
-                    ride.routeStops.forEach((stop: any) => {
-                      const townKey = stop.renderedTown;
-                      if (!stopsGroupedByTown[townKey]) {
-                        stopsGroupedByTown[townKey] = [];
-                      }
-                      stopsGroupedByTown[townKey].push(stop);
-                    });
-
-                    return Object.entries(stopsGroupedByTown).map(([townName, stops]: [string, any[]]) => (
-                      <div class="town-stops-block" key={townName}>
-                        <h4 class="town-name">{townName}</h4>
-                        <div class="stops-list">
-                          {stops.map((stop: any) => (
-                            <div class="stop-item" key={`${stop.name}-${stop.type}`}>
-                              <div class="stop-header">
-                                <span class="stop-type-badge" data-type={stop.type}>
-                                  {stop.type.charAt(0).toUpperCase() + stop.type.slice(1)}
-                                </span>
-                                <span class="stop-name">{stop.name}</span>
-                              </div>
-                              {stop.notes && (
-                                <div class="stop-notes">{stop.notes}</div>
-                              )}
-                              <div class="stop-source">
-                                <small>{stop.source}</small>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              )}
+              {/* Route Stops */}
+              <OptionalStops rideDay={ride.dayNumber} ride={ride} />
 
               {/* Lunch Block */}
               {hasLunch && (

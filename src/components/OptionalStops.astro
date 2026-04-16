@@ -1,20 +1,22 @@
 ---
+import { google } from 'googleapis';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { google } from 'googleapis';
 
-interface OptionalStop {
-  milePost: number;
-  establishmentName: string;
+interface Stop {
+  distance: number | null;
+  name: string;
   location: string;
-  serviceType: string;
+  type: string;
+  hasResolution: boolean;
 }
 
 interface Props {
   rideDay: string;
+  ride: any;
 }
 
-const { rideDay } = Astro.props;
+const { rideDay, ride } = Astro.props;
 const rideDayStr = String(rideDay);
 
 const SPREADSHEET_ID = '1OUtAtMZrE4cR-GDijHu4IY4bbowjs3itHpjSTpq1I8g';
@@ -50,44 +52,146 @@ async function fetchSheetData(sheetName: string, range: string): Promise<any[][]
   }
 }
 
-// Fetch lunch data
-const lunchData = await fetchSheetData('RDE_Lunch_Options', 'A2:E1000');
+function createHeaderMap(headerRow: string[]): Record<string, number> {
+  const map: Record<string, number> = {};
+  headerRow.forEach((header, idx) => {
+    if (header) {
+      map[header.trim()] = idx;
+    }
+  });
+  return map;
+}
 
-// Process stops
-const stops: OptionalStop[] = lunchData
-  .filter(row => row[1] && row[2])
+function normalizeString(str: string): string {
+  return str.trim().toLowerCase().replace(/\s+/g, '');
+}
+
+function getRideDayRelativeDistance(townName: string, rideObj: any): number | null {
+  if (!rideObj || !Array.isArray(rideObj.towns)) {
+    return null;
+  }
+
+  const normalizedInput = normalizeString(townName);
+
+  for (const town of rideObj.towns) {
+    const normalizedTown = normalizeString(town.name || town.town || '');
+    if (normalizedTown === normalizedInput) {
+      const distance = town.distanceFromStart !== undefined ? town.distanceFromStart : null;
+      return distance;
+    }
+  }
+
+  return null;
+}
+
+// Fetch all three stop sources
+const [wcData, cafeData, lunchData] = await Promise.all([
+  fetchSheetData('TWN_WC', 'A:Z'),
+  fetchSheetData('TWN_Cafe_Boulangeries', 'A:Z'),
+  fetchSheetData('RDE_Lunch_Options', 'A:Z'),
+]);
+
+const wcHeader = createHeaderMap(wcData[0] || []);
+const cafeHeader = createHeaderMap(cafeData[0] || []);
+const lunchHeader = createHeaderMap(lunchData[0] || []);
+
+// Parse WC stops
+const wcStops: Stop[] = (wcData.slice(1) || [])
+  .filter(row => row[wcHeader['Town_Name']] && row[wcHeader['Ride_Day']] === rideDayStr)
+  .map(row => {
+    const townName = row[wcHeader['Town_Name']] || '';
+    const distance = getRideDayRelativeDistance(townName, ride);
+
+    if (distance === null) {
+      throw new Error(`WC stop in ${townName} on ${rideDayStr} cannot be matched to route`);
+    }
+    if (distance === 0) {
+      throw new Error(`WC stop in ${townName} on ${rideDayStr} resolved to distance 0 (invalid)`);
+    }
+
+    return {
+      distance,
+      name: row[wcHeader['Location']] || row[wcHeader['Facility_Type']] || 'WC',
+      location: row[wcHeader['Location']] || '',
+      type: 'WC',
+      hasResolution: true,
+    };
+  });
+
+// Parse Cafe/Boulangerie stops
+const cafeStops: Stop[] = (cafeData.slice(1) || [])
+  .filter(row => row[cafeHeader['Town_Name']] && row[cafeHeader['Ride_Day']] === rideDayStr)
+  .map(row => {
+    const townName = row[cafeHeader['Town_Name']] || '';
+    const distance = getRideDayRelativeDistance(townName, ride);
+
+    if (distance === null) {
+      throw new Error(`Cafe/Boulangerie stop in ${townName} on ${rideDayStr} cannot be matched to route`);
+    }
+    if (distance === 0) {
+      throw new Error(`Cafe/Boulangerie stop in ${townName} on ${rideDayStr} resolved to distance 0 (invalid)`);
+    }
+
+    return {
+      distance,
+      name: row[cafeHeader['Cafe_Name']] || row[cafeHeader['Boulangerie_Name']] || '',
+      location: row[cafeHeader['Location']] || '',
+      type: row[cafeHeader['Type']] || 'Cafe',
+      hasResolution: true,
+    };
+  });
+
+// Parse Lunch stops
+const lunchStops: Stop[] = (lunchData.slice(1) || [])
+  .filter(row => row[lunchHeader['Ride_Day']] === rideDayStr)
   .map(row => ({
-    milePost: parseFloat(row[4]) || 0,
-    establishmentName: row[2] || '',
-    location: row[3] || '',
-    serviceType: row[3] || 'Lunch',
-    rideDay: row[1],
-  }))
-  .filter(s => s.milePost >= 0 && s.establishmentName && (s.rideDay === rideDayStr || s.rideDay === rideDay));
+    distance: parseFloat(row[lunchHeader['Mile_Post_On_Route']]) || null,
+    name: row[lunchHeader['Business_Name']] || '',
+    location: row[lunchHeader['Town']] || row[lunchHeader['Location']] || '',
+    type: 'Lunch',
+    hasResolution: (parseFloat(row[lunchHeader['Mile_Post_On_Route']]) || 0) > 0,
+  }));
 
-const sortedStops = stops.sort((a, b) => a.milePost - b.milePost);
-const hasStops = sortedStops.length > 0;
+// Count unresolved
+const unresolvedCount = [...wcStops, ...cafeStops, ...lunchStops].filter(s => !s.hasResolution).length;
+if (unresolvedCount > 1) {
+  throw new Error(`More than 1 stop unresolved on ${rideDayStr}: ${unresolvedCount}`);
+}
+
+// Merge and sort: resolved first (ascending), then unresolved
+const allStops = [...wcStops, ...cafeStops, ...lunchStops]
+  .filter(s => s.name && s.location)
+  .sort((a, b) => {
+    if (a.hasResolution && !b.hasResolution) return -1;
+    if (!a.hasResolution && b.hasResolution) return 1;
+    if (a.hasResolution && b.hasResolution && a.distance && b.distance) {
+      return a.distance - b.distance;
+    }
+    return 0;
+  });
+
+const hasStops = allStops.length > 0;
 ---
 
 {hasStops && (
-  <div class="stops-section">
-    <h3>Optional Stops</h3>
+  <div class="route-stops-grid">
+    <h3>Towns & Stops Along Route</h3>
     <table class="stops-table">
       <thead>
         <tr>
-          <th>Mile Post</th>
-          <th>Establishment Name</th>
-          <th>Location</th>
-          <th>Service Type</th>
+          <th class="col-distance">Distance</th>
+          <th class="col-name">Name</th>
+          <th class="col-location">Location</th>
+          <th class="col-type">Type</th>
         </tr>
       </thead>
       <tbody>
-        {sortedStops.map(stop => (
+        {allStops.map((stop: any) => (
           <tr>
-            <td>{stop.milePost.toFixed(1)}</td>
-            <td>{stop.establishmentName}</td>
-            <td>{stop.location}</td>
-            <td>{stop.serviceType}</td>
+            <td class="col-distance">{stop.hasResolution && stop.distance ? stop.distance.toFixed(1) : ''}</td>
+            <td class="col-name">{stop.name}</td>
+            <td class="col-location">{stop.location}</td>
+            <td class="col-type">{stop.type.toUpperCase()}</td>
           </tr>
         ))}
       </tbody>
@@ -96,64 +200,86 @@ const hasStops = sortedStops.length > 0;
 )}
 
 <style>
-  .stops-section {
-    margin-bottom: 2.5rem;
+  .route-stops-grid {
+    margin: 1.5rem 0;
   }
 
-  .stops-section h3 {
+  .route-stops-grid h3 {
     font-size: 1.1rem;
     font-weight: 600;
     color: #2d5016;
-    margin-bottom: 0.75rem;
-    border-bottom: 2px solid #e8dcc8;
-    padding-bottom: 0.5rem;
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0;
   }
 
   .stops-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    line-height: 1.2;
   }
 
   .stops-table thead {
-    background-color: #f5f0e8;
+    background-color: transparent;
   }
 
   .stops-table th {
-    padding: 0.75rem;
+    padding: 0.25rem 0.4rem;
     text-align: left;
     font-weight: 600;
     color: #2d5016;
-    border-bottom: 2px solid #2d5016;
+    border-bottom: 1px solid #2d5016;
+    font-size: 0.8rem;
   }
 
   .stops-table td {
-    padding: 0.75rem;
+    padding: 0.25rem 0.4rem;
     border-bottom: 1px solid #e8dcc8;
     color: #333;
   }
 
-  .stops-table tbody tr:last-child td {
-    border-bottom: none;
+  .col-distance {
+    width: 8%;
+    font-weight: 600;
+    color: #2d5016;
   }
 
-  @media (max-width: 480px) {
-    .stops-section h3 {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
+  .col-name {
+    width: 28%;
+    font-weight: 500;
+  }
 
+  .col-location {
+    width: 52%;
+  }
+
+  .col-type {
+    width: 12%;
+    font-weight: 600;
+    color: #2d5016;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
     .stops-table {
-      font-size: 0.85rem;
-    }
-
-    .stops-table th {
-      padding: 0.5rem;
       font-size: 0.75rem;
     }
 
+    .stops-table th {
+      padding: 0.2rem 0.3rem;
+    }
+
     .stops-table td {
-      padding: 0.5rem;
+      padding: 0.2rem 0.3rem;
+    }
+
+    .col-name {
+      width: 25%;
+    }
+
+    .col-location {
+      width: 50%;
     }
   }
 </style>
