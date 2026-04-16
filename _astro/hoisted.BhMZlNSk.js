@@ -1,0 +1,1 @@
+function s(t){const e=`rwgps://route/${t}`,n=`https://www.rwgps.com/routes/${t}`,o=window.open(e,"_blank");setTimeout(()=>{(!o||o.closed===!1)&&(window.location.href=n)},500)}document.getElementById("full-route-btn")?.addEventListener("click",t=>{const e=t.target.dataset.routeId;e&&s(e)});

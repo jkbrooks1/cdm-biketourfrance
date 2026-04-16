@@ -1,0 +1,1 @@
+import"./hoisted.BhMZlNSk.js";const e=document.getElementById("day-picker");if(e){const t=localStorage.getItem("selectedRideDay");t?e.value=t:e.value=e.options[0].value,e.addEventListener("change",d=>{const a=d.target;localStorage.setItem("selectedRideDay",a.value),window.dispatchEvent(new CustomEvent("daySelected",{detail:{dayNumber:a.value}}))})}
