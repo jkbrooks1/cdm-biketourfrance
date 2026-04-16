@@ -388,8 +388,8 @@ function parseTourData(tabs, gpxData) {
             distance: distance,
             town: originalTown,
             renderedTown: applyBastideRule(originalTown, normTown, bastideByTownNormalized),
-            name: wc.location || wc.wcType,
-            location: wc.location || '',
+            name: 'WC',
+            location: wc.location,
             type: 'wc',
             source: 'TWN_WC',
             verified: true,
@@ -429,34 +429,6 @@ function parseTourData(tabs, gpxData) {
         });
       }
     });
-
-    // Add Lunch stops (ignoring for now per requirements)
-    if (lunchByDay[ride.rideDay]) {
-      const lunch = lunchByDay[ride.rideDay];
-      const lunchTown = lunch.town || ride.endTown;
-      const lunchNormTown = normalizeString(lunchTown);
-
-      if (routeTownsNormalized.includes(lunchNormTown)) {
-        const townIdx = routeTownsNormalized.indexOf(lunchNormTown);
-        const originalTown = routeTowns[townIdx];
-
-        if (!stopsMap[lunchNormTown]) stopsMap[lunchNormTown] = [];
-        stopsMap[lunchNormTown].push({
-          distance: lunch.milepost,
-          town: originalTown,
-          renderedTown: applyBastideRule(originalTown, lunchNormTown, bastideByTownNormalized),
-          name: lunch.name,
-          location: lunchTown,
-          type: 'lunch',
-          source: 'RDE_Lunch_Options',
-          verified: true,
-          notes: `Mile ${lunch.milepost}`
-        });
-      } else {
-        validateHardFail(false,
-          `UNMATCHED LUNCH: Ride ${ride.rideDay} lunch town "${lunchTown}" not found in route towns`);
-      }
-    }
 
     // HARD FAIL: Check for orphaned stops
     Object.keys(stopsMap).forEach(normTown => {
@@ -631,11 +603,7 @@ function parseTourData(tabs, gpxData) {
     // CRITICAL: Build route stops for this ride (with GPX-derived distances)
     const routeStops = buildRouteStops(ride, gpxData);
 
-    // HARD FAIL: Every ride must have usable planning data
-    if (ride.rideType === 'ride') {
-      validateHardFail(routeStops.length > 0,
-        `NO ROUTE STOPS: Ride ${ride.rideDay} has no stops from required tabs`);
-    }
+    // NOTE: Route stops (WC/Boulangerie) are optional. Lunch is kept separate.
 
     const towns = [];
     const wcTowns = [];

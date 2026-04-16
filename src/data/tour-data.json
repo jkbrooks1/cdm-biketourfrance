@@ -86,21 +86,10 @@
       },
       "routeStops": [
         {
-          "distance": 0,
-          "town": "La Réole",
-          "renderedTown": "La Réole",
-          "name": "PER JOHN",
-          "location": "La Réole",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        },
-        {
           "distance": 0.3,
           "town": "Bordeaux",
           "renderedTown": "Bordeaux",
-          "name": "Quai Louis XVIII",
+          "name": "WC",
           "location": "Quai Louis XVIII",
           "type": "wc",
           "source": "TWN_WC",
@@ -122,7 +111,7 @@
           "distance": 39.1,
           "town": "La Réole",
           "renderedTown": "La Réole",
-          "name": "Avenue Jean Jaurès",
+          "name": "WC",
           "location": "Avenue Jean Jaurès",
           "type": "wc",
           "source": "TWN_WC",
@@ -199,21 +188,10 @@
       },
       "routeStops": [
         {
-          "distance": 0,
-          "town": "Aiguillon",
-          "renderedTown": "Aiguillon",
-          "name": "PER JOHN",
-          "location": "Aiguillon",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        },
-        {
           "distance": 30.1,
           "town": "Aiguillon",
           "renderedTown": "Aiguillon",
-          "name": "Place du 14 Juillet",
+          "name": "WC",
           "location": "Place du 14 Juillet",
           "type": "wc",
           "source": "TWN_WC",
@@ -279,21 +257,10 @@
       },
       "routeStops": [
         {
-          "distance": 0,
-          "town": "Moissac",
-          "renderedTown": "Moissac",
-          "name": "PER JOHN",
-          "location": "Moissac",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        },
-        {
           "distance": 43.8,
           "town": "Moissac",
           "renderedTown": "Moissac",
-          "name": "Port de Plaisance",
+          "name": "WC",
           "location": "Port de Plaisance",
           "type": "wc",
           "source": "TWN_WC",
@@ -370,21 +337,10 @@
       },
       "routeStops": [
         {
-          "distance": 0,
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "PER JOHN",
-          "location": "Toulouse",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        },
-        {
           "distance": 41.39999999999999,
           "town": "Toulouse",
           "renderedTown": "Toulouse",
-          "name": "Jardin Compans",
+          "name": "WC",
           "location": "Jardin Compans",
           "type": "wc",
           "source": "TWN_WC",
@@ -459,19 +415,7 @@
         "milepost": 0,
         "town": ""
       },
-      "routeStops": [
-        {
-          "distance": 0,
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "PER JOHN",
-          "location": "Toulouse",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        }
-      ],
+      "routeStops": [],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD05_PANDA_v1.png",
       "overnightNarrative": "Toulouse, known as “La Ville Rose” for its terracotta brick architecture, has long been a center of culture and innovation. Once a powerful medieval city-state, it later became pivotal in the aerospace industry, home to Airbus headquarters. The Basilica of Saint-Sernin anchors its Romanesque legacy, while lively squares reflect a youthful student population. Toulouse balances deep Occitan heritage with modern dynamism, making it one of France’s most distinctive and economically important regional capitals.",
       "towns": [],
@@ -521,7 +465,7 @@
           "distance": 0,
           "town": "Castelnaudary",
           "renderedTown": "Castelnaudary",
-          "name": "Grand Bassin",
+          "name": "WC",
           "location": "Grand Bassin",
           "type": "wc",
           "source": "TWN_WC",
@@ -538,17 +482,6 @@
           "source": "TWN_Boulangerie",
           "verified": true,
           "notes": ""
-        },
-        {
-          "distance": 0,
-          "town": "Castelnaudary",
-          "renderedTown": "Castelnaudary",
-          "name": "PER JOHN",
-          "location": "Castelnaudary",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD06_PANDA_v1.png",
@@ -612,7 +545,7 @@
           "distance": 0,
           "town": "Carcassonne",
           "renderedTown": "Carcassonne (B)",
-          "name": "SNCF Station",
+          "name": "WC",
           "location": "SNCF Station",
           "type": "wc",
           "source": "TWN_WC",
@@ -629,17 +562,6 @@
           "source": "TWN_Boulangerie",
           "verified": true,
           "notes": ""
-        },
-        {
-          "distance": 0,
-          "town": "Carcassonne",
-          "renderedTown": "Carcassonne (B)",
-          "name": "PER JOHN",
-          "location": "Carcassonne",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD07_PANDA_v1.png",
@@ -698,19 +620,7 @@
         "milepost": 0,
         "town": ""
       },
-      "routeStops": [
-        {
-          "distance": 0,
-          "town": "Capestang",
-          "renderedTown": "Capestang",
-          "name": "PER JOHN",
-          "location": "Capestang",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        }
-      ],
+      "routeStops": [],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
       "overnightNarrative": "Capestang grew around its imposing collegiate church, Saint-Étienne, whose unfinished tower reflects ambitious medieval plans. The town sits along the Canal du Midi, giving it a quiet but steady connection to trade and travel. Nearby wetlands and vineyards shape its landscape. Capestang is known for its relaxed pace and local wine culture, offering a contrast to larger destinations. It remains a place where canal life, agriculture, and history intersect in understated but authentic ways.",
       "towns": [],
@@ -768,17 +678,6 @@
         "town": ""
       },
       "routeStops": [
-        {
-          "distance": 0,
-          "town": "Sète",
-          "renderedTown": "Sète",
-          "name": "PER JOHN",
-          "location": "Sète",
-          "type": "lunch",
-          "source": "RDE_Lunch_Options",
-          "verified": true,
-          "notes": "Mile 0"
-        },
         {
           "distance": 2.3999999999999773,
           "town": "Capestang",
@@ -853,5 +752,5 @@
       "dayShape": null
     }
   ],
-  "buildDate": "2026-04-16T19:24:13.866Z"
+  "buildDate": "2026-04-16T19:54:34.793Z"
 }

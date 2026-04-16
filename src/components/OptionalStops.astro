@@ -17,7 +17,7 @@ const { ride } = Astro.props;
 const allStops: Stop[] = (ride.routeStops || [])
   .map((stop: any) => ({
     name: stop.name || '',
-    location: stop.notes || stop.town || '',
+    location: stop.location || stop.town || '',
     type: stop.type.toUpperCase(),
     town: stop.town || '',
     rendered: stop.renderedTown || stop.town || '',
