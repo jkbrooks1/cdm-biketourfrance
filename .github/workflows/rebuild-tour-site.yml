@@ -43,6 +43,9 @@ jobs:
           R2_BASE_URL: ${{ secrets.R2_BASE_URL }}
         run: npm run fetch
 
+      - name: Validate route stops data quality
+        run: npm run audit
+
       - name: Build site with Astro
         env:
           TOUR_NAME: ${{ secrets.TOUR_NAME }}

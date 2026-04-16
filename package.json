@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "fetch": "node scripts/validate-and-transform.js",
+    "audit": "node scripts/audit-route-stops.js",
     "populate-dates": "node scripts/populate-tour-dates.js",
     "build": "npm run fetch && astro build",
     "build:astro": "astro build",
