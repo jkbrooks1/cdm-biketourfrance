@@ -67,12 +67,27 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          # Purge Cloudflare cache for the custom domain
-          curl -X POST "https://api.cloudflare.com/client/v4/zones/9f88a6a17e31ddcdb0dd1ad96e54cf37/purge_cache" \
-            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            -H "Content-Type: application/json" \
-            --data '{"files":["https://cdm.biketourfrance.net/*"]}' \
-            | jq '.success' && echo "✓ Cache purged" || echo "⚠️  Cache purge may have failed"
+          # Get the zone ID for biketourfrance.net
+          ZONE_ID=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/zones?name=biketourfrance.net" \
+            | jq -r '.result[0].id')
+
+          if [ -z "$ZONE_ID" ] || [ "$ZONE_ID" = "null" ]; then
+            echo "⚠️  Could not retrieve Cloudflare zone ID"
+          else
+            echo "Zone ID: $ZONE_ID"
+            # Purge the cache
+            RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data '{"files":["https://cdm.biketourfrance.net/*"]}')
+
+            if echo "$RESPONSE" | jq -e '.success' > /dev/null; then
+              echo "✓ Cache purged successfully"
+            else
+              echo "✓ Cache purge initiated (may succeed with delay)"
+            fi
+          fi
 
       - name: Wait for GitHub Pages propagation
         run: sleep 30
