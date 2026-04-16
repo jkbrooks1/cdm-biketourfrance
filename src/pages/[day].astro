@@ -73,7 +73,7 @@ const hasTowns = ride.towns && ride.towns.length > 0;
 
         <h1 class="day-title">{dayHeading()}</h1>
 
-        {ride.rwgpsId && (
+        {ride.rwgpsId && ride.rwgpsId !== 'NA' && (
 
           <button class="btn-primary" id="day-route-btn" data-route-id={ride.rwgpsId}>
 
