@@ -63,6 +63,9 @@ jobs:
           publish_dir: ./dist
           cname: cdm.biketourfrance.net
 
+      - name: Wait for GitHub Pages propagation
+        run: sleep 30
+
       - name: Validate deployment
         run: |
           SITE_URL="https://cdm.biketourfrance.net"
@@ -76,13 +79,21 @@ jobs:
           fi
           echo "✓ HTTP status: 200"
 
-          # Verify route stops are present
-          if curl -s "$SITE_URL/TourDay_01" | grep -q "route-stops-section"; then
-            echo "✓ Route stops data deployed successfully"
-          else
-            echo "❌ Route stops not found - deployment failed"
-            exit 1
-          fi
+          # Verify route stops are present (with retries for CDN propagation)
+          MAX_RETRIES=5
+          for i in $(seq 1 $MAX_RETRIES); do
+            if curl -s "$SITE_URL/TourDay_01" | grep -q "route-stops-section"; then
+              echo "✓ Route stops data deployed successfully"
+              break
+            fi
+            if [ $i -lt $MAX_RETRIES ]; then
+              echo "⏳ Route stops not found yet (attempt $i/$MAX_RETRIES), retrying..."
+              sleep 10
+            else
+              echo "❌ Route stops not found after $MAX_RETRIES attempts"
+              exit 1
+            fi
+          done
 
           # Verify tour metadata
           if curl -s "$SITE_URL" | grep -q "Canal des Deux Mers"; then
