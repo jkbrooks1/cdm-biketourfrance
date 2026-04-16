@@ -1,12 +1,159 @@
 ---
+import { readFileSync } from 'fs';
+import path from 'path';
+import { google } from 'googleapis';
+
+interface OptionalStop {
+  milePost: number;
+  establishmentName: string;
+  location: string;
+  serviceType: string;
+}
+
 interface Props {
   rideDay: string;
 }
 
 const { rideDay } = Astro.props;
+const rideDayStr = String(rideDay);
 
-// Empty component - Optional Stops will be implemented separately
-// without modifying the build pipeline
+const SPREADSHEET_ID = '1OUtAtMZrE4cR-GDijHu4IY4bbowjs3itHpjSTpq1I8g';
+
+let credentials: any = {};
+try {
+  const credPath = path.join(process.env.HOME || '', 'key_fixed.json');
+  const credContent = readFileSync(credPath, 'utf-8');
+  credentials = JSON.parse(credContent);
+} catch (error) {
+  // Credentials not available during build
+}
+
+const auth = new google.auth.GoogleAuth({
+  credentials,
+  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+});
+
+const sheets = google.sheets({
+  version: 'v4',
+  auth,
+});
+
+async function fetchSheetData(sheetName: string, range: string): Promise<any[][]> {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sheetName}!${range}`,
+    });
+    return response.data.values || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+// Fetch lunch data
+const lunchData = await fetchSheetData('RDE_Lunch_Options', 'A2:E1000');
+
+// Process stops
+const stops: OptionalStop[] = lunchData
+  .filter(row => row[1] && row[2])
+  .map(row => ({
+    milePost: parseFloat(row[4]) || 0,
+    establishmentName: row[2] || '',
+    location: row[3] || '',
+    serviceType: row[3] || 'Lunch',
+    rideDay: row[1],
+  }))
+  .filter(s => s.milePost >= 0 && s.establishmentName && (s.rideDay === rideDayStr || s.rideDay === rideDay));
+
+const sortedStops = stops.sort((a, b) => a.milePost - b.milePost);
+const hasStops = sortedStops.length > 0;
 ---
 
-<!-- Placeholder for future Optional Stops implementation -->
+{hasStops && (
+  <div class="stops-section">
+    <h3>Optional Stops</h3>
+    <table class="stops-table">
+      <thead>
+        <tr>
+          <th>Mile Post</th>
+          <th>Establishment Name</th>
+          <th>Location</th>
+          <th>Service Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {sortedStops.map(stop => (
+          <tr>
+            <td>{stop.milePost.toFixed(1)}</td>
+            <td>{stop.establishmentName}</td>
+            <td>{stop.location}</td>
+            <td>{stop.serviceType}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+<style>
+  .stops-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .stops-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d5016;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #e8dcc8;
+    padding-bottom: 0.5rem;
+  }
+
+  .stops-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .stops-table thead {
+    background-color: #f5f0e8;
+  }
+
+  .stops-table th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #2d5016;
+    border-bottom: 2px solid #2d5016;
+  }
+
+  .stops-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e8dcc8;
+    color: #333;
+  }
+
+  .stops-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 480px) {
+    .stops-section h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stops-table {
+      font-size: 0.85rem;
+    }
+
+    .stops-table th {
+      padding: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .stops-table td {
+      padding: 0.5rem;
+    }
+  }
+</style>

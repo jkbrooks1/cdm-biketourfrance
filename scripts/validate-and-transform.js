@@ -81,8 +81,7 @@ async function validateAndTransform() {
         'TWN_Narratives!A:Z',
         'RDE_Highlights!A:Z',
         'RDE_Lunch_Options!A:Z',
-        'RDE_Media_Assets!A:Z',
-        'TWN_Infrastructure!A:Z'
+        'RDE_Media_Assets!A:Z'
       ]
     });
 
@@ -94,7 +93,8 @@ async function validateAndTransform() {
       highlights: response.data.valueRanges[2].values || [],
       lunchOptions: response.data.valueRanges[3].values || [],
       mediaManifest: response.data.valueRanges[4].values || [],
-      townsInfrastructure: response.data.valueRanges[5].values || []
+      // Infrastructure data moved to separate Google Sheets API calls in components
+      townsInfrastructure: []
     };
 
     const tourData = parseTourData(tabs);
