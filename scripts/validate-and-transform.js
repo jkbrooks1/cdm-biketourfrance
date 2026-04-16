@@ -15,6 +15,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { parseStringPromise } from 'xml2js';
 
 dotenv.config();
 
@@ -53,6 +54,51 @@ function validateHardFail(condition, message) {
   }
 }
 
+// GPX PARSING: Load and extract waypoint data
+async function loadGpxData() {
+  const gpxPath = '/Users/jkbrookspersonal/Downloads/v5.0_CDM-Bordeaux-SeteTRACK.gpx';
+
+  validateHardFail(fs.existsSync(gpxPath), `GPX file not found: ${gpxPath}`);
+
+  const gpxContent = fs.readFileSync(gpxPath, 'utf-8');
+  const parsed = await parseStringPromise(gpxContent);
+  const waypoints = parsed.gpx.wpt || [];
+
+  const townsByNormalized = {}; // key: normalized town name, value: { routeMiles, originalName }
+  const ovnByNumber = {}; // key: ride number (1, 2, 3...), value: { routeMiles, town }
+
+  waypoints.forEach((wpt) => {
+    const name = wpt.name?.[0] || '';
+    const desc = wpt.desc?.[0] || '';
+
+    // Extract Route_Miles from description
+    const routeMilesMatch = desc.match(/Route_Miles=([0-9.]+)/);
+    const routeMiles = routeMilesMatch ? parseFloat(routeMilesMatch[1]) : null;
+
+    // Parse OVN waypoints (ride-day boundaries)
+    const ovnMatch = name.match(/OVN_(\d+)_(.+)/);
+    if (ovnMatch) {
+      const rideNum = parseInt(ovnMatch[1]);
+      const town = ovnMatch[2];
+      validateHardFail(routeMiles !== null, `OVN waypoint "${name}" missing Route_Miles`);
+      ovnByNumber[rideNum] = { routeMiles, town };
+    }
+
+    // Parse TOWN waypoints
+    const typeMatch = desc.match(/Type=(\w+)/);
+    if (typeMatch && typeMatch[1] === 'TOWN') {
+      validateHardFail(routeMiles !== null, `TOWN waypoint "${name}" missing Route_Miles`);
+      const normalized = normalizeString(name);
+      townsByNormalized[normalized] = { routeMiles, originalName: name };
+    }
+  });
+
+  console.log(`✓ Loaded GPX: ${Object.keys(townsByNormalized).length} towns, ${Object.keys(ovnByNumber).length} OVN waypoints`);
+
+  return { townsByNormalized, ovnByNumber };
+}
+
+
 async function validateAndTransform() {
   const startTime = Date.now();
 
@@ -82,7 +128,7 @@ async function validateAndTransform() {
     const sheets = google.sheets({ version: 'v4', auth });
     console.log('✓ Google Sheets API authenticated');
 
-    // CRITICAL: Fetch ALL THREE required tabs + existing tabs
+    // CRITICAL: Fetch ALL required tabs
     const response = await sheets.spreadsheets.values.batchGet({
       spreadsheetId: SHEETS_ID,
       ranges: [
@@ -93,7 +139,7 @@ async function validateAndTransform() {
         'RDE_Lunch_Options!A:Z',
         'RDE_Media_Assets!A:Z',
         'TWN_WC!A:Z',
-        'TWN_Cafe_Boulangeries!A:Z'
+        'TWN_Boulangerie!A:Z'
       ]
     });
 
@@ -119,16 +165,17 @@ async function validateAndTransform() {
       lunchOptions: response.data.valueRanges[4].values || [],
       mediaManifest: response.data.valueRanges[5].values || [],
       wcTowns: response.data.valueRanges[6].values || [],
-      cafeBoulangeries: response.data.valueRanges[7].values || [],
-      townsInfrastructure: []
+      boulangeries: response.data.valueRanges[7].values || []
     };
 
     // HARD FAIL: Validate required tabs have data
-    validateHardFail(tabs.lunchOptions.length > 0, 'RDE_Lunch_Options tab is empty or missing');
     validateHardFail(tabs.wcTowns.length > 0, 'TWN_WC tab is empty or missing');
-    validateHardFail(tabs.cafeBoulangeries.length > 0, 'TWN_Cafe_Boulangeries tab is empty or missing');
+    validateHardFail(tabs.boulangeries.length > 0, 'TWN_Boulangerie tab is empty or missing');
 
-    const tourData = parseTourData(tabs);
+    // Load GPX data for route-day-relative distance calculation
+    const gpxData = await loadGpxData();
+
+    const tourData = parseTourData(tabs, gpxData);
     console.log(`✓ Parsed ${tourData.rides.length} ride days`);
     console.log(`✓ Integrated route stops from 3 sheets`);
 
@@ -151,7 +198,7 @@ async function validateAndTransform() {
   }
 }
 
-function parseTourData(tabs) {
+function parseTourData(tabs, gpxData) {
   const rideHeader = tabs.rideDays[0] || [];
   const rideHeaderMap = createHeaderMap(rideHeader);
 
@@ -194,7 +241,7 @@ function parseTourData(tabs) {
   rides.push(...uniqueRides);
 
   // ==================================================
-  // SECTION: Parse WC Towns (TWN_WC)
+  // SECTION: Parse WC (TWN_WC)
   // ==================================================
   const wcHeader = tabs.wcTowns[0] || [];
   const wcHeaderMap = createHeaderMap(wcHeader);
@@ -209,51 +256,58 @@ function parseTourData(tabs) {
       wcByTownNormalized[normTown] = [];
     }
 
+    const wcLocation = (row[wcHeaderMap['WC_Location']] || '').trim();
+    validateHardFail(wcLocation, `WC in ${townName} on Ride_Day ${row[wcHeaderMap['Ride_Day']]} has no WC_Location`);
+
     wcByTownNormalized[normTown].push({
       town: townName,
-      facilityType: row[wcHeaderMap['Facility_Type']] || 'WC',
-      location: row[wcHeaderMap['Location']] || '',
+      wcType: row[wcHeaderMap['WC_Type']] || 'infrastructure',
+      location: wcLocation,
       rideDay: (row[wcHeaderMap['Ride_Day']] || '').trim(),
-      verified: (row[wcHeaderMap['Verified']] || '').toUpperCase() === 'Y'
+      distance: parseFloat(row[wcHeaderMap['Distance_Miles']]) || null
     });
   });
 
   // ==================================================
-  // SECTION: Parse Cafe/Boulangeries (TWN_Cafe_Boulangeries)
+  // SECTION: Parse Boulangeries (TWN_Boulangeries)
   // ==================================================
-  const cafeHeader = tabs.cafeBoulangeries[0] || [];
-  const cafeHeaderMap = createHeaderMap(cafeHeader);
-  const cafeByTownNormalized = {};
+  const boulangeriHeader = tabs.boulangeries[0] || [];
+  const boulangeriHeaderMap = createHeaderMap(boulangeriHeader);
+  const boulangeriByTownNormalized = {};
   const bastideByTownNormalized = {}; // BASTIDE RULE: source of truth
 
-  (tabs.cafeBoulangeries.slice(1) || []).forEach((row) => {
-    const townName = (row[cafeHeaderMap['Town_Name']] || '').trim();
+  (tabs.boulangeries.slice(1) || []).forEach((row) => {
+    const townName = (row[boulangeriHeaderMap['Town_Name']] || '').trim();
     if (!townName) return;
 
     const normTown = normalizeString(townName);
-    const bastideFlag = (row[cafeHeaderMap['Bastide']] || '').trim();
+    const bastideFlag = (row[boulangeriHeaderMap['Bastide']] || '').trim();
 
     // BASTIDE CONFLICT CHECK
     if (bastideByTownNormalized[normTown] !== undefined) {
       const existing = bastideByTownNormalized[normTown];
       const incoming = bastideFlag === 'Bastide' ? true : false;
       validateHardFail(existing === incoming,
-        `BASTIDE CONFLICT: Town "${townName}" has conflicting Bastide values in TWN_Cafe_Boulangeries`);
+        `BASTIDE CONFLICT: Town "${townName}" has conflicting Bastide values in TWN_Boulangeries`);
     }
 
     bastideByTownNormalized[normTown] = (bastideFlag === 'Bastide');
 
-    if (!cafeByTownNormalized[normTown]) {
-      cafeByTownNormalized[normTown] = [];
+    if (!boulangeriByTownNormalized[normTown]) {
+      boulangeriByTownNormalized[normTown] = [];
     }
 
-    cafeByTownNormalized[normTown].push({
+    const boulangeriName = (row[boulangeriHeaderMap['Boulangerie_Name']] || '').trim();
+    const boulangeriLocation = (row[boulangeriHeaderMap['Location']] || '').trim();
+    validateHardFail(boulangeriLocation, `Boulangerie "${boulangeriName}" in ${townName} on Ride_Day ${row[boulangeriHeaderMap['Ride_Day']]} has no Location`);
+
+    boulangeriByTownNormalized[normTown].push({
       town: townName,
-      name: row[cafeHeaderMap['Cafe_Name']] || row[cafeHeaderMap['Boulangerie_Name']] || '',
-      type: row[cafeHeaderMap['Type']] || 'cafe',
-      location: row[cafeHeaderMap['Location']] || '',
-      rideDay: (row[cafeHeaderMap['Ride_Day']] || '').trim(),
-      notes: row[cafeHeaderMap['Notes']] || ''
+      name: boulangeriName,
+      location: boulangeriLocation,
+      rideDay: (row[boulangeriHeaderMap['Ride_Day']] || '').trim(),
+      distance: parseFloat(row[boulangeriHeaderMap['Distance_Miles']]) || null,
+      notes: row[boulangeriHeaderMap['Rider_Notes']] || ''
     });
   });
 
@@ -279,8 +333,9 @@ function parseTourData(tabs) {
   // ==================================================
   // SECTION: Build Route Stops (JOIN LOGIC)
   // ==================================================
-  function buildRouteStops(ride) {
+  function buildRouteStops(ride, gpxData) {
     const routeStops = [];
+    const { ovnByNumber } = gpxData;
 
     // Determine route towns: use explicit list, or implicit from start/end
     let routeTowns = [];
@@ -293,48 +348,89 @@ function parseTourData(tabs) {
 
     const routeTownsNormalized = routeTowns.map(t => normalizeString(t));
 
+    // DERIVE RIDE START MILES from GPX OVN waypoint
+    const rideNum = ride.tourDayNum;
+    let rideStartMiles = ovnByNumber[rideNum]?.routeMiles;
+
+    // For arrival day (0), start at milepost 0
+    if (rideNum === 0) {
+      rideStartMiles = 0;
+    }
+    // For REST/TRAIN days without OVN, use the previous day's OVN or skip
+    else if (rideStartMiles === undefined || rideStartMiles === null) {
+      // For REST/TRAIN, it's okay to not have stops; skip distance computation
+      return [];
+    }
+
+    validateHardFail(rideStartMiles !== undefined && rideStartMiles !== null,
+      `RIDE START NOT FOUND: Ride ${ride.rideDay} (day ${rideNum}, "${ride.startTown}") has no OVN waypoint in GPX`);
+
     // Collect all stops for towns on this route
     const stopsMap = {}; // key: normalized town name, value: array of stops
 
-    // Add WC stops
+    // Add WC stops with sheet-provided distances (filtered by rideDay)
     routeTownsNormalized.forEach((normTown, idx) => {
       const originalTown = routeTowns[idx];
       if (wcByTownNormalized[normTown]) {
         if (!stopsMap[normTown]) stopsMap[normTown] = [];
         wcByTownNormalized[normTown].forEach(wc => {
+          // Only include stops for this specific ride day
+          if (wc.rideDay !== ride.rideDay) return;
+
+          validateHardFail(wc.distance !== null,
+            `WC DISTANCE MISSING: WC in "${originalTown}" on ${ride.rideDay} has no Distance_Miles`);
+
+          const distance = wc.distance - rideStartMiles;
+          validateHardFail(distance >= 0,
+            `NEGATIVE DISTANCE: WC in "${originalTown}" on ${ride.rideDay} computed distance ${distance.toFixed(1)} (full-route ${wc.distance.toFixed(1)} - start ${rideStartMiles.toFixed(1)})`);
+
           stopsMap[normTown].push({
+            distance: distance,
             town: originalTown,
             renderedTown: applyBastideRule(originalTown, normTown, bastideByTownNormalized),
-            name: wc.location || wc.facilityType,
+            name: wc.location || wc.wcType,
+            location: wc.location || '',
             type: 'wc',
             source: 'TWN_WC',
-            verified: wc.verified,
-            notes: wc.facilityType
+            verified: true,
+            notes: wc.wcType
           });
         });
       }
     });
 
-    // Add Cafe/Boulangerie stops
+    // Add Boulangerie stops with sheet-provided distances (filtered by rideDay)
     routeTownsNormalized.forEach((normTown, idx) => {
       const originalTown = routeTowns[idx];
-      if (cafeByTownNormalized[normTown]) {
+      if (boulangeriByTownNormalized[normTown]) {
         if (!stopsMap[normTown]) stopsMap[normTown] = [];
-        cafeByTownNormalized[normTown].forEach(cafe => {
+        boulangeriByTownNormalized[normTown].forEach(boulangerie => {
+          // Only include stops for this specific ride day
+          if (boulangerie.rideDay !== ride.rideDay) return;
+
+          validateHardFail(boulangerie.distance !== null,
+            `BOULANGERIE DISTANCE MISSING: Boulangerie in "${originalTown}" on ${ride.rideDay} has no Distance_Miles`);
+
+          const distance = boulangerie.distance - rideStartMiles;
+          validateHardFail(distance >= 0,
+            `NEGATIVE DISTANCE: Boulangerie in "${originalTown}" on ${ride.rideDay} computed distance ${distance.toFixed(1)} (full-route ${boulangerie.distance.toFixed(1)} - start ${rideStartMiles.toFixed(1)})`);
+
           stopsMap[normTown].push({
+            distance: distance,
             town: originalTown,
             renderedTown: applyBastideRule(originalTown, normTown, bastideByTownNormalized),
-            name: cafe.name,
-            type: cafe.type.toLowerCase().includes('boulangerie') ? 'boulangerie' : 'cafe',
-            source: 'TWN_Cafe_Boulangeries',
+            name: boulangerie.name,
+            location: boulangerie.location || '',
+            type: 'boulangerie',
+            source: 'TWN_Boulangerie',
             verified: true,
-            notes: cafe.location || cafe.notes
+            notes: boulangerie.notes
           });
         });
       }
     });
 
-    // Add Lunch stop if it matches a route town
+    // Add Lunch stops (ignoring for now per requirements)
     if (lunchByDay[ride.rideDay]) {
       const lunch = lunchByDay[ride.rideDay];
       const lunchTown = lunch.town || ride.endTown;
@@ -346,16 +442,17 @@ function parseTourData(tabs) {
 
         if (!stopsMap[lunchNormTown]) stopsMap[lunchNormTown] = [];
         stopsMap[lunchNormTown].push({
+          distance: lunch.milepost,
           town: originalTown,
           renderedTown: applyBastideRule(originalTown, lunchNormTown, bastideByTownNormalized),
           name: lunch.name,
+          location: lunchTown,
           type: 'lunch',
           source: 'RDE_Lunch_Options',
           verified: true,
           notes: `Mile ${lunch.milepost}`
         });
       } else {
-        // HARD FAIL: Lunch stop doesn't match any route town
         validateHardFail(false,
           `UNMATCHED LUNCH: Ride ${ride.rideDay} lunch town "${lunchTown}" not found in route towns`);
       }
@@ -367,7 +464,7 @@ function parseTourData(tabs) {
         `ORPHANED STOP: Town "${normTown}" in stops map but not in route`);
     });
 
-    // Flatten into array with deduplication
+    // Flatten into array with deduplication, sorted by distance
     const seenStops = new Set();
     Object.values(stopsMap).forEach(townStops => {
       townStops.forEach(stop => {
@@ -378,6 +475,9 @@ function parseTourData(tabs) {
         }
       });
     });
+
+    // Sort by distance (ascending)
+    routeStops.sort((a, b) => (a.distance || 0) - (b.distance || 0));
 
     return routeStops;
   }
@@ -528,8 +628,8 @@ function parseTourData(tabs) {
       };
     }
 
-    // CRITICAL: Build route stops for this ride
-    const routeStops = buildRouteStops(ride);
+    // CRITICAL: Build route stops for this ride (with GPX-derived distances)
+    const routeStops = buildRouteStops(ride, gpxData);
 
     // HARD FAIL: Every ride must have usable planning data
     if (ride.rideType === 'ride') {
@@ -608,8 +708,10 @@ function normalizeString(str) {
   return (str || '')
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, ' ') // collapse multiple spaces
-    .replace(/[^\w\s]/g, ''); // remove non-alphanumeric except spaces
+    .normalize('NFD') // Decompose accented characters
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritical marks
+    .replace(/\s+/g, '') // Remove all spaces
+    .replace(/[^\w]/g, ''); // Remove non-word characters (keep alphanumeric)
 }
 
 validateAndTransform().catch(err => {

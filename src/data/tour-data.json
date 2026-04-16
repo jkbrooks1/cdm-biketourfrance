@@ -39,35 +39,7 @@
       "routeTowns": "",
       "highlights": [],
       "lunch": null,
-      "routeStops": [
-        {
-          "town": "Bordeaux",
-          "renderedTown": "Bordeaux",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Bordeaux",
-          "renderedTown": "Bordeaux",
-          "name": "La Boulangerie Saint-Michel",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "Sète",
-          "renderedTown": "Sète",
-          "name": "La Tropézienne",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        }
-      ],
+      "routeStops": [],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD00_KICKOFF_PANDA_v2.png",
       "overnightNarrative": "Sète, founded in the 17th century to support the Canal du Midi, is a vibrant port city linking inland waterways to the Mediterranean. Known as the “Venice of Languedoc,” its canals define the urban landscape. It hosts the lively water jousting festival, a centuries-old tradition of competitive boat duels. With strong maritime identity, seafood cuisine, and artistic heritage, Sète marks the culmination of the Atlantic-to-Mediterranean journey, blending working port energy with cultural richness.",
       "towns": [],
@@ -114,49 +86,59 @@
       },
       "routeStops": [
         {
-          "town": "Bordeaux",
-          "renderedTown": "Bordeaux",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Bordeaux",
-          "renderedTown": "Bordeaux",
-          "name": "La Boulangerie Saint-Michel",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "La Réole",
-          "renderedTown": "La Réole",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "La Réole",
-          "renderedTown": "La Réole",
-          "name": "Boul. de la Réole",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "La Réole",
           "renderedTown": "La Réole",
           "name": "PER JOHN",
+          "location": "La Réole",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
           "notes": "Mile 0"
+        },
+        {
+          "distance": 0.3,
+          "town": "Bordeaux",
+          "renderedTown": "Bordeaux",
+          "name": "Quai Louis XVIII",
+          "location": "Quai Louis XVIII",
+          "type": "wc",
+          "source": "TWN_WC",
+          "verified": true,
+          "notes": "public"
+        },
+        {
+          "distance": 0.3,
+          "town": "Bordeaux",
+          "renderedTown": "Bordeaux",
+          "name": "La Boulangerie Saint-Michel",
+          "location": "Near Basilica of Saint-Michel",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
+          "verified": true,
+          "notes": ""
+        },
+        {
+          "distance": 39.1,
+          "town": "La Réole",
+          "renderedTown": "La Réole",
+          "name": "Avenue Jean Jaurès",
+          "location": "Avenue Jean Jaurès",
+          "type": "wc",
+          "source": "TWN_WC",
+          "verified": true,
+          "notes": "public"
+        },
+        {
+          "distance": 39.1,
+          "town": "La Réole",
+          "renderedTown": "La Réole",
+          "name": "Boul. de la Réole",
+          "location": "Place Georges Chaigne near the center",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
+          "verified": true,
+          "notes": ""
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD01_PANDA_v1.png",
@@ -217,40 +199,26 @@
       },
       "routeStops": [
         {
-          "town": "La Réole",
-          "renderedTown": "La Réole",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "La Réole",
-          "renderedTown": "La Réole",
-          "name": "Boul. de la Réole",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "Aiguillon",
-          "renderedTown": "Aiguillon",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
+          "distance": 0,
           "town": "Aiguillon",
           "renderedTown": "Aiguillon",
           "name": "PER JOHN",
+          "location": "Aiguillon",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
           "notes": "Mile 0"
+        },
+        {
+          "distance": 30.1,
+          "town": "Aiguillon",
+          "renderedTown": "Aiguillon",
+          "name": "Place du 14 Juillet",
+          "location": "Place du 14 Juillet",
+          "type": "wc",
+          "source": "TWN_WC",
+          "verified": true,
+          "notes": "public"
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD02_PANDA_v1.png",
@@ -311,40 +279,37 @@
       },
       "routeStops": [
         {
-          "town": "Aiguillon",
-          "renderedTown": "Aiguillon",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Moissac",
-          "renderedTown": "Moissac",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Moissac",
-          "renderedTown": "Moissac",
-          "name": "Lou Panissol",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Moissac",
           "renderedTown": "Moissac",
           "name": "PER JOHN",
+          "location": "Moissac",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
           "notes": "Mile 0"
+        },
+        {
+          "distance": 43.8,
+          "town": "Moissac",
+          "renderedTown": "Moissac",
+          "name": "Port de Plaisance",
+          "location": "Port de Plaisance",
+          "type": "wc",
+          "source": "TWN_WC",
+          "verified": true,
+          "notes": "infrastructure"
+        },
+        {
+          "distance": 43.8,
+          "town": "Moissac",
+          "renderedTown": "Moissac",
+          "name": "Lou Panissol",
+          "location": "Facing Saint-Pierre Abbey historic center",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
+          "verified": true,
+          "notes": ""
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD03_PANDA_v1.png",
@@ -405,49 +370,37 @@
       },
       "routeStops": [
         {
-          "town": "Moissac",
-          "renderedTown": "Moissac",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Moissac",
-          "renderedTown": "Moissac",
-          "name": "Lou Panissol",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "Pillon",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Toulouse",
           "renderedTown": "Toulouse",
           "name": "PER JOHN",
+          "location": "Toulouse",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
           "notes": "Mile 0"
+        },
+        {
+          "distance": 41.39999999999999,
+          "town": "Toulouse",
+          "renderedTown": "Toulouse",
+          "name": "Jardin Compans",
+          "location": "Jardin Compans",
+          "type": "wc",
+          "source": "TWN_WC",
+          "verified": true,
+          "notes": "public"
+        },
+        {
+          "distance": 41.39999999999999,
+          "town": "Toulouse",
+          "renderedTown": "Toulouse",
+          "name": "Pillon",
+          "location": "Rue du Rempart Saint-Étienne city center",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
+          "verified": true,
+          "notes": ""
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD04_PANDA_v1.png",
@@ -508,27 +461,11 @@
       },
       "routeStops": [
         {
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "Pillon",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Toulouse",
           "renderedTown": "Toulouse",
           "name": "PER JOHN",
+          "location": "Toulouse",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
@@ -581,45 +518,33 @@
       },
       "routeStops": [
         {
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Toulouse",
-          "renderedTown": "Toulouse",
-          "name": "Pillon",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Castelnaudary",
           "renderedTown": "Castelnaudary",
-          "name": "WC",
+          "name": "Grand Bassin",
+          "location": "Grand Bassin",
           "type": "wc",
           "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
+          "verified": true,
+          "notes": "infrastructure"
         },
         {
+          "distance": 0,
           "town": "Castelnaudary",
           "renderedTown": "Castelnaudary",
           "name": "l'Épi d'Or",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
+          "location": "Near the Grand Bassin town center",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
           "verified": true,
           "notes": ""
         },
         {
+          "distance": 0,
           "town": "Castelnaudary",
           "renderedTown": "Castelnaudary",
           "name": "PER JOHN",
+          "location": "Castelnaudary",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
@@ -684,45 +609,33 @@
       },
       "routeStops": [
         {
-          "town": "Castelnaudary",
-          "renderedTown": "Castelnaudary",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Castelnaudary",
-          "renderedTown": "Castelnaudary",
-          "name": "l'Épi d'Or",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Carcassonne",
           "renderedTown": "Carcassonne (B)",
-          "name": "WC",
+          "name": "SNCF Station",
+          "location": "SNCF Station",
           "type": "wc",
           "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
+          "verified": true,
+          "notes": "public"
         },
         {
+          "distance": 0,
           "town": "Carcassonne",
           "renderedTown": "Carcassonne (B)",
           "name": "Boul. de la Cité",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
+          "location": "Rue Saint-Louis heart of the Cité",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
           "verified": true,
           "notes": ""
         },
         {
+          "distance": 0,
           "town": "Carcassonne",
           "renderedTown": "Carcassonne (B)",
           "name": "PER JOHN",
+          "location": "Carcassonne",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
@@ -787,36 +700,11 @@
       },
       "routeStops": [
         {
-          "town": "Carcassonne",
-          "renderedTown": "Carcassonne (B)",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Carcassonne",
-          "renderedTown": "Carcassonne (B)",
-          "name": "Boul. de la Cité",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "Capestang",
-          "renderedTown": "Capestang",
-          "name": "Boulangerie de la Place",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Capestang",
           "renderedTown": "Capestang",
           "name": "PER JOHN",
+          "location": "Capestang",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
@@ -881,31 +769,37 @@
       },
       "routeStops": [
         {
-          "town": "Capestang",
-          "renderedTown": "Capestang",
-          "name": "Boulangerie de la Place",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "Sète",
-          "renderedTown": "Sète",
-          "name": "La Tropézienne",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
+          "distance": 0,
           "town": "Sète",
           "renderedTown": "Sète",
           "name": "PER JOHN",
+          "location": "Sète",
           "type": "lunch",
           "source": "RDE_Lunch_Options",
           "verified": true,
           "notes": "Mile 0"
+        },
+        {
+          "distance": 2.3999999999999773,
+          "town": "Capestang",
+          "renderedTown": "Capestang",
+          "name": "Boulangerie de la Place",
+          "location": "Place Jean Jaurès facing the church",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
+          "verified": true,
+          "notes": ""
+        },
+        {
+          "distance": 40.39999999999998,
+          "town": "Sète",
+          "renderedTown": "Sète",
+          "name": "La Tropézienne",
+          "location": "Near the Quai de la Résistance",
+          "type": "boulangerie",
+          "source": "TWN_Boulangerie",
+          "verified": true,
+          "notes": ""
         }
       ],
       "pandaImageUrl": "https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_CDM_RD08_PANDA_v1.png",
@@ -946,35 +840,7 @@
       "routeTowns": "",
       "highlights": [],
       "lunch": null,
-      "routeStops": [
-        {
-          "town": "Bordeaux",
-          "renderedTown": "Bordeaux",
-          "name": "WC",
-          "type": "wc",
-          "source": "TWN_WC",
-          "verified": false,
-          "notes": "WC"
-        },
-        {
-          "town": "Bordeaux",
-          "renderedTown": "Bordeaux",
-          "name": "La Boulangerie Saint-Michel",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        },
-        {
-          "town": "Sète",
-          "renderedTown": "Sète",
-          "name": "La Tropézienne",
-          "type": "cafe",
-          "source": "TWN_Cafe_Boulangeries",
-          "verified": true,
-          "notes": ""
-        }
-      ],
+      "routeStops": [],
       "pandaImageUrl": null,
       "overnightNarrative": "Bordeaux, capital of Nouvelle-Aquitaine, rose to prominence through wine trade and its strategic Garonne River port. Known as “Port of the Moon,” its crescent harbor fueled global commerce in the 18th century. The city’s limestone architecture reflects immense wealth from that era. Bordeaux also carries complex history tied to Atlantic trade. Today, it blends grand boulevards, vibrant markets, and a deep wine culture, serving as both cultural capital and gateway to southwestern France’s vineyards.",
       "towns": [],
@@ -987,5 +853,5 @@
       "dayShape": null
     }
   ],
-  "buildDate": "2026-04-16T14:50:27.722Z"
+  "buildDate": "2026-04-16T19:24:13.866Z"
 }
