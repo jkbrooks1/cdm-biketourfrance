@@ -14,7 +14,7 @@ on:
       - 'package.json'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -56,108 +56,29 @@ jobs:
           R2_BASE_URL: ${{ secrets.R2_BASE_URL }}
         run: npm run build:astro
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          cname: cdm.biketourfrance.net
-
-      - name: Purge Cloudflare cache
+      - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PROJECT_NAME: cdm-biketourfrance
         run: |
-          # Get the zone ID for biketourfrance.net
-          ZONE_ID=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/zones?name=biketourfrance.net" \
-            | jq -r '.result[0].id')
+          npx wrangler pages deploy dist --project-name=$CLOUDFLARE_PROJECT_NAME --branch=main
 
-          if [ -z "$ZONE_ID" ] || [ "$ZONE_ID" = "null" ]; then
-            echo "⚠️  Could not retrieve Cloudflare zone ID"
-          else
-            echo "Zone ID: $ZONE_ID"
-            # Purge the cache
-            RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
-              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-              -H "Content-Type: application/json" \
-              --data '{"files":["https://cdm.biketourfrance.net/*"]}')
-
-            if echo "$RESPONSE" | jq -e '.success' > /dev/null; then
-              echo "✓ Cache purged successfully"
-            else
-              echo "✓ Cache purge initiated (may succeed with delay)"
-            fi
-          fi
-
-      - name: Wait for GitHub Pages propagation
-        run: sleep 30
-
-      - name: Validate deployment
+      - name: Verify live deployment
         run: |
           SITE_URL="https://cdm.biketourfrance.net"
-          echo "Validating deployment at $SITE_URL..."
 
-          # Check HTTP status
+          # verify HTTP
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL")
           if [ "$STATUS" != "200" ]; then
-            echo "❌ Site returned HTTP $STATUS (expected 200)"
+            echo "❌ Site returned HTTP $STATUS"
             exit 1
           fi
-          echo "✓ HTTP status: 200"
 
-          # Verify route stops are present (with retries for CDN propagation)
-          MAX_RETRIES=5
-          for i in $(seq 1 $MAX_RETRIES); do
-            if curl -s "$SITE_URL/TourDay_01" | grep -q "route-stops-section"; then
-              echo "✓ Route stops data deployed successfully"
-              break
-            fi
-            if [ $i -lt $MAX_RETRIES ]; then
-              echo "⏳ Route stops not found yet (attempt $i/$MAX_RETRIES), retrying..."
-              sleep 10
-            else
-              echo "❌ Route stops not found after $MAX_RETRIES attempts"
-              exit 1
-            fi
-          done
-
-          # Verify tour metadata
-          if curl -s "$SITE_URL" | grep -q "Canal des Deux Mers"; then
-            echo "✓ Tour metadata verified"
+          # verify route stops exist
+          if curl -s "$SITE_URL/TourDay_01/" | grep -q "route-stops-section"; then
+            echo "✓ Route stops present"
           else
-            echo "❌ Tour metadata not found"
+            echo "❌ Route stops missing"
             exit 1
           fi
-
-          echo ""
-          echo "✅ Deployment validation passed"
-
-      - name: Verify production deployment binding
-        run: |
-          echo "=== PRODUCTION DEPLOYMENT VERIFICATION ==="
-
-          # Get the gh-pages branch deployment ID
-          DEPLOYMENT_ID=$(git ls-remote origin gh-pages | awk '{print $1}' | cut -c1-7)
-          echo "Deployment ID (gh-pages): $DEPLOYMENT_ID"
-
-          # Verify CNAME is set to custom domain
-          CNAME=$(curl -s https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/CNAME)
-          if [ "$CNAME" = "cdm.biketourfrance.net" ]; then
-            echo "✓ Custom domain bound: $CNAME"
-          else
-            echo "❌ CNAME mismatch: expected 'cdm.biketourfrance.net', got '$CNAME'"
-            exit 1
-          fi
-
-          # Verify live domain is serving from this deployment
-          LIVE_COMMIT=$(curl -s https://cdm.biketourfrance.net/ | grep -o 'gh-pages-[a-f0-9]*' | head -1 || echo "verified-via-content")
-          echo "✓ Custom domain $CNAME is serving latest deployment"
-
-          echo ""
-          echo "=== PRODUCTION STATUS ==="
-          echo "Domain: https://cdm.biketourfrance.net"
-          echo "Deployment: $DEPLOYMENT_ID (gh-pages)"
-          echo "CNAME: $CNAME"
-          echo "Route Stops: ✅ LIVE"
-          echo ""
-          echo "✅ PRODUCTION DEPLOYMENT VERIFIED"
