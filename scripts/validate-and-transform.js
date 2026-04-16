@@ -56,7 +56,7 @@ function validateHardFail(condition, message) {
 
 // GPX PARSING: Load and extract waypoint data
 async function loadGpxData() {
-  const gpxPath = '/Users/jkbrookspersonal/Downloads/v5.0_CDM-Bordeaux-SeteTRACK.gpx';
+  const gpxPath = path.join(__dirname, '../data/gpx/v5.0_CDM-Bordeaux-SeteTRACK.gpx');
 
   validateHardFail(fs.existsSync(gpxPath), `GPX file not found: ${gpxPath}`);
 
