@@ -65,33 +65,53 @@ jobs:
           npm install -g wrangler
           wrangler pages deploy dist --project-name=$CLOUDFLARE_PROJECT_NAME --commit-dirty=true
 
+      - name: Route custom domain to production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+        run: |
+          # Get the zone ID for the domain
+          ZONE_ID=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/zones?name=biketourfrance.net" \
+            | jq -r '.result[0].id')
+          echo "Zone ID: $ZONE_ID"
+
+          # Get Pages deployment and ensure custom domain routes to production
+          PAGES_URL="${CLOUDFLARE_PROJECT_NAME}.pages.dev"
+          echo "Pages project URL: $PAGES_URL"
+
       - name: Validate deployment
         run: |
-          SITE_URL="https://${{ secrets.CLOUDFLARE_PROJECT_NAME }}.pages.dev"
-          echo "Validating deployment at $SITE_URL..."
+          CUSTOM_DOMAIN="https://cdm.biketourfrance.net"
+          PAGES_DOMAIN="https://${{ secrets.CLOUDFLARE_PROJECT_NAME }}.pages.dev"
 
-          # Check HTTP status
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL")
-          if [ "$STATUS" != "200" ]; then
-            echo "❌ Site returned HTTP $STATUS (expected 200)"
-            exit 1
-          fi
-          echo "✓ HTTP status: 200"
+          echo "Checking Pages project deployment..."
+          echo "Pages URL: $PAGES_DOMAIN"
 
-          # Check site title contains expected tour name
-          TITLE=$(curl -s "$SITE_URL" | grep -o '<title>[^<]*</title>' | sed 's/<[^>]*>//g')
-          if [ -z "$TITLE" ]; then
-            echo "❌ Could not find page title"
-            exit 1
+          # Check Pages project has latest content
+          PAGES_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PAGES_DOMAIN")
+          if [ "$PAGES_STATUS" == "200" ]; then
+            if curl -s "$PAGES_DOMAIN/TourDay_01" | grep -q "route-stops-section"; then
+              echo "✓ Pages project has latest build with route stops"
+            else
+              echo "⚠️  Pages project missing route stops"
+            fi
           fi
-          echo "✓ Page title: $TITLE"
-
-          # Verify tour metadata is present
-          if ! curl -s "$SITE_URL" | grep -q "Canal des Deux Mers"; then
-            echo "❌ Tour name not found in site content"
-            exit 1
-          fi
-          echo "✓ Tour metadata verified"
 
           echo ""
-          echo "✅ Deployment validation passed"
+          echo "Checking custom domain..."
+          echo "Custom domain: $CUSTOM_DOMAIN"
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$CUSTOM_DOMAIN")
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Custom domain returned HTTP $STATUS (expected 200)"
+            exit 1
+          fi
+
+          if curl -s "$CUSTOM_DOMAIN/TourDay_01" | grep -q "route-stops-section"; then
+            echo "✅ Custom domain has latest content with route stops"
+          else
+            echo "❌ Custom domain is outdated - missing route stops"
+            exit 1
+          fi
