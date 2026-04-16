@@ -56,62 +56,41 @@ jobs:
           R2_BASE_URL: ${{ secrets.R2_BASE_URL }}
         run: npm run build:astro
 
-      - name: Deploy to Cloudflare Pages
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
-        run: |
-          npm install -g wrangler
-          wrangler pages deploy dist --project-name=$CLOUDFLARE_PROJECT_NAME --commit-dirty=true
-
-      - name: Route custom domain to production
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
-        run: |
-          # Get the zone ID for the domain
-          ZONE_ID=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/zones?name=biketourfrance.net" \
-            | jq -r '.result[0].id')
-          echo "Zone ID: $ZONE_ID"
-
-          # Get Pages deployment and ensure custom domain routes to production
-          PAGES_URL="${CLOUDFLARE_PROJECT_NAME}.pages.dev"
-          echo "Pages project URL: $PAGES_URL"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: cdm.biketourfrance.net
 
       - name: Validate deployment
         run: |
-          CUSTOM_DOMAIN="https://cdm.biketourfrance.net"
-          PAGES_DOMAIN="https://${{ secrets.CLOUDFLARE_PROJECT_NAME }}.pages.dev"
+          SITE_URL="https://cdm.biketourfrance.net"
+          echo "Validating deployment at $SITE_URL..."
 
-          echo "Checking Pages project deployment..."
-          echo "Pages URL: $PAGES_DOMAIN"
+          # Check HTTP status
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL")
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Site returned HTTP $STATUS (expected 200)"
+            exit 1
+          fi
+          echo "✓ HTTP status: 200"
 
-          # Check Pages project has latest content
-          PAGES_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PAGES_DOMAIN")
-          if [ "$PAGES_STATUS" == "200" ]; then
-            if curl -s "$PAGES_DOMAIN/TourDay_01" | grep -q "route-stops-section"; then
-              echo "✓ Pages project has latest build with route stops"
-            else
-              echo "⚠️  Pages project missing route stops"
-            fi
+          # Verify route stops are present
+          if curl -s "$SITE_URL/TourDay_01" | grep -q "route-stops-section"; then
+            echo "✓ Route stops data deployed successfully"
+          else
+            echo "❌ Route stops not found - deployment failed"
+            exit 1
+          fi
+
+          # Verify tour metadata
+          if curl -s "$SITE_URL" | grep -q "Canal des Deux Mers"; then
+            echo "✓ Tour metadata verified"
+          else
+            echo "❌ Tour metadata not found"
+            exit 1
           fi
 
           echo ""
-          echo "Checking custom domain..."
-          echo "Custom domain: $CUSTOM_DOMAIN"
-
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$CUSTOM_DOMAIN")
-          if [ "$STATUS" != "200" ]; then
-            echo "❌ Custom domain returned HTTP $STATUS (expected 200)"
-            exit 1
-          fi
-
-          if curl -s "$CUSTOM_DOMAIN/TourDay_01" | grep -q "route-stops-section"; then
-            echo "✅ Custom domain has latest content with route stops"
-          else
-            echo "❌ Custom domain is outdated - missing route stops"
-            exit 1
-          fi
+          echo "✅ Deployment validation passed"
