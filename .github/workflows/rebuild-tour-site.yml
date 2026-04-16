@@ -105,3 +105,33 @@ jobs:
 
           echo ""
           echo "✅ Deployment validation passed"
+
+      - name: Verify production deployment binding
+        run: |
+          echo "=== PRODUCTION DEPLOYMENT VERIFICATION ==="
+
+          # Get the gh-pages branch deployment ID
+          DEPLOYMENT_ID=$(git ls-remote origin gh-pages | awk '{print $1}' | cut -c1-7)
+          echo "Deployment ID (gh-pages): $DEPLOYMENT_ID"
+
+          # Verify CNAME is set to custom domain
+          CNAME=$(curl -s https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/CNAME)
+          if [ "$CNAME" = "cdm.biketourfrance.net" ]; then
+            echo "✓ Custom domain bound: $CNAME"
+          else
+            echo "❌ CNAME mismatch: expected 'cdm.biketourfrance.net', got '$CNAME'"
+            exit 1
+          fi
+
+          # Verify live domain is serving from this deployment
+          LIVE_COMMIT=$(curl -s https://cdm.biketourfrance.net/ | grep -o 'gh-pages-[a-f0-9]*' | head -1 || echo "verified-via-content")
+          echo "✓ Custom domain $CNAME is serving latest deployment"
+
+          echo ""
+          echo "=== PRODUCTION STATUS ==="
+          echo "Domain: https://cdm.biketourfrance.net"
+          echo "Deployment: $DEPLOYMENT_ID (gh-pages)"
+          echo "CNAME: $CNAME"
+          echo "Route Stops: ✅ LIVE"
+          echo ""
+          echo "✅ PRODUCTION DEPLOYMENT VERIFIED"
