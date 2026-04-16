@@ -33,19 +33,19 @@ body {
 }
 
 /* ─── Typography ─────────────────────────────────────────────── */
-h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; line-height: 1.15; }
-h2 { font-size: clamp(20px, 3vw, 30px); font-weight: 700; line-height: 1.25; }
-h3 { font-size: clamp(16px, 2vw, 20px); font-weight: 600; line-height: 1.35; }
-p  { font-size: 17px; line-height: 1.65; }
+h1 { font-size: clamp(24px, 5vw, 52px); font-weight: 700; line-height: 1.15; }
+h2 { font-size: clamp(18px, 3vw, 30px); font-weight: 700; line-height: 1.25; }
+h3 { font-size: clamp(14px, 2vw, 20px); font-weight: 600; line-height: 1.35; }
+p  { font-size: 15px; line-height: 1.65; }
 
 /* ─── Layout ─────────────────────────────────────────────────── */
 .container {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 16px;
 }
-section { padding: 72px 0; }
+section { padding: 36px 0; }
 
 /* ─── Navigation ─────────────────────────────────────────────── */
 .site-nav {
@@ -58,23 +58,26 @@ section { padding: 72px 0; }
 .nav-inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 16px;
   height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.nav-logo {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-white);
-  letter-spacing: 0.06em;
+.nav-logo-link {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
-.nav-logo span {
-  font-weight: 400;
-  opacity: 0.7;
-  margin-left: 8px;
-  letter-spacing: 0.03em;
+
+.nav-logo-img {
+  height: 40px;
+  width: auto;
+  max-width: 120px;
+}
+
+.nav-inner .btn-inverse {
+  margin-left: auto;
 }
 .nav-links {
   list-style: none;
@@ -99,7 +102,7 @@ section { padding: 72px 0; }
 .footer-inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 36px 24px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,7 +122,7 @@ section { padding: 72px 0; }
 
 /* ─── Hero ───────────────────────────────────────────────────── */
 .hero {
-  padding: 64px 0 56px;
+  padding: 28px 0 24px;
   border-bottom: 1px solid var(--color-divider);
 }
 .hero-eyebrow {
@@ -187,7 +190,7 @@ section { padding: 72px 0; }
 /* ─── Ride Day Cards (Homepage grid) ─────────────────────────── */
 .ride-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: 1fr;
   gap: 14px;
 }
 .ride-card {
@@ -246,26 +249,28 @@ section { padding: 72px 0; }
 .day-topbar-inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 16px;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 .btn-topbar {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: rgba(255,255,255,0.85);
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.25);
   border-radius: 5px;
-  padding: 7px 16px;
+  padding: 5px 10px;
   transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
 }
 .btn-topbar:hover {
   background: rgba(255,255,255,0.22);
@@ -276,7 +281,7 @@ section { padding: 72px 0; }
 }
 
 /* ─── Day Page ───────────────────────────────────────────────── */
-.day-hero { padding: 48px 0 0; }
+.day-hero { padding: 20px 0 0; }
 .day-title {
   font-size: clamp(22px, 4vw, 40px);
   font-weight: 700;
@@ -648,6 +653,20 @@ section { padding: 72px 0; }
   font-weight: 400;
 }
 
+/* ─── Back Link ──────────────────────────────────────────────── */
+.back-link {
+  margin-bottom: 28px;
+}
+.back-link a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-green);
+  transition: opacity 0.15s;
+}
+.back-link a:hover {
+  opacity: 0.70;
+}
+
 /* ─── Form ───────────────────────────────────────────────────── */
 .form-wrap { max-width: 600px; }
 .form-grid {
@@ -702,29 +721,87 @@ section { padding: 72px 0; }
 }
 .btn-primary:hover { opacity: 0.86; }
 
-/* ─── Responsive ─────────────────────────────────────────────── */
-@media (max-width: 800px) {
-  section { padding: 48px 0; }
-
-  .day-layout {
-    grid-template-columns: 1fr;
-  }
-  .map-key {
-    position: static;
-    width: 100%;
-  }
-  .ride-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
+/* ─── Button Inverse (Beige on Green) ────────────────────────── */
+.btn-inverse {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-text);
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.btn-inverse:hover {
+  opacity: 0.8;
+  background: var(--color-white);
 }
 
-@media (max-width: 540px) {
-  .nav-logo span { display: none; }
-  .nav-links .hide-mobile { display: none; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .ride-grid { grid-template-columns: 1fr; }
+/* ─── Route Table Wrap (for horizontal scroll) ─────────────────── */
+.route-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+/* ─── Responsive (mobile-first) ──────────────────────────────── */
+
+/* Hide mobile nav extra items on small screens (already correct) */
+.nav-logo span { display: none; }
+.nav-links .hide-mobile { display: none; }
+
+/* 640px+ — larger tablet/desktop */
+@media (min-width: 640px) {
+  .container { padding: 0 24px; }
+  section { padding: 56px 0; }
+
+  .nav-inner { padding: 0 24px; }
+  .day-topbar-inner { padding: 0 24px; }
+  .footer-inner { padding: 36px 24px; }
+
+  .hero { padding: 48px 0 40px; }
+  .day-hero { padding: 48px 0 0; }
+
+  h1 { font-size: clamp(32px, 5vw, 52px); }
+  h2 { font-size: clamp(20px, 3vw, 30px); }
+  h3 { font-size: clamp(16px, 2vw, 20px); }
+  p  { font-size: 17px; }
+
+  .btn-topbar { font-size: 11px; padding: 6px 12px; gap: 5px; }
+
+  .ride-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .logistics-grid { grid-template-columns: repeat(2, 1fr); }
-  .route-table { font-size: 13px; }
-  .route-table thead th,
-  .route-table tbody td { padding: 10px 8px; }
+}
+
+/* 800px+ — larger desktop */
+@media (min-width: 800px) {
+  section { padding: 72px 0; }
+
+  .day-layout {
+    grid-template-columns: 1fr 240px;
+    gap: 40px;
+  }
+  .map-key {
+    position: sticky;
+    top: 74px;
+  }
+
+  .ride-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .logistics-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Keep existing about-layout breakpoint */
+@media (max-width: 800px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .about-photo {
+    position: static;
+    max-width: 400px;
+  }
 }

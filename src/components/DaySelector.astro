@@ -27,13 +27,15 @@ function formatDate(raw: string) {
 <div class="day-selector-wrapper">
   <div class="day-selector">
     <label for="day-picker">Select a day:</label>
-    <select id="day-picker" class="day-picker">
-      {rideDays.map((day: any) => (
-        <option value={day.dayNumber}>
-          {formatDate(day.date)} • {day.startTown} → {day.endTown} • {day.miles.toFixed(0)} mi
-        </option>
-      ))}
-    </select>
+    <div class="day-picker-wrap">
+      <select id="day-picker" class="day-picker">
+        {rideDays.map((day: any) => (
+          <option value={day.dayNumber}>
+            {formatDate(day.date)} • {day.startTown} → {day.endTown} • {day.miles.toFixed(0)} mi
+          </option>
+        ))}
+      </select>
+    </div>
   </div>
 </div>
 
@@ -78,16 +80,35 @@ function formatDate(raw: string) {
     letter-spacing: 0.4px;
   }
 
+  .day-picker-wrap {
+    position: relative;
+  }
+
+  .day-picker-wrap::after {
+    content: "▾";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #2D5016;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
   .day-picker {
-    padding: 0.625rem 0.5rem;
+    padding: 0.625rem 0.5rem 0.625rem 0.5rem;
+    padding-right: 32px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 0.875rem;
     font-family: Montserrat, Arial, sans-serif;
     cursor: pointer;
     min-height: 44px;
+    width: 100%;
     -webkit-appearance: none;
     appearance: none;
+    background-color: white;
   }
 
   .day-picker:focus {
@@ -107,6 +128,7 @@ function formatDate(raw: string) {
 
     .day-picker {
       padding: 0.75rem;
+      padding-right: 32px;
       font-size: 0.95rem;
     }
   }

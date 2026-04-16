@@ -16,7 +16,7 @@ try {
 const { tourName, startDate, endDate, description, rides, endToEndRwgpsId } = tourData;
 ---
 
-<Layout title={tourName} description={description}>
+<Layout title={tourName} description={description} fullRouteId={endToEndRwgpsId}>
   <HomepageContent {rides} {tourName} {startDate} {endDate} {description} {endToEndRwgpsId} />
 </Layout>
 /* Force rebuild */

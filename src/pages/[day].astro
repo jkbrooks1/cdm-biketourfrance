@@ -50,7 +50,7 @@ const hasLunch = ride.lunch && ride.lunch.name && ride.lunch.name !== 'PER JOHN'
 const hasTowns = ride.towns && ride.towns.length > 0;
 ---
 
-<Layout title={pageTitle()}>
+<Layout title={pageTitle()} fullRouteId={tourData.endToEndRwgpsId}>
   <div class="day-topbar">
     <div class="day-topbar-inner">
       {hasPrev ? (
@@ -69,7 +69,21 @@ const hasTowns = ride.towns && ride.towns.length > 0;
 
   <div class="day-hero">
     <div class="container">
-      <h1 class="day-title">{dayHeading()}</h1>
+      <div class="day-title-wrapper">
+
+        <h1 class="day-title">{dayHeading()}</h1>
+
+        {ride.rwgpsId && (
+
+          <button class="btn-primary" id="day-route-btn" data-route-id={ride.rwgpsId}>
+
+            View Day Route
+
+          </button>
+
+        )}
+
+      </div>
       {subHeading() && <p class="day-date">{subHeading()}</p>}
       {ride.date && <p class="day-date" style="margin-top: 4px;">{ride.date}</p>}
 
@@ -286,6 +300,25 @@ const hasTowns = ride.towns && ride.towns.length > 0;
 </Layout>
 
 <style>
+  .day-title-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .day-title-wrapper .day-title {
+    flex: 1;
+    margin: 0;
+  }
+
+  .day-title-wrapper .btn-primary {
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
   /* Day Snapshot Block - Quick Reference Dashboard */
   .day-snapshot {
     background: linear-gradient(135deg, #f8f6f0 0%, #f5f0e8 100%);

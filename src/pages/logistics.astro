@@ -62,36 +62,38 @@ const restCount = rides.filter((r: any) => r.dayNumber === 'REST').length;
         <h2>Daily Summary</h2>
       </div>
 
-      <table class="route-table">
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>Date</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Miles</th>
-            <th>Elevation</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rides.map((ride: any) => (
+      <div class="route-table-wrap">
+        <table class="route-table">
+          <thead>
             <tr>
-              <td>
-                <a href={`/${ride.dayNumber}`}>
-                  {ride.dayNumber === 'REST' ? 'Rest'
-                   : ride.dayNumber === '0' ? 'Arr.'
-                   : ride.dayNumber}
-                </a>
-              </td>
-              <td>{ride.date || '—'}</td>
-              <td>{ride.startTown || '—'}</td>
-              <td>{ride.endTown || '—'}</td>
-              <td>{ride.miles > 0 ? ride.miles.toFixed(1) : '—'}</td>
-              <td>{ride.elevation > 0 ? ride.elevation.toLocaleString() : '—'}</td>
+              <th>Day</th>
+              <th>Date</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Miles</th>
+              <th>Elevation</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rides.map((ride: any) => (
+              <tr>
+                <td>
+                  <a href={`/${ride.dayNumber}`}>
+                    {ride.dayNumber === 'REST' ? 'Rest'
+                     : ride.dayNumber === '0' ? 'Arr.'
+                     : ride.dayNumber}
+                  </a>
+                </td>
+                <td>{ride.date || '—'}</td>
+                <td>{ride.startTown || '—'}</td>
+                <td>{ride.endTown || '—'}</td>
+                <td>{ride.miles > 0 ? ride.miles.toFixed(1) : '—'}</td>
+                <td>{ride.elevation > 0 ? ride.elevation.toLocaleString() : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 </Layout>

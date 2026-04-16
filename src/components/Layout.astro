@@ -4,9 +4,10 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  fullRouteId?: string;
 }
 
-const { title, description = 'Canal des Deux Mers 2026 — BikeTourFrance.net' } = Astro.props;
+const { title, description = 'Canal des Deux Mers 2026 — BikeTourFrance.net', fullRouteId } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -23,15 +24,44 @@ const { title, description = 'Canal des Deux Mers 2026 — BikeTourFrance.net' }
 <body>
   <nav class="site-nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">BikeTourFrance<span>.net</span></a>
+      <a href="/" class="nav-logo-link">
+        <img src="https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev/BTF_LOGO_White_on_Transparent.png" alt="BikeTourFrance" class="nav-logo-img" />
+      </a>
       <ul class="nav-links">
-        <li><a href="/">Route</a></li>
         <li class="hide-mobile"><a href="/overview">Overview</a></li>
         <li class="hide-mobile"><a href="/logistics">Logistics</a></li>
-        <li class="hide-mobile"><a href="/contact">Contact</a></li>
+        <li class="hide-mobile"><a href="/contact">Contact Form</a></li>
       </ul>
+      {fullRouteId && (
+        <button class="btn-inverse" id="full-route-btn" data-route-id={fullRouteId}>
+          View Full Route
+        </button>
+      )}
     </div>
   </nav>
+
+  <script>
+    // Smart link handler: try RWGPS app first, fallback to web
+    function openRwgpsRoute(routeId: string) {
+      const appUrl = `rwgps://route/${routeId}`;
+      const webUrl = `https://www.rwgps.com/routes/${routeId}`;
+
+      // Try opening the app
+      const appWindow = window.open(appUrl, '_blank');
+
+      // If app didn't open, fallback to web after a short delay
+      setTimeout(() => {
+        if (!appWindow || appWindow.closed === false) {
+          window.location.href = webUrl;
+        }
+      }, 500);
+    }
+
+    document.getElementById('full-route-btn')?.addEventListener('click', (e) => {
+      const routeId = (e.target as HTMLButtonElement).dataset.routeId;
+      if (routeId) openRwgpsRoute(routeId);
+    });
+  </script>
 
   <main>
     <slot />

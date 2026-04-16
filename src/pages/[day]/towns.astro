@@ -27,7 +27,7 @@ function pageTitle() {
 }
 ---
 
-<Layout title={pageTitle()}>
+<Layout fullRouteId={tourData.endToEndRwgpsId} title={pageTitle()}>
   <div class="day-topbar">
     <div class="day-topbar-inner">
       <a href={`/${ride.dayNumber}`} class="btn-topbar">← Back to Ride Overview</a>
