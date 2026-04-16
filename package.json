@@ -15,7 +15,8 @@
   "dependencies": {
     "astro": "^4.0.0",
     "dotenv": "^17.4.2",
-    "googleapis": "^118.0.0"
+    "googleapis": "^118.0.0",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
