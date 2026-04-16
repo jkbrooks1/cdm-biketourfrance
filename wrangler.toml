@@ -1,2 +1,5 @@
-account_id = ""
-pages_build_caching = true
+name = "cdm-biketourfrance"
+compatibility_date = "2026-04-16"
+
+[assets]
+directory = "dist"
