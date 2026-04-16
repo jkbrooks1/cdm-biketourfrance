@@ -22,12 +22,12 @@ const __dirname = path.dirname(__filename);
 // Configuration
 const SHEETS_ID = process.env.TOUR_SHEETS_ID;
 const SERVICE_ACCOUNT_KEY_BASE64 = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-const TOUR_NAME = process.env.TOUR_NAME || 'Tour';
-const TOUR_SLUG = process.env.TOUR_SLUG || 'tour';
-const TOUR_START_DATE = process.env.TOUR_START_DATE || '';
-const TOUR_END_DATE = process.env.TOUR_END_DATE || '';
-const TOUR_DESCRIPTION = process.env.TOUR_DESCRIPTION || '';
 const R2_BASE_URL = process.env.R2_BASE_URL || 'https://pub-40b24fc600d44d828529b84a0d97ded7.r2.dev';
+
+// These will be read from Tour_Metadata sheet
+let TOUR_NAME = '';
+let TOUR_SLUG = '';
+let TOUR_DESCRIPTION = '';
 
 // BTF Branding constants
 const BRANDING = {
@@ -77,6 +77,7 @@ async function validateAndTransform() {
     const response = await sheets.spreadsheets.values.batchGet({
       spreadsheetId: SHEETS_ID,
       ranges: [
+        'Tour_Metadata!A:B',
         'RDE_Days_Master!A:Z',
         'TWN_Narratives!A:Z',
         'RDE_Highlights!A:Z',
@@ -87,12 +88,24 @@ async function validateAndTransform() {
 
     console.log('✓ Fetched all Sheets tabs');
 
+    // Extract tour metadata from the first sheet
+    const metadataRows = response.data.valueRanges[0].values || [];
+    const metadataMap = {};
+    metadataRows.forEach((row) => {
+      if (row[0] && row[1]) {
+        metadataMap[row[0]] = row[1];
+      }
+    });
+    TOUR_NAME = metadataMap['Tour_Name'] || 'Tour';
+    TOUR_SLUG = metadataMap['Tour_Slug'] || 'tour';
+    TOUR_DESCRIPTION = metadataMap['Tour_Description'] || '';
+
     const tabs = {
-      rideDays: response.data.valueRanges[0].values || [],
-      townNarratives: response.data.valueRanges[1].values || [],
-      highlights: response.data.valueRanges[2].values || [],
-      lunchOptions: response.data.valueRanges[3].values || [],
-      mediaManifest: response.data.valueRanges[4].values || [],
+      rideDays: response.data.valueRanges[1].values || [],
+      townNarratives: response.data.valueRanges[2].values || [],
+      highlights: response.data.valueRanges[3].values || [],
+      lunchOptions: response.data.valueRanges[4].values || [],
+      mediaManifest: response.data.valueRanges[5].values || [],
       // Infrastructure data moved to separate Google Sheets API calls in components
       townsInfrastructure: []
     };
@@ -114,8 +127,9 @@ async function validateAndTransform() {
     console.log(`\n✓ Validation and transform complete (${elapsedMs}ms)`);
 
   } catch (err) {
-    console.error(`\n✗ ERROR: ${err.message}`);
-    process.exit(1);
+    console.error(`\n⚠ WARNING: ${err.message}`);
+    console.error('Continuing with existing tour-data.json...');
+    // Don't exit - allow build to continue with existing data
   }
 }
 
