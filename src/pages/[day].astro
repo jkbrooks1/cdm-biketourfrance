@@ -161,6 +161,50 @@ const hasTowns = ride.towns && ride.towns.length > 0;
                 </div>
               )}
 
+              {/* ROUTE STOPS — Rider Planning Data */}
+              {ride.routeStops && ride.routeStops.length > 0 && (
+                <div class="route-stops-section">
+                  <h3>Towns & Stops Along Route</h3>
+                  <p class="route-stops-intro">Plan your day with stops for water, food, and facilities.</p>
+
+                  {/* Group stops by rendered town name */}
+                  {(() => {
+                    const stopsGroupedByTown: { [key: string]: any[] } = {};
+                    ride.routeStops.forEach((stop: any) => {
+                      const townKey = stop.renderedTown;
+                      if (!stopsGroupedByTown[townKey]) {
+                        stopsGroupedByTown[townKey] = [];
+                      }
+                      stopsGroupedByTown[townKey].push(stop);
+                    });
+
+                    return Object.entries(stopsGroupedByTown).map(([townName, stops]: [string, any[]]) => (
+                      <div class="town-stops-block" key={townName}>
+                        <h4 class="town-name">{townName}</h4>
+                        <div class="stops-list">
+                          {stops.map((stop: any) => (
+                            <div class="stop-item" key={`${stop.name}-${stop.type}`}>
+                              <div class="stop-header">
+                                <span class="stop-type-badge" data-type={stop.type}>
+                                  {stop.type.charAt(0).toUpperCase() + stop.type.slice(1)}
+                                </span>
+                                <span class="stop-name">{stop.name}</span>
+                              </div>
+                              {stop.notes && (
+                                <div class="stop-notes">{stop.notes}</div>
+                              )}
+                              <div class="stop-source">
+                                <small>{stop.source}</small>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              )}
+
               {/* Lunch Block */}
               {hasLunch && (
                 <div class="lunch-block">
@@ -669,6 +713,155 @@ const hasTowns = ride.towns && ride.towns.length > 0;
       display: block;
       text-align: center;
       padding: 1rem;
+    }
+  }
+</style>
+
+<style>
+  /* Route Stops Section — Towns & Stops Along Route */
+  .route-stops-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: #f9f8f6;
+    border-radius: 8px;
+    border-left: 4px solid #2d5016;
+  }
+
+  .route-stops-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d5016;
+    margin: 0 0 0.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e8dcc8;
+  }
+
+  .route-stops-intro {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0.5rem 0 1.5rem 0;
+    font-style: italic;
+  }
+
+  .town-stops-block {
+    margin-bottom: 1.75rem;
+  }
+
+  .town-stops-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .town-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1B4F72;
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #d4c5b9;
+  }
+
+  .stops-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .stop-item {
+    padding: 1rem;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e8dcc8;
+    transition: all 0.2s ease;
+  }
+
+  .stop-item:hover {
+    box-shadow: 0 2px 8px rgba(45, 80, 22, 0.1);
+    border-color: #2d5016;
+  }
+
+  .stop-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stop-type-badge {
+    display: inline-block;
+    padding: 0.35rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .stop-type-badge[data-type="wc"] {
+    background: #E8F4F8;
+    color: #1B4F72;
+  }
+
+  .stop-type-badge[data-type="cafe"] {
+    background: #F5E8D8;
+    color: #8B5A3C;
+  }
+
+  .stop-type-badge[data-type="boulangerie"] {
+    background: #FFE8D4;
+    color: #B8652A;
+  }
+
+  .stop-type-badge[data-type="lunch"] {
+    background: #E8F5E8;
+    color: #2D5016;
+  }
+
+  .stop-type-badge[data-type="water"] {
+    background: #D4E8F0;
+    color: #1B4F72;
+  }
+
+  .stop-name {
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .stop-notes {
+    font-size: 0.85rem;
+    color: #666;
+    margin-left: 0;
+    padding-left: 2rem;
+    font-style: italic;
+  }
+
+  .stop-source {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  @media (max-width: 768px) {
+    .route-stops-section {
+      padding: 1.5rem;
+    }
+
+    .stop-item {
+      padding: 0.75rem;
+    }
+
+    .stop-header {
+      flex-wrap: wrap;
+    }
+
+    .stop-notes {
+      padding-left: 1.5rem;
+      font-size: 0.8rem;
     }
   }
 </style>

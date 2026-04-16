@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 /**
  * Script: validate-and-transform.js
- * Version: 1.0
- * Build: 2
- * Date: 2026-0413
+ * Version: 2.0
+ * Build: 3
+ * Date: 2026-04-16
  * AI: Claude Haiku 4.5
  * Purpose: Fetch tour data from Google Sheets, validate against BTF schema, transform to tour-data.json
+ *
+ * CRITICAL: This is a HARD FAIL build script. Missing or malformed data causes build exit with non-zero status.
  */
 
 import { google } from 'googleapis';
@@ -43,22 +45,28 @@ const BRANDING = {
   }
 };
 
+// VALIDATION: Hard fail wrapper
+function validateHardFail(condition, message) {
+  if (!condition) {
+    console.error(`\n✗ FATAL BUILD ERROR: ${message}`);
+    process.exit(1);
+  }
+}
+
 async function validateAndTransform() {
   const startTime = Date.now();
-  
+
   try {
-    if (!SHEETS_ID) throw new Error('TOUR_SHEETS_ID not set');
-    if (!SERVICE_ACCOUNT_KEY_BASE64) throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not set');
+    validateHardFail(SHEETS_ID, 'TOUR_SHEETS_ID not set');
+    validateHardFail(SERVICE_ACCOUNT_KEY_BASE64, 'GOOGLE_SERVICE_ACCOUNT_KEY not set');
 
     console.log('✓ Validating environment...');
 
     let serviceAccountInfo;
     try {
-      // Try base64 decoding first (for local .env files)
       const decodedKey = Buffer.from(SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf-8');
       serviceAccountInfo = JSON.parse(decodedKey);
     } catch (err) {
-      // If base64 fails, try parsing directly as JSON (for GitHub Actions secrets)
       try {
         serviceAccountInfo = JSON.parse(SERVICE_ACCOUNT_KEY_BASE64);
       } catch (jsonErr) {
@@ -74,6 +82,7 @@ async function validateAndTransform() {
     const sheets = google.sheets({ version: 'v4', auth });
     console.log('✓ Google Sheets API authenticated');
 
+    // CRITICAL: Fetch ALL THREE required tabs + existing tabs
     const response = await sheets.spreadsheets.values.batchGet({
       spreadsheetId: SHEETS_ID,
       ranges: [
@@ -82,13 +91,15 @@ async function validateAndTransform() {
         'TWN_Narratives!A:Z',
         'RDE_Highlights!A:Z',
         'RDE_Lunch_Options!A:Z',
-        'RDE_Media_Assets!A:Z'
+        'RDE_Media_Assets!A:Z',
+        'TWN_WC!A:Z',
+        'TWN_Cafe_Boulangeries!A:Z'
       ]
     });
 
     console.log('✓ Fetched all Sheets tabs');
 
-    // Extract tour metadata from the first sheet
+    // Extract tour metadata
     const metadataRows = response.data.valueRanges[0].values || [];
     const metadataMap = {};
     metadataRows.forEach((row) => {
@@ -100,22 +111,30 @@ async function validateAndTransform() {
     TOUR_SLUG = metadataMap['Tour_Slug'] || 'tour';
     TOUR_DESCRIPTION = metadataMap['Tour_Description'] || '';
 
+    // CRITICAL: Hard fail on missing required tabs
     const tabs = {
       rideDays: response.data.valueRanges[1].values || [],
       townNarratives: response.data.valueRanges[2].values || [],
       highlights: response.data.valueRanges[3].values || [],
       lunchOptions: response.data.valueRanges[4].values || [],
       mediaManifest: response.data.valueRanges[5].values || [],
-      // Infrastructure data moved to separate Google Sheets API calls in components
+      wcTowns: response.data.valueRanges[6].values || [],
+      cafeBoulangeries: response.data.valueRanges[7].values || [],
       townsInfrastructure: []
     };
 
+    // HARD FAIL: Validate required tabs have data
+    validateHardFail(tabs.lunchOptions.length > 0, 'RDE_Lunch_Options tab is empty or missing');
+    validateHardFail(tabs.wcTowns.length > 0, 'TWN_WC tab is empty or missing');
+    validateHardFail(tabs.cafeBoulangeries.length > 0, 'TWN_Cafe_Boulangeries tab is empty or missing');
+
     const tourData = parseTourData(tabs);
     console.log(`✓ Parsed ${tourData.rides.length} ride days`);
+    console.log(`✓ Integrated route stops from 3 sheets`);
 
     const outputPath = path.join(__dirname, '../src/data/tour-data.json');
     const outputDir = path.dirname(outputPath);
-    
+
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
@@ -127,42 +146,42 @@ async function validateAndTransform() {
     console.log(`\n✓ Validation and transform complete (${elapsedMs}ms)`);
 
   } catch (err) {
-    console.error(`\n⚠ WARNING: ${err.message}`);
-    console.error('Continuing with existing tour-data.json...');
-    // Don't exit - allow build to continue with existing data
+    console.error(`\n✗ FATAL: ${err.message}`);
+    process.exit(1);
   }
 }
 
 function parseTourData(tabs) {
   const rideHeader = tabs.rideDays[0] || [];
   const rideHeaderMap = createHeaderMap(rideHeader);
-  
+
   const rides = (tabs.rideDays.slice(1) || []).map((row) => {
     const tourDayRaw = (row[rideHeaderMap['Tour_Day']] || '').trim();
     const rideDayRaw = (row[rideHeaderMap['Ride_Day']] || '').trim().toUpperCase();
     const tourDayNum = parseInt(tourDayRaw);
-    if (isNaN(tourDayNum)) return null; // skip empty/malformed rows
+    if (isNaN(tourDayNum)) return null;
 
     const rideType = rideDayRaw === 'REST'  ? 'rest'    :
                      rideDayRaw === 'TRAIN' ? 'train'   :
                      tourDayNum === 0       ? 'arrival' : 'ride';
 
     return {
-      dayNumber:  `TourDay_${String(tourDayNum).padStart(2, '0')}`, // URL slug
-      tourDayNum,  // numeric for display: 1, 2, ...
-      rideType,    // 'arrival' | 'ride' | 'rest' | 'train'
-      rideDay: rideDayRaw, // original Ride_Day value for lookup in other tabs
+      dayNumber:  `TourDay_${String(tourDayNum).padStart(2, '0')}`,
+      tourDayNum,
+      rideType,
+      rideDay: rideDayRaw,
       date: row[rideHeaderMap['Date']] || '',
       startTown: row[rideHeaderMap['Start_Town']] || '',
       endTown: row[rideHeaderMap['End_Town']] || '',
       miles: parseFloat(row[rideHeaderMap['Miles']]) || 0,
       elevation: parseFloat(row[rideHeaderMap['Hand coded Elevation']] || row[rideHeaderMap['Elevation']]) || 0,
       rwgpsId: row[rideHeaderMap['RWGPS_Route_ID']] || '',
-      pandaImage: row[rideHeaderMap['Panda_Asset_Name']] || ''
+      pandaImage: row[rideHeaderMap['Panda_Asset_Name']] || '',
+      routeTowns: row[rideHeaderMap['Route_Towns']] || '' // Optional: explicit route towns list
     };
   }).filter(Boolean);
 
-  // Deduplicate rides by dayNumber, keeping the first valid (non-empty) entry
+  // Deduplicate rides
   const seenDays = new Set();
   const uniqueRides = [];
   for (const ride of rides) {
@@ -174,10 +193,211 @@ function parseTourData(tabs) {
   rides.length = 0;
   rides.push(...uniqueRides);
 
+  // ==================================================
+  // SECTION: Parse WC Towns (TWN_WC)
+  // ==================================================
+  const wcHeader = tabs.wcTowns[0] || [];
+  const wcHeaderMap = createHeaderMap(wcHeader);
+  const wcByTownNormalized = {}; // key: normalized town name
+
+  (tabs.wcTowns.slice(1) || []).forEach((row) => {
+    const townName = (row[wcHeaderMap['Town_Name']] || '').trim();
+    if (!townName) return;
+
+    const normTown = normalizeString(townName);
+    if (!wcByTownNormalized[normTown]) {
+      wcByTownNormalized[normTown] = [];
+    }
+
+    wcByTownNormalized[normTown].push({
+      town: townName,
+      facilityType: row[wcHeaderMap['Facility_Type']] || 'WC',
+      location: row[wcHeaderMap['Location']] || '',
+      rideDay: (row[wcHeaderMap['Ride_Day']] || '').trim(),
+      verified: (row[wcHeaderMap['Verified']] || '').toUpperCase() === 'Y'
+    });
+  });
+
+  // ==================================================
+  // SECTION: Parse Cafe/Boulangeries (TWN_Cafe_Boulangeries)
+  // ==================================================
+  const cafeHeader = tabs.cafeBoulangeries[0] || [];
+  const cafeHeaderMap = createHeaderMap(cafeHeader);
+  const cafeByTownNormalized = {};
+  const bastideByTownNormalized = {}; // BASTIDE RULE: source of truth
+
+  (tabs.cafeBoulangeries.slice(1) || []).forEach((row) => {
+    const townName = (row[cafeHeaderMap['Town_Name']] || '').trim();
+    if (!townName) return;
+
+    const normTown = normalizeString(townName);
+    const bastideFlag = (row[cafeHeaderMap['Bastide']] || '').trim();
+
+    // BASTIDE CONFLICT CHECK
+    if (bastideByTownNormalized[normTown] !== undefined) {
+      const existing = bastideByTownNormalized[normTown];
+      const incoming = bastideFlag === 'Bastide' ? true : false;
+      validateHardFail(existing === incoming,
+        `BASTIDE CONFLICT: Town "${townName}" has conflicting Bastide values in TWN_Cafe_Boulangeries`);
+    }
+
+    bastideByTownNormalized[normTown] = (bastideFlag === 'Bastide');
+
+    if (!cafeByTownNormalized[normTown]) {
+      cafeByTownNormalized[normTown] = [];
+    }
+
+    cafeByTownNormalized[normTown].push({
+      town: townName,
+      name: row[cafeHeaderMap['Cafe_Name']] || row[cafeHeaderMap['Boulangerie_Name']] || '',
+      type: row[cafeHeaderMap['Type']] || 'cafe',
+      location: row[cafeHeaderMap['Location']] || '',
+      rideDay: (row[cafeHeaderMap['Ride_Day']] || '').trim(),
+      notes: row[cafeHeaderMap['Notes']] || ''
+    });
+  });
+
+  // ==================================================
+  // SECTION: Parse Lunch Options (RDE_Lunch_Options)
+  // ==================================================
+  const lunchHeader = tabs.lunchOptions[0] || [];
+  const lunchHeaderMap = createHeaderMap(lunchHeader);
+  const lunchByDay = {};
+
+  (tabs.lunchOptions.slice(1) || []).forEach((row) => {
+    const rideDay = (row[lunchHeaderMap['Ride_Day']] || '').trim();
+    if (!rideDay) return;
+
+    lunchByDay[rideDay] = {
+      name: row[lunchHeaderMap['Business_Name']] || '',
+      type: row[lunchHeaderMap['Business_Type']] || '',
+      milepost: parseFloat(row[lunchHeaderMap['Mile_Post_On_Route']]) || 0,
+      town: row[lunchHeaderMap['Town']] || row[lunchHeaderMap['Location']] || ''
+    };
+  });
+
+  // ==================================================
+  // SECTION: Build Route Stops (JOIN LOGIC)
+  // ==================================================
+  function buildRouteStops(ride) {
+    const routeStops = [];
+
+    // Determine route towns: use explicit list, or implicit from start/end
+    let routeTowns = [];
+    if (ride.routeTowns) {
+      routeTowns = ride.routeTowns.split(',').map(t => t.trim()).filter(t => t);
+    } else {
+      // Fallback: include start and end towns
+      routeTowns = [ride.startTown, ride.endTown].filter(t => t);
+    }
+
+    const routeTownsNormalized = routeTowns.map(t => normalizeString(t));
+
+    // Collect all stops for towns on this route
+    const stopsMap = {}; // key: normalized town name, value: array of stops
+
+    // Add WC stops
+    routeTownsNormalized.forEach((normTown, idx) => {
+      const originalTown = routeTowns[idx];
+      if (wcByTownNormalized[normTown]) {
+        if (!stopsMap[normTown]) stopsMap[normTown] = [];
+        wcByTownNormalized[normTown].forEach(wc => {
+          stopsMap[normTown].push({
+            town: originalTown,
+            renderedTown: applyBastideRule(originalTown, normTown, bastideByTownNormalized),
+            name: wc.location || wc.facilityType,
+            type: 'wc',
+            source: 'TWN_WC',
+            verified: wc.verified,
+            notes: wc.facilityType
+          });
+        });
+      }
+    });
+
+    // Add Cafe/Boulangerie stops
+    routeTownsNormalized.forEach((normTown, idx) => {
+      const originalTown = routeTowns[idx];
+      if (cafeByTownNormalized[normTown]) {
+        if (!stopsMap[normTown]) stopsMap[normTown] = [];
+        cafeByTownNormalized[normTown].forEach(cafe => {
+          stopsMap[normTown].push({
+            town: originalTown,
+            renderedTown: applyBastideRule(originalTown, normTown, bastideByTownNormalized),
+            name: cafe.name,
+            type: cafe.type.toLowerCase().includes('boulangerie') ? 'boulangerie' : 'cafe',
+            source: 'TWN_Cafe_Boulangeries',
+            verified: true,
+            notes: cafe.location || cafe.notes
+          });
+        });
+      }
+    });
+
+    // Add Lunch stop if it matches a route town
+    if (lunchByDay[ride.rideDay]) {
+      const lunch = lunchByDay[ride.rideDay];
+      const lunchTown = lunch.town || ride.endTown;
+      const lunchNormTown = normalizeString(lunchTown);
+
+      if (routeTownsNormalized.includes(lunchNormTown)) {
+        const townIdx = routeTownsNormalized.indexOf(lunchNormTown);
+        const originalTown = routeTowns[townIdx];
+
+        if (!stopsMap[lunchNormTown]) stopsMap[lunchNormTown] = [];
+        stopsMap[lunchNormTown].push({
+          town: originalTown,
+          renderedTown: applyBastideRule(originalTown, lunchNormTown, bastideByTownNormalized),
+          name: lunch.name,
+          type: 'lunch',
+          source: 'RDE_Lunch_Options',
+          verified: true,
+          notes: `Mile ${lunch.milepost}`
+        });
+      } else {
+        // HARD FAIL: Lunch stop doesn't match any route town
+        validateHardFail(false,
+          `UNMATCHED LUNCH: Ride ${ride.rideDay} lunch town "${lunchTown}" not found in route towns`);
+      }
+    }
+
+    // HARD FAIL: Check for orphaned stops
+    Object.keys(stopsMap).forEach(normTown => {
+      validateHardFail(routeTownsNormalized.includes(normTown),
+        `ORPHANED STOP: Town "${normTown}" in stops map but not in route`);
+    });
+
+    // Flatten into array with deduplication
+    const seenStops = new Set();
+    Object.values(stopsMap).forEach(townStops => {
+      townStops.forEach(stop => {
+        const stopKey = `${stop.renderedTown}|${stop.type}|${stop.name}`;
+        if (!seenStops.has(stopKey)) {
+          seenStops.add(stopKey);
+          routeStops.push(stop);
+        }
+      });
+    });
+
+    return routeStops;
+  }
+
+  // ==================================================
+  // SECTION: Render towns with Bastide rule
+  // ==================================================
+  function applyBastideRule(originalTown, normalizedTown, bastideMap) {
+    const isBastide = bastideMap[normalizedTown];
+
+    // HARD FAIL: If town in route and in cafe sheet, Bastide must be deterministic
+    if (isBastide !== undefined) {
+      return isBastide ? `${originalTown} (B)` : originalTown;
+    }
+
+    return originalTown;
+  }
+
   const townHeader = tabs.townNarratives[0] || [];
   const townHeaderMap = createHeaderMap(townHeader);
-
-  // Build a lookup map: endTown name → narrative
   const narrativeByTown = {};
   (tabs.townNarratives.slice(1) || []).forEach((row) => {
     const name = (row[townHeaderMap['Overnight Town']] || '').trim();
@@ -188,46 +408,29 @@ function parseTourData(tabs) {
   const highlightHeader = tabs.highlights[0] || [];
   const highlightHeaderMap = createHeaderMap(highlightHeader);
   const highlightsByDay = {};
-  
+
   (tabs.highlights.slice(1) || []).forEach((row) => {
     const day = row[highlightHeaderMap['Ride Day']];
     if (!highlightsByDay[day]) highlightsByDay[day] = [];
-    
+
     for (let i = 1; i <= 3; i++) {
       const titleKey = `HL${i}_Title`;
       const descKey = `HL${i}_Desc`;
       const title = row[highlightHeaderMap[titleKey]];
       const desc = row[highlightHeaderMap[descKey]];
-      
+
       if (title && desc && highlightsByDay[day].length < 3) {
         highlightsByDay[day].push({ title, description: desc });
       }
     }
   });
 
-  const lunchHeader = tabs.lunchOptions[0] || [];
-  const lunchHeaderMap = createHeaderMap(lunchHeader);
-  const lunchByDay = {};
-  
-  (tabs.lunchOptions.slice(1) || []).forEach((row) => {
-    const day = row[lunchHeaderMap['Ride_Day']] || row[lunchHeaderMap['Date']];
-    if (day) {
-      lunchByDay[day] = {
-        name: row[lunchHeaderMap['Business_Name']] || '',
-        type: row[lunchHeaderMap['Business_Type']] || '',
-        milepost: parseFloat(row[lunchHeaderMap['Mile_Post_On_Route']]) || 0
-      };
-    }
-  });
-
   const mediaHeader = tabs.mediaManifest[0] || [];
   const mediaHeaderMap = createHeaderMap(mediaHeader);
   const mediaRows = tabs.mediaManifest.slice(1) || [];
-  
+
   let logo = 'BTF_LOGO_White_on_Transparent.png';
 
-  // Fallback map keyed by Tour_Day number (0–10)
-  // Tour Day 5 = REST, Tour Days 6-9 = Ride Days 5-8
   const PANDA_FALLBACK = {
     '0':  'BTF_CDM_RD00_KICKOFF_PANDA_v2.png',
     '1':  'BTF_CDM_RD01_PANDA_v2.png',
@@ -243,61 +446,15 @@ function parseTourData(tabs) {
 
   const pandaAssets = { ...PANDA_FALLBACK };
 
-  // Media_Manifest entries override fallback; Day_Number maps to Tour_Day
   mediaRows.forEach((row) => {
     const day = row[mediaHeaderMap['Day_Number']];
     const assetName = row[mediaHeaderMap['Panda_Asset_Name']];
     if (day && assetName) {
-      const normalizedDay = String(parseInt(day)); // '05' → '5'
+      const normalizedDay = String(parseInt(day));
       pandaAssets[normalizedDay] = assetName;
     }
   });
 
-  // Parse towns infrastructure data
-  const townsInfraHeader = tabs.townsInfrastructure[0] || [];
-  const townsInfraHeaderMap = createHeaderMap(townsInfraHeader);
-  const townsByRideDay = {};
-
-  (tabs.townsInfrastructure.slice(1) || []).forEach((row) => {
-    const rideDay = (row[townsInfraHeaderMap['Ride_Day']] || '').trim();
-    if (!rideDay) return;
-
-    if (!townsByRideDay[rideDay]) {
-      townsByRideDay[rideDay] = [];
-    }
-
-    const boulangieAddress = row[townsInfraHeaderMap['Boulangerie_Address']] || '';
-    const appleMapsLinkRaw = row[townsInfraHeaderMap['Apple_Maps_Link']] || '';
-
-    // Append ", France" to Apple Maps links to ensure they resolve to French locations
-    let appleMapsLink = appleMapsLinkRaw;
-    if (appleMapsLinkRaw && !appleMapsLinkRaw.includes('France')) {
-      appleMapsLink = appleMapsLinkRaw.replace('/?address=', '/?address=').replace(/([^=]+)$/, '$1,+France');
-    }
-
-    const town = {
-      name: row[townsInfraHeaderMap['Town_Name']] || '',
-      population: parseInt(row[townsInfraHeaderMap['Population']]) || 0,
-      distanceFromStart: parseFloat(row[townsInfraHeaderMap['Distance_From_Start_Miles']]) || 0,
-      wcAvailable: (row[townsInfraHeaderMap['WC_Available']] || '').toUpperCase() === 'Y',
-      wcType: row[townsInfraHeaderMap['WC_Type']] || '',
-      wcLocation: row[townsInfraHeaderMap['WC_Location']] || '',
-      boulangerieName: row[townsInfraHeaderMap['Boulangerie_Name']] || '',
-      boulangieAddress,
-      distFromRoute: row[townsInfraHeaderMap['Distance_From_Route']] || '',
-      googleMapsLink: row[townsInfraHeaderMap['Google_Maps_Link']] || '',
-      appleMapsLink,
-      cafes: row[townsInfraHeaderMap['Cafe_Count']] || '',
-      riderNotes: row[townsInfraHeaderMap['Rider_Notes']] || '',
-      description: row[townsInfraHeaderMap['Town_Description']] || ''
-    };
-
-    if (town.name) {
-      townsByRideDay[rideDay].push(town);
-    }
-  });
-
-  // Hardcoded day shape narratives per ride
   const DAY_SHAPES = {
     '1': `Bordeaux → La Réole: 45.7 miles, 1,050 ft elevation. Easy roll out through vineyards. Main climb: Sadirac area (mile 18, 2.3 mi, 240 ft gain). Route passes through Sadirac, Créon, Sauveterre-de-Guyenne. Final push into La Réole.`,
     '2': `La Réole → Aiguillon: 28.4 miles, 120 ft elevation. Flat river valley day following Garonne River. Easy pace with minimal elevation. Route passes through Meilhan-sur-Garonne, Marmande, Le Mas d'Agenais, Clairac, Tonneins, Damazan. Perfect recovery day after Day 1.`,
@@ -310,31 +467,29 @@ function parseTourData(tabs) {
     '9': `Capestang → Sète: 42.7 miles, 80 ft elevation. Final day to Mediterranean coast. Flat approach through Languedoc wine country. Sète—arrival at salt lagoons and working port—marks Atlantic-to-Mediterranean journey completion.`
   };
 
-  // Function to assign confidence rating based on WC type
   function getWCConfidence(wcType) {
     const typeNorm = (wcType || '').toLowerCase().trim();
     if (typeNorm.includes('public')) return 5;
     if (typeNorm.includes('cafe') || typeNorm.includes('bar')) return 3;
-    return 2; // unknown/unverified
+    return 2;
   }
 
+  // ==================================================
+  // SECTION: Enrich rides with ALL data including routeStops
+  // ==================================================
   const enrichedRides = rides.map((ride) => {
-    // Calculate estimated ride time: miles / 10 hours
     const rideTimeBase = ride.rideType === 'ride' && ride.miles > 0
       ? ride.miles / 10
       : 0;
 
-    // Round to nearest 0.5 for display
     const rideTimeHours = Math.round(rideTimeBase * 2) / 2;
 
-    // Calculate day duration: ride time × 1.5 (ride + 50% for stops/lunch)
     const dayDurationBase = ride.rideType === 'ride' && ride.miles > 0
       ? rideTimeBase * 1.5
       : 0;
 
     const dayDurationHours = Math.round(dayDurationBase * 2) / 2;
 
-    // Time ranges for estimates (±30 min)
     let estimatedRideTimeRange = null;
     let estimatedDayDurationRange = null;
     let estimatedFinishTime = null;
@@ -356,7 +511,6 @@ function parseTourData(tabs) {
         display: `${dayDurationMin.toFixed(1)} to ${dayDurationMax.toFixed(1)} hours`
       };
 
-      // Calculate finish time range (9am start + duration)
       const startHour = 9;
       const startMin = 0;
       const totalMinMin = startHour * 60 + startMin + (dayDurationMin * 60);
@@ -374,31 +528,29 @@ function parseTourData(tabs) {
       };
     }
 
-    // Extract all towns with WC availability and confidence ratings
-    const towns = townsByRideDay[ride.rideDay] || [];
-    const wcTowns = towns
-      .filter((t) => t.wcAvailable)
-      .map((t) => ({
-        name: t.name,
-        distanceFromStart: t.distanceFromStart,
-        wcType: t.wcType,
-        wcLocation: t.wcLocation,
-        confidence: getWCConfidence(t.wcType)
-      }))
-      .sort((a, b) => a.distanceFromStart - b.distanceFromStart);
+    // CRITICAL: Build route stops for this ride
+    const routeStops = buildRouteStops(ride);
+
+    // HARD FAIL: Every ride must have usable planning data
+    if (ride.rideType === 'ride') {
+      validateHardFail(routeStops.length > 0,
+        `NO ROUTE STOPS: Ride ${ride.rideDay} has no stops from required tabs`);
+    }
+
+    const towns = [];
+    const wcTowns = [];
 
     return {
       ...ride,
-      // highlights/lunch use Ride_Day values from their own sheets
       highlights: highlightsByDay[ride.rideDay] || [],
       lunch: lunchByDay[ride.rideDay] || null,
+      routeStops: routeStops, // REQUIRED: First-class data
       pandaImageUrl: pandaAssets[String(ride.tourDayNum)]
         ? `${R2_BASE_URL}/${pandaAssets[String(ride.tourDayNum)]}`
         : null,
       overnightNarrative: narrativeByTown[ride.endTown.trim()] || '',
       towns,
-      wcTowns, // WC towns with confidence ratings
-      // Ride time calculations for operational dashboard
+      wcTowns,
       rideTimeHours,
       estimatedRideTimeRange,
       dayDurationHours,
@@ -411,14 +563,12 @@ function parseTourData(tabs) {
   const totalMiles = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.miles, 0);
   const totalElevation = enrichedRides.filter(r => r.rideType === 'ride').reduce((sum, r) => sum + r.elevation, 0);
 
-  // Derive start/end dates from ride data (day 0 or day 1 → last ride day)
   const rideDates = enrichedRides
     .filter(r => r.date && r.rideType !== 'train')
     .map(r => r.date);
-  const derivedStartDate = rideDates[0] || TOUR_START_DATE;
-  const derivedEndDate   = rideDates[rideDates.length - 1] || TOUR_END_DATE;
+  const derivedStartDate = rideDates[0] || '';
+  const derivedEndDate   = rideDates[rideDates.length - 1] || '';
 
-  // Extract end-to-end RWGPS route ID from arrival day
   const arrivalRide = enrichedRides.find(r => r.rideType === 'arrival');
   const endToEndRwgpsId = arrivalRide?.rwgpsId || '';
 
@@ -449,6 +599,17 @@ function createHeaderMap(headerRow) {
     }
   });
   return map;
+}
+
+// ==================================================
+// UTILITY: Deterministic string normalization
+// ==================================================
+function normalizeString(str) {
+  return (str || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ') // collapse multiple spaces
+    .replace(/[^\w\s]/g, ''); // remove non-alphanumeric except spaces
 }
 
 validateAndTransform().catch(err => {

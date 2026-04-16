@@ -61,3 +61,34 @@ jobs:
         run: |
           npm install -g wrangler
           wrangler pages deploy dist --project-name=$CLOUDFLARE_PROJECT_NAME --branch=main
+
+      - name: Validate deployment
+        run: |
+          SITE_URL="https://${{ secrets.CLOUDFLARE_PROJECT_NAME }}.pages.dev"
+          echo "Validating deployment at $SITE_URL..."
+
+          # Check HTTP status
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL")
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Site returned HTTP $STATUS (expected 200)"
+            exit 1
+          fi
+          echo "✓ HTTP status: 200"
+
+          # Check site title contains expected tour name
+          TITLE=$(curl -s "$SITE_URL" | grep -o '<title>[^<]*</title>' | sed 's/<[^>]*>//g')
+          if [ -z "$TITLE" ]; then
+            echo "❌ Could not find page title"
+            exit 1
+          fi
+          echo "✓ Page title: $TITLE"
+
+          # Verify tour metadata is present
+          if ! curl -s "$SITE_URL" | grep -q "Canal des Deux Mers"; then
+            echo "❌ Tour name not found in site content"
+            exit 1
+          fi
+          echo "✓ Tour metadata verified"
+
+          echo ""
+          echo "✅ Deployment validation passed"
