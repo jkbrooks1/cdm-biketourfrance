@@ -1,174 +1,27 @@
 ---
-import { google } from 'googleapis';
-import { readFileSync } from 'fs';
-import path from 'path';
-
 interface Stop {
-  distance: number | null;
   name: string;
   location: string;
   type: string;
-  hasResolution: boolean;
+  town: string;
+  rendered: string;
 }
 
 interface Props {
-  rideDay: string;
   ride: any;
 }
 
-const { rideDay, ride } = Astro.props;
-const rideDayStr = String(rideDay);
+const { ride } = Astro.props;
 
-const SPREADSHEET_ID = '1OUtAtMZrE4cR-GDijHu4IY4bbowjs3itHpjSTpq1I8g';
-
-let credentials: any = {};
-try {
-  const credPath = path.join(process.env.HOME || '', 'key_fixed.json');
-  const credContent = readFileSync(credPath, 'utf-8');
-  credentials = JSON.parse(credContent);
-} catch (error) {
-  // Credentials not available during build
-}
-
-const auth = new google.auth.GoogleAuth({
-  credentials,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-});
-
-const sheets = google.sheets({
-  version: 'v4',
-  auth,
-});
-
-async function fetchSheetData(sheetName: string, range: string): Promise<any[][]> {
-  try {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sheetName}!${range}`,
-    });
-    return response.data.values || [];
-  } catch (error) {
-    return [];
-  }
-}
-
-function createHeaderMap(headerRow: string[]): Record<string, number> {
-  const map: Record<string, number> = {};
-  headerRow.forEach((header, idx) => {
-    if (header) {
-      map[header.trim()] = idx;
-    }
-  });
-  return map;
-}
-
-function normalizeString(str: string): string {
-  return str.trim().toLowerCase().replace(/\s+/g, '');
-}
-
-function getRideDayRelativeDistance(townName: string, rideObj: any): number | null {
-  if (!rideObj || !Array.isArray(rideObj.towns)) {
-    return null;
-  }
-
-  const normalizedInput = normalizeString(townName);
-
-  for (const town of rideObj.towns) {
-    const normalizedTown = normalizeString(town.name || town.town || '');
-    if (normalizedTown === normalizedInput) {
-      const distance = town.distanceFromStart !== undefined ? town.distanceFromStart : null;
-      return distance;
-    }
-  }
-
-  return null;
-}
-
-// Fetch all three stop sources
-const [wcData, cafeData, lunchData] = await Promise.all([
-  fetchSheetData('TWN_WC', 'A:Z'),
-  fetchSheetData('TWN_Cafe_Boulangeries', 'A:Z'),
-  fetchSheetData('RDE_Lunch_Options', 'A:Z'),
-]);
-
-const wcHeader = createHeaderMap(wcData[0] || []);
-const cafeHeader = createHeaderMap(cafeData[0] || []);
-const lunchHeader = createHeaderMap(lunchData[0] || []);
-
-// Parse WC stops
-const wcStops: Stop[] = (wcData.slice(1) || [])
-  .filter(row => row[wcHeader['Town_Name']] && row[wcHeader['Ride_Day']] === rideDayStr)
-  .map(row => {
-    const townName = row[wcHeader['Town_Name']] || '';
-    const distance = getRideDayRelativeDistance(townName, ride);
-
-    if (distance === null) {
-      throw new Error(`WC stop in ${townName} on ${rideDayStr} cannot be matched to route`);
-    }
-    if (distance === 0) {
-      throw new Error(`WC stop in ${townName} on ${rideDayStr} resolved to distance 0 (invalid)`);
-    }
-
-    return {
-      distance,
-      name: row[wcHeader['Location']] || row[wcHeader['Facility_Type']] || 'WC',
-      location: row[wcHeader['Location']] || '',
-      type: 'WC',
-      hasResolution: true,
-    };
-  });
-
-// Parse Cafe/Boulangerie stops
-const cafeStops: Stop[] = (cafeData.slice(1) || [])
-  .filter(row => row[cafeHeader['Town_Name']] && row[cafeHeader['Ride_Day']] === rideDayStr)
-  .map(row => {
-    const townName = row[cafeHeader['Town_Name']] || '';
-    const distance = getRideDayRelativeDistance(townName, ride);
-
-    if (distance === null) {
-      throw new Error(`Cafe/Boulangerie stop in ${townName} on ${rideDayStr} cannot be matched to route`);
-    }
-    if (distance === 0) {
-      throw new Error(`Cafe/Boulangerie stop in ${townName} on ${rideDayStr} resolved to distance 0 (invalid)`);
-    }
-
-    return {
-      distance,
-      name: row[cafeHeader['Cafe_Name']] || row[cafeHeader['Boulangerie_Name']] || '',
-      location: row[cafeHeader['Location']] || '',
-      type: row[cafeHeader['Type']] || 'Cafe',
-      hasResolution: true,
-    };
-  });
-
-// Parse Lunch stops
-const lunchStops: Stop[] = (lunchData.slice(1) || [])
-  .filter(row => row[lunchHeader['Ride_Day']] === rideDayStr)
-  .map(row => ({
-    distance: parseFloat(row[lunchHeader['Mile_Post_On_Route']]) || null,
-    name: row[lunchHeader['Business_Name']] || '',
-    location: row[lunchHeader['Town']] || row[lunchHeader['Location']] || '',
-    type: 'Lunch',
-    hasResolution: (parseFloat(row[lunchHeader['Mile_Post_On_Route']]) || 0) > 0,
+// Use pre-computed routeStops from tour-data.json
+const allStops: Stop[] = (ride.routeStops || [])
+  .map((stop: any) => ({
+    name: stop.name || '',
+    location: stop.notes || stop.town || '',
+    type: stop.type.toUpperCase(),
+    town: stop.town || '',
+    rendered: stop.renderedTown || stop.town || '',
   }));
-
-// Count unresolved
-const unresolvedCount = [...wcStops, ...cafeStops, ...lunchStops].filter(s => !s.hasResolution).length;
-if (unresolvedCount > 1) {
-  throw new Error(`More than 1 stop unresolved on ${rideDayStr}: ${unresolvedCount}`);
-}
-
-// Merge and sort: resolved first (ascending), then unresolved
-const allStops = [...wcStops, ...cafeStops, ...lunchStops]
-  .filter(s => s.name && s.location)
-  .sort((a, b) => {
-    if (a.hasResolution && !b.hasResolution) return -1;
-    if (!a.hasResolution && b.hasResolution) return 1;
-    if (a.hasResolution && b.hasResolution && a.distance && b.distance) {
-      return a.distance - b.distance;
-    }
-    return 0;
-  });
 
 const hasStops = allStops.length > 0;
 ---
@@ -179,7 +32,6 @@ const hasStops = allStops.length > 0;
     <table class="stops-table">
       <thead>
         <tr>
-          <th class="col-distance">Distance</th>
           <th class="col-name">Name</th>
           <th class="col-location">Location</th>
           <th class="col-type">Type</th>
@@ -188,10 +40,9 @@ const hasStops = allStops.length > 0;
       <tbody>
         {allStops.map((stop: any) => (
           <tr>
-            <td class="col-distance">{stop.hasResolution && stop.distance ? stop.distance.toFixed(1) : ''}</td>
             <td class="col-name">{stop.name}</td>
             <td class="col-location">{stop.location}</td>
-            <td class="col-type">{stop.type.toUpperCase()}</td>
+            <td class="col-type">{stop.type}</td>
           </tr>
         ))}
       </tbody>
@@ -238,23 +89,17 @@ const hasStops = allStops.length > 0;
     color: #333;
   }
 
-  .col-distance {
-    width: 8%;
-    font-weight: 600;
-    color: #2d5016;
-  }
-
   .col-name {
-    width: 28%;
+    width: 32%;
     font-weight: 500;
   }
 
   .col-location {
-    width: 52%;
+    width: 60%;
   }
 
   .col-type {
-    width: 12%;
+    width: 8%;
     font-weight: 600;
     color: #2d5016;
     font-size: 0.75rem;
@@ -275,11 +120,11 @@ const hasStops = allStops.length > 0;
     }
 
     .col-name {
-      width: 25%;
+      width: 30%;
     }
 
     .col-location {
-      width: 50%;
+      width: 60%;
     }
   }
 </style>
