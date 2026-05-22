@@ -1,12 +1,66 @@
 ---
 interface Props {
-  rides: any[];
+  days: any[];
 }
 
-const { rides } = Astro.props;
+const { days } = Astro.props;
+const isRootPage = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 
 // Filter to only ride days (not arrival, rest, train)
-const rideDays = rides.filter((r: any) => r.rideType === 'ride');
+const safeDays = Array.isArray(days) ? days : [];
+const rideDays = safeDays
+  .filter((r: any) => ['arrival', 'ride', 'rest', 'train'].includes(r.rideType))
+  .sort((a: any, b: any) => Number(a.tourDayNum ?? 0) - Number(b.tourDayNum ?? 0));
+
+function routeKey(day: any) {
+  return String((day.rideDay ?? day.tourDayNum) ?? '').trim().toUpperCase();
+}
+
+function getWeekday(raw: string): string {
+  if (!raw) return '';
+  let month: number, day: number, year: number;
+  if (raw.includes('-')) {
+    [year, month, day] = raw.split('-').map(Number);
+  } else if (raw.includes('/')) {
+    const parts = raw.split('/').map(Number);
+    month = parts[0]; day = parts[1]; year = 2026;
+  } else {
+    return '';
+  }
+  const d = new Date(year, month - 1, day);
+  return d.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+}
+
+function formatRideDay(rideDay: any): string {
+  const day = String(rideDay ?? '').trim();
+  if (!day || day === 'NULL') return '';
+  const num = parseInt(day, 10);
+  if (!isNaN(num) && num > 0) {
+    return `RD${String(num).padStart(2, '0')}`;
+  }
+  return String(rideDay ?? '').trim().toUpperCase();
+}
+
+function optionLabel(day: any) {
+  const weekday = getWeekday(day.date);
+
+  if (day.rideType === 'overview') {
+    return `OVERVIEW · ${weekday} · ${day.startTown} → ${day.endTown}`;
+  }
+  if (day.rideType === 'arrival') {
+    return `ARRIVAL · ${weekday} · ${day.endTown}`;
+  }
+  if (day.rideType === 'rest') {
+    return `REST · ${weekday} · ${day.startTown}`;
+  }
+  if (day.rideType === 'train') {
+    return `TRAIN · ${weekday} · ${day.startTown} → ${day.endTown}`;
+  }
+
+  // Ride days (rideType === 'ride')
+  const rideLabel = formatRideDay(day.rideDay);
+  return `${rideLabel} · ${weekday} · ${day.startTown} → ${day.endTown} · ${Math.round(day.miles)} mi`;
+}
 
 function formatDate(raw: string) {
   if (!raw) return '';
@@ -29,41 +83,49 @@ function formatDate(raw: string) {
     <label for="day-picker">Select a day:</label>
     <div class="day-picker-wrap">
       <select id="day-picker" class="day-picker">
+        <option value="">Select a ride day...</option>
         {rideDays.map((day: any) => (
-          <option value={day.dayNumber}>
-            {formatDate(day.date)} • {day.startTown} → {day.endTown} • {day.miles.toFixed(0)} mi
-          </option>
+          <option value={routeKey(day)}>{optionLabel(day)}</option>
         ))}
       </select>
     </div>
   </div>
 </div>
 
-<script>
-  // Initialize day selection from localStorage or default to first ride day
-  const dayPicker = document.getElementById('day-picker') as HTMLSelectElement;
+<script define:vars={{ isRootPage }}>
+  // Initialize day selection from localStorage or default to placeholder on root
+  const dayPicker = document.getElementById('day-picker');
 
   if (dayPicker) {
-    const savedDay = localStorage.getItem('selectedRideDay');
-    if (savedDay) {
-      dayPicker.value = savedDay;
+    if (isRootPage) {
+      // Root page: show placeholder (empty value), ignore localStorage
+      dayPicker.value = '';
     } else {
-      // Default to first ride day
-      dayPicker.value = dayPicker.options[0].value;
+      // Day pages: use localStorage or default to first ride day option
+      const savedDay = localStorage.getItem('selectedTourDay');
+      if (savedDay) {
+        dayPicker.value = savedDay;
+      } else {
+        // Skip placeholder, select first actual ride day
+        dayPicker.value = dayPicker.options[1]?.value || '';
+      }
     }
 
-    // Save selection to localStorage and trigger update
+    // Handle selection change: navigate to selected day
     dayPicker.addEventListener('change', (e) => {
-      const target = e.target as HTMLSelectElement;
-      localStorage.setItem('selectedRideDay', target.value);
-      window.dispatchEvent(new CustomEvent('daySelected', { detail: { dayNumber: target.value } }));
+      const target = e.target;
+      const selectedDay = target.value;
+      if (selectedDay) {
+        localStorage.setItem('selectedTourDay', selectedDay);
+        window.location.href = `/${selectedDay}`;
+      }
     });
   }
 </script>
 
 <style>
   .day-selector-wrapper {
-    padding: 0.75rem 0;
+    padding: 0.5rem 0;
     border-bottom: 1px solid #ddd;
   }
 
